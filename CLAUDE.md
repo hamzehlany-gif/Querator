@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Querator is a [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) plugin for CS2 (Counter-Strike 2) that runs and manages practice/pugs/scrims/matches. It is a C# class library targeting **.NET 8.0** that compiles to a DLL loaded by the CounterStrikeSharp runtime inside a CS2 dedicated server. There is no standalone executable — the plugin runs in-process with the game server.
 
-> **Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy)** (MIT; see `CREDITS` / `LICENSE`). A rebrand from MatchZy → Querator is **in progress** — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md). The *project* is "Querator", but many code identifiers still use the MatchZy name (class `MatchZy`, `matchzy_*` cvars, `MatchZy.dll`, `cfg/MatchZy/`, `plugins/MatchZy/`, `matchzy_stats_*` tables, `matchzy.*` lang keys, `/api/matchzy`, …) and are renamed in later sub-phases. **The MatchZy-named code references in this document are current and accurate** until those sub-phases land.
+> **Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy)** (MIT; see `CREDITS` / `LICENSE`). A rebrand from MatchZy → Querator is **in progress** — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md). The *project* is "Querator" and the **C# namespace + class are now `Querator`** (renamed in SP2), but many identifiers still use the MatchZy name (`matchzy_*` cvars, `MatchZy.dll`, `cfg/MatchZy/`, `plugins/MatchZy/`, `matchzy_stats_*` tables, `matchzy.*` lang keys, `/api/matchzy`, string-literal paths, …) and are renamed in later sub-phases. **The MatchZy-named code references in this document are current and accurate** until those sub-phases land.
 
 ## Build & develop
 
@@ -30,7 +30,7 @@ The version string lives in **one place**: `ModuleVersion` in `MatchZy.cs`. The 
 
 ## Architecture
 
-The entire plugin is **one class — `partial class MatchZy : BasePlugin`** — split across ~19 `.cs` files at the repo root by feature area (e.g. `PracticeMode.cs`, `MapVeto.cs`, `MatchManagement.cs`, `Coach.cs`, `Pausing.cs`, `BackupManagement.cs`, `DamageInfo.cs`). All these files share the same fields and methods; there is no per-file encapsulation. When adding a feature, add a new partial-class file rather than a new class, following the existing split.
+The entire plugin is **one class — `partial class Querator : BasePlugin`** — split across ~19 `.cs` files at the repo root by feature area (e.g. `PracticeMode.cs`, `MapVeto.cs`, `MatchManagement.cs`, `Coach.cs`, `Pausing.cs`, `BackupManagement.cs`, `DamageInfo.cs`). All these files share the same fields and methods; there is no per-file encapsulation. When adding a feature, add a new partial-class file rather than a new class, following the existing split.
 
 `Load()` in `MatchZy.cs` is the single entry point: it loads admins, initializes the database, executes `cfg/MatchZy/config.cfg`, builds the `commandActions` dictionary, and registers all event handlers. Read it first to understand wiring.
 

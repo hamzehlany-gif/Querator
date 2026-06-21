@@ -84,8 +84,8 @@ else:                                       # enough maps chosen
 
 ### `BanMap` / `PickMap`
 Both call **`RemoveMapFromMapPool(mapName)`** then announce and fire an event:
-- `PickMap` → append to `Maplist`, fire **`MatchZyMapPickedEvent`** (`map_picked`).
-- `BanMap` → just remove, fire **`MatchZyMapVetoedEvent`** (`map_vetoed`).
+- `PickMap` → append to `Maplist`, fire **`QueratorMapPickedEvent`** (`map_picked`).
+- `BanMap` → just remove, fire **`QueratorMapVetoedEvent`** (`map_vetoed`).
 - Both set `lastVetoTeam`.
 
 **`RemoveMapFromMapPool` quirks** (worth knowing):
@@ -97,7 +97,7 @@ Both call **`RemoveMapFromMapPool(mapName)`** then announce and fire an event:
 ### Side selection
 - `PromptForSideSelectionInChat(team)` asks the non-last-veto captain to `.ct`/`.t` for the just-picked map.
 - `PickSide(side, team)` appends the proper `team1_ct`/`team1_t` token to `MapSides` and fires
-  **`MatchZySidePickedEvent`** (`side_picked`).
+  **`QueratorSidePickedEvent`** (`side_picked`).
 - `HandleAutomaticSideSelection()` (non-standard `MatchSideType`): `random` → random `team1_ct`/`team1_t`;
   `never_knife` → `team1_ct`; otherwise → `"knife"`.
 
@@ -134,8 +134,8 @@ picks, and pool size must be exactly one larger than the ban/pick count (unless 
 
 ## 7. Events fired during veto (remote log / panel)
 
-`map_picked` (`MatchZyMapPickedEvent`), `map_vetoed` (`MatchZyMapVetoedEvent`), `side_picked`
-(`MatchZySidePickedEvent`) — all carry `matchid`, `team`, `map_name` (+ `map_number`/`side`). See
+`map_picked` (`QueratorMapPickedEvent`), `map_vetoed` (`QueratorMapVetoedEvent`), `side_picked`
+(`QueratorSidePickedEvent`) — all carry `matchid`, `team`, `map_name` (+ `map_number`/`side`). See
 [10-demos-backups-events-damage.md](10-demos-backups-events-damage.md) and [`Events.cs`](../Events.cs).
 
 ---

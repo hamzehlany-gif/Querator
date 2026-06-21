@@ -27,7 +27,7 @@ The plugin's IO / observability surface. Sources: [`DemoManagement.cs`](../DemoM
 - **Upload** (`UploadFileAsync`): POSTs the raw file as `application/octet-stream` with headers `MatchZy-FileName`,
   `MatchZy-MatchId`, `MatchZy-MapNumber`, `MatchZy-RoundNumber` (+ `Get5-*` duplicates), plus the optional custom
   header. ⚠️ **Findings:** demos are **not zipped** (despite `System.IO.Compression` being imported), and the
-  `MatchZyDemoUploadedEvent` (`demo_upload_ended`) is **defined but never fired** on this path.
+  `QueratorDemoUploadedEvent` (`demo_upload_ended`) is **defined but never fired** on this path.
 
 ---
 
@@ -52,7 +52,7 @@ low-level snapshot (positions, money, score) — MatchZy treats it as an opaque 
 ### `.stop` (`css_stop`, both teams confirm)
 Player-only; requires `isStopCommandAvailable && isMatchLive`; rejected during halftime, post-game, or an active
 tactical timeout, and — if `matchzy_stop_command_no_damage` is set — if `playerHasTakenDamage` this round. T sets
-`stopData["t"]`, CT sets `stopData["ct"]`; when both are set → `RestoreRoundBackup(player, lastMatchZyBackupFileName)`
+`stopData["t"]`, CT sets `stopData["ct"]`; when both are set → `RestoreRoundBackup(player, lastQueratorBackupFileName)`
 (the current round's `.json`).
 
 ### `.restore <round>` (`css_restore`, admin `@css/config`)
@@ -75,14 +75,14 @@ zipped**). Restore-from-remote: `matchzy_loadbackup`/`get5_loadbackup` (file), `
 `get5_loadbackup_url` (URL → saved as `MatchZyDataBackup/<GUID>.json` → restore), `matchzy_listbackups`/
 `get5_listbackups` (list by matchid).
 
-> ⚠️ Dead/odd fields: `lastBackupFileName` is declared but unused; `lastMatchZyBackupFileName` is read by `.stop` but
+> ⚠️ Dead/odd fields: `lastBackupFileName` is declared but unused; `lastQueratorBackupFileName` is read by `.stop` but
 > assigned outside this file (in the round/backup flow) — verify when touching `.stop`.
 
 ---
 
 ## 3. Event forwarding ([`PublishEvents.cs`](../PublishEvents.cs) + [`Events.cs`](../Events.cs))
 
-- **`SendEventAsync(MatchZyEvent)`**: if `matchConfig.RemoteLogURL` is empty, **no-op**. Else serializes the event to
+- **`SendEventAsync(QueratorEvent)`**: if `matchConfig.RemoteLogURL` is empty, **no-op**. Else serializes the event to
   JSON (System.Text.Json, by runtime type) and **POSTs** it to `RemoteLogURL` with the optional
   `RemoteLogHeaderKey/Value` header. **No retry, no dedup, no batching** — fire-and-forget (callers wrap in
   `Task.Run`). Configured via `matchzy_remote_log_url`/`get5_remote_log_url` (+ header key/value) — see
@@ -90,21 +90,21 @@ zipped**). Restore-from-remote: `matchzy_loadbackup`/`get5_loadbackup` (file), `
 - The OpenAPI schema for these payloads is `documentation/docs/event_schema.yml`.
 
 ### Event catalog (class → `event` name → key payload, from [`Events.cs`](../Events.cs))
-DTO hierarchy roots: `MatchZyEvent` (`event`) → `MatchZyMatchEvent` (+`matchid`) → `MatchZyMapEvent` (+`map_number`) →
-`MatchZyRoundEvent` (+`round_number`) → `MatchZyTimedRoundEvent` (+`round_time`); plus team/player mixins.
+DTO hierarchy roots: `QueratorEvent` (`event`) → `QueratorMatchEvent` (+`matchid`) → `QueratorMapEvent` (+`map_number`) →
+`QueratorRoundEvent` (+`round_number`) → `QueratorTimedRoundEvent` (+`round_time`); plus team/player mixins.
 
 | `event` | Class | Extra payload | Fired from |
 |---|---|---|---|
-| `series_start` | `MatchZySeriesStartedEvent` | `team1`,`team2` (id+name), `num_maps` | `LoadMatchFromJSON` |
-| `series_end` | `MatchZySeriesResultEvent` | `winner`, `team1_series_score`, `team2_series_score`, `time_until_restore` | `EndSeries` |
+| `series_start` | `QueratorSeriesStartedEvent` | `team1`,`team2` (id+name), `num_maps` | `LoadMatchFromJSON` |
+| `series_end` | `QueratorSeriesResultEvent` | `winner`, `team1_series_score`, `team2_series_score`, `time_until_restore` | `EndSeries` |
 | `going_live` | `GoingLiveEvent` | (`matchid`,`map_number`) | `StartLive` |
-| `round_end` | `MatchZyRoundEndedEvent` | `reason`, `winner`, team stats | round-end handler |
+| `round_end` | `QueratorRoundEndedEvent` | `reason`, `winner`, team stats | round-end handler |
 | `map_result` | `MapResultEvent` | `winner`, team stats | `HandleMatchEnd` |
-| `map_picked` | `MatchZyMapPickedEvent` | `team`, `map_name`, `map_number` | veto `PickMap` |
-| `map_vetoed` | `MatchZyMapVetoedEvent` | `team`, `map_name` | veto `BanMap` |
-| `side_picked` | `MatchZySidePickedEvent` | `team`, `map_name`, `map_number`, `side` | veto `PickSide` |
-| `player_disconnect` | `MatchZyPlayerDisconnectedEvent` | `player` | disconnect handler |
-| `demo_upload_ended` | `MatchZyDemoUploadedEvent` | `map_number`, `filename`, `success` | ⚠️ **defined but never fired** |
+| `map_picked` | `QueratorMapPickedEvent` | `team`, `map_name`, `map_number` | veto `PickMap` |
+| `map_vetoed` | `QueratorMapVetoedEvent` | `team`, `map_name` | veto `BanMap` |
+| `side_picked` | `QueratorSidePickedEvent` | `team`, `map_name`, `map_number`, `side` | veto `PickSide` |
+| `player_disconnect` | `QueratorPlayerDisconnectedEvent` | `player` | disconnect handler |
+| `demo_upload_ended` | `QueratorDemoUploadedEvent` | `map_number`, `filename`, `success` | ⚠️ **defined but never fired** |
 
 > `Winner` is `{ side: "2"/"3", team: "team1"/"team2" }`. `going_live` is dispatched but never consumed internally
 > (the Get5 `going_live` state is derived by proxy — see [07](07-match-management-and-get5.md#6-get5-status-surface-g5apics)).

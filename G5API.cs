@@ -5,7 +5,7 @@ using CounterStrikeSharp.API.Modules.Commands;
 using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 
-namespace MatchZy
+namespace Querator
 {
     public class Get5Status
     {
@@ -90,7 +90,7 @@ namespace MatchZy
         public string PluginVersion { get; } = "0.15.0";
     }
 
-    public partial class MatchZy
+    public partial class Querator
     {
         [ConsoleCommand("get5_status", "Returns get5 status")]
         public void Get5StatusCommand(CCSPlayerController? player, CommandInfo command)

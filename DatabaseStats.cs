@@ -14,7 +14,7 @@ using MySqlConnector;
 
 
 
-namespace MatchZy
+namespace Querator
 {
     public class Database
     {
