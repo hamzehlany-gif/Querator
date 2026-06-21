@@ -618,7 +618,7 @@ namespace MatchZy
 
             if (matchStarted)
             {
-                // ReplyToUserCommand(player, "MatchZy is already in match mode!");
+                // ReplyToUserCommand(player, "Querator is already in match mode!");
                 ReplyToUserCommand(player, Localizer["matchzy.cc.match"]);
                 return;
             }
@@ -637,7 +637,7 @@ namespace MatchZy
 
             if (matchStarted)
             {
-                //ReplyToUserCommand(player, "MatchZy is already in match mode!");
+                //ReplyToUserCommand(player, "Querator is already in match mode!");
                 ReplyToUserCommand(player, Localizer["matchzy.cc.exitprac"]);
                 return;
             }

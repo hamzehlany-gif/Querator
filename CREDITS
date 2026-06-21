@@ -1,0 +1,26 @@
+Querator — Credits & Attribution
+================================
+
+Querator is a fork of MatchZy, maintained by Lany (https://lany.gg) for the Lany CS2 community.
+It removes upstream branding for Lany's internal use, but the lineage and license are retained on purpose.
+
+Upstream
+--------
+- MatchZy — https://github.com/shobhit-pathak/MatchZy — by shobhit-pathak ("WD-").
+  Querator is derived from MatchZy and used under the MIT License (see LICENSE).
+  Querator tracks MatchZy for security and CS2-compatibility fixes and ports them manually as needed
+  (e.g. the signature-scanned grenade projectile functions that can break on CS2 updates).
+
+MatchZy's own credits (carried forward)
+---------------------------------------
+- Get5 — https://github.com/splewis/get5
+- G5V / G5API — https://github.com/PhlexPlexico/G5V , https://github.com/PhlexPlexico/G5API
+- eBot — https://github.com/deStrO/eBot-CSGO
+- CounterStrikeSharp — https://github.com/roflmuffin/CounterStrikeSharp/
+- AlliedModders community — https://alliedmods.net/
+- Contributors: CHR15cs (practice mode), K4ryuu (damage report), DEAFPS (practice mode / whitelisting),
+  LOTGaming (initial testing).
+
+License
+-------
+MIT — see LICENSE. The MatchZy copyright notice is retained as required by the MIT License.

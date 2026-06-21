@@ -20,7 +20,7 @@ other doc can assume this context.
 
 > **Naming note:** the fork is called *Querator* but the code still identifies itself as *MatchZy* everywhere
 > (class name, module name, chat prefix, ConVar prefix `matchzy_`, lang keys `matchzy.*`, namespace `MatchZy`).
-> Renaming is a deliberate future decision — see [12-customization-for-lany.md](12-customization-for-lany.md).
+> Renaming is **in progress** (a multi-sub-phase program) — see [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 > For now, treat "MatchZy" in code as the identity of Querator.
 
 ---

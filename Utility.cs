@@ -131,7 +131,7 @@ namespace MatchZy
             };
             if (attr.CanExecuteCommand(player)) return true; // Admin exists in admins.json of CSSharp
             if (player == null) return true; // Sent via server, hence should be treated as an admin.
-            if (loadedAdmins.ContainsKey(player.SteamID.ToString())) return true; // Admin exists in admins.json of MatchZy
+            if (loadedAdmins.ContainsKey(player.SteamID.ToString())) return true; // Admin exists in admins.json of Querator
             return false;
         }
 
