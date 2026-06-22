@@ -11,8 +11,8 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | Old | New | Sub-phase | Status |
 |---|---|---|---|
 | MatchZy (project identity / branding, docs, comments) | Querator | SP1 / SP3 | in progress |
-| `namespace MatchZy` / `class MatchZy` | `namespace Querator` / `class Querator` | SP2 | planned |
-| `MatchZy*Event` / `MatchZyStats*` (DTO type names) | `Querator*Event` / `QueratorStats*` | SP2 | planned |
+| `namespace MatchZy` / `class MatchZy` | `namespace Querator` / `class Querator` | SP2 | done |
+| `MatchZy*Event` / `MatchZyStats*` (DTO type names) | `Querator*Event` / `QueratorStats*` | SP2 | done |
 | `ModuleName "MatchZy"` | `"Querator"` | SP-B1 (coupled) | planned |
 | `ModuleVersion 0.8.15` | `1.0.0` | SP3 | planned |
 | `ModuleAuthor "WD-…"` | Lany | SP3 | planned |
@@ -27,7 +27,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | release `MatchZy-*.zip` + upstream release source | `Querator-*.zip` + fork source | Phase C | planned |
 | lany-docs MatchZy references (37 refs/10 files) | Querator | Phase C | planned |
 | `get5_*` surface | (decision: keep; optional removal later) | post-rebrand | deferred (D7) |
-| `lastMatchZyBackupFileName` (variable) | `lastQueratorBackupFileName` | SP2 (with identifiers) | planned |
+| `lastMatchZyBackupFileName` (variable) | `lastQueratorBackupFileName` | SP2 | done |
 
 > Consumers that break on a coupled rename (must change in lockstep) — see the plan's impact map: node-agent
 > `rconDetector.js:60`, `detector.js:265`, `plugin.js:254`, `MATCHZY_*` env, config templates; lanyBot
@@ -54,3 +54,33 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
   unaffected.
 - **Deploy:** none (prose only).
 - **Rollback:** delete/revert `rebrand-a-sp1-prose`.
+
+### SP2 — code identifiers (Phase A) — 2026-06-21 — ✅ build green; ✅ VM load smoke passed (2026-06-22)
+- **Branch:** `rebrand-a-sp2-identifiers` (off `rebrand-a`). Repo: **Querator only**.
+- **Changes (internal identifiers; case-sensitive allow-list, never a blanket replace):** `namespace MatchZy`→`Querator`
+  (all files); `partial class MatchZy`→`Querator`; the `MatchZy*Event` / `MatchZyStatsTeam` / `MatchZyTeamWrapper` DTO
+  type names → `Querator*`; `lastMatchZyBackupFileName`→`lastQueratorBackupFileName`. Engineering-doc references
+  updated to match (docs 00,01,03,06,07,10,11 + CLAUDE.md prose notes).
+- **Kept (string literals / coupled — verified counts):** `ModuleName "MatchZy"` (1), `"MatchZy/"` cfg paths (15),
+  `MatchZy_Stats`/`MatchZyDataBackup` (5), `matchzy_*` cvars (94), `matchzy.*` lang keys, `MatchZy.cs` filenames,
+  `MapResultEvent`/`GoingLiveEvent` (no MatchZy prefix). **Source files NOT renamed** (deferred to the DLL/csproj
+  rename, SP-B2).
+- **Deferred (internal camelCase, later identifier sweep):** `matchzyTeam1`/`matchzyTeam2` and other lowercase-`matchzy`
+  fields.
+- **Verification:** ✅ `dotnet publish` exit 0 (compiles). DLL still `MatchZy.dll`, `ModuleName` still "MatchZy" →
+  node-agent/lanyBot detection unaffected. ✅ **VM load smoke (2026-06-22, `82.212.83.229`):** deployed flat to
+  `plugins/MatchZy/`, `cs2` restarted → CSSharp `Finished loading plugin MatchZy` at 19:56:31 (74 ms), **zero
+  errors/exceptions/warns**. Deployed DLL verified to carry **31 `Querator`** namespace/class markers + all
+  `Querator*Event` DTOs, and 5 retained `MatchZy` string literals (= the "Kept (5)" count). The renamed
+  `partial class Querator` instantiates fine — CSSharp locates the `BasePlugin` subclass by type-scan, not by name.
+- **Ops notes (not rebrand changes, logged for traceability):**
+  - Discovered the VM's node-agent plugin-install is **nested one level too deep** (real DLL was at
+    `plugins/MatchZy/addons/counterstrikesharp/plugins/MatchZy/MatchZy.dll`, with a duplicate `cfg/MatchZy/` inside the
+    plugin folder). Moved the cruft to `/tmp/matchzy-botched-bak/` and deployed flat to the correct path. Filed as a
+    **TODO for SP-B2/SP-C1** — see the plan's §8a (likely affects the whole fleet).
+  - Fixed `scripts/deploy-to-vm.ps1`: `Compress-Archive`+`unzip` emitted a backslash-separator warning → `unzip` exit 1
+    → that broke the `&& systemctl restart` chain (files updated but server never restarted). Switched to `tar.gz`
+    (forward slashes, exit 0) + base64-piped remote script + a post-restart load-poll that confirms a clean reload.
+- **Merge:** ✅ merged `rebrand-a-sp2-identifiers` → `rebrand-a` (local, no push) after the gate passed.
+- **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP2 tip; the `rebrand-a-sp2-identifiers`
+  branch is retained.

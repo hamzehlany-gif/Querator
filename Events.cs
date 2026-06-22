@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 
-namespace MatchZy;
-public class MatchZyEvent
+namespace Querator;
+public class QueratorEvent
 {
-    public MatchZyEvent(string eventName)
+    public QueratorEvent(string eventName)
     {
         EventName = eventName;
     }
@@ -12,114 +12,114 @@ public class MatchZyEvent
     public string EventName { get; }
 }
 
-public class MatchZyMatchEvent : MatchZyEvent
+public class QueratorMatchEvent : QueratorEvent
 {
     [JsonPropertyName("matchid")]
     public required long MatchId { get; init; }
 
-    protected MatchZyMatchEvent(string eventName) : base(eventName)
+    protected QueratorMatchEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyMatchTeamEvent : MatchZyMatchEvent
+public class QueratorMatchTeamEvent : QueratorMatchEvent
 {
     [JsonPropertyName("team")]
     public required string Team { get; init; }
 
-    protected MatchZyMatchTeamEvent(string eventName) : base(eventName)
+    protected QueratorMatchTeamEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyMapEvent : MatchZyMatchEvent
+public class QueratorMapEvent : QueratorMatchEvent
 {
     [JsonPropertyName("map_number")]
     public required int MapNumber { get; init; }
 
-    protected MatchZyMapEvent(string eventName) : base(eventName)
+    protected QueratorMapEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyMapTeamEvent : MatchZyMapEvent
+public class QueratorMapTeamEvent : QueratorMapEvent
 {
     [JsonPropertyName("team_int")]
     public required int TeamNumber { get; init; }
 
-    protected MatchZyMapTeamEvent(string eventName) : base(eventName)
+    protected QueratorMapTeamEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyRoundEvent : MatchZyMapEvent
+public class QueratorRoundEvent : QueratorMapEvent
 {
     [JsonPropertyName("round_number")]
     public required int RoundNumber { get; init; }
 
-    protected MatchZyRoundEvent(string eventName) : base(eventName)
+    protected QueratorRoundEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyTimedRoundEvent : MatchZyRoundEvent
+public class QueratorTimedRoundEvent : QueratorRoundEvent
 {
     [JsonPropertyName("round_time")]
     public required int RoundTime { get; init; }
 
-    protected MatchZyTimedRoundEvent(string eventName) : base(eventName)
+    protected QueratorTimedRoundEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyPlayerRoundEvent : MatchZyRoundEvent
+public class QueratorPlayerRoundEvent : QueratorRoundEvent
 {
 
     [JsonPropertyName("player")]
     public required int Player { get; init; }
 
-    protected MatchZyPlayerRoundEvent(string eventName) : base(eventName)
+    protected QueratorPlayerRoundEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyPlayerTimedRoundEvent : MatchZyTimedRoundEvent
+public class QueratorPlayerTimedRoundEvent : QueratorTimedRoundEvent
 {
     [JsonPropertyName("player")]
     public required int Player { get; init; }
 
-    protected MatchZyPlayerTimedRoundEvent(string eventName) : base(eventName)
+    protected QueratorPlayerTimedRoundEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyPlayerDisconnectedEvent : MatchZyMatchEvent
+public class QueratorPlayerDisconnectedEvent : QueratorMatchEvent
 {
     [JsonPropertyName("player")]
     public required int Player { get; init; }
 
-    public MatchZyPlayerDisconnectedEvent() : base("player_disconnect")
+    public QueratorPlayerDisconnectedEvent() : base("player_disconnect")
     {
     }
 }
 
-public class MatchZySeriesStartedEvent : MatchZyMatchEvent
+public class QueratorSeriesStartedEvent : QueratorMatchEvent
 {
     [JsonPropertyName("team1")]
-    public required MatchZyTeamWrapper Team1 { get; init; }
+    public required QueratorTeamWrapper Team1 { get; init; }
 
     [JsonPropertyName("team2")]
-    public required MatchZyTeamWrapper Team2 { get; init; }
+    public required QueratorTeamWrapper Team2 { get; init; }
 
     [JsonPropertyName("num_maps")]
     public required int NumberOfMaps { get; init; }
 
-    public MatchZySeriesStartedEvent() : base("series_start")
+    public QueratorSeriesStartedEvent() : base("series_start")
     {
     }
 }
 
-public class MatchZySeriesResultEvent : MatchZyMatchEvent
+public class QueratorSeriesResultEvent : QueratorMatchEvent
 {
     [JsonPropertyName("time_until_restore")]
     public required int TimeUntilRestore { get; init; }
@@ -133,19 +133,19 @@ public class MatchZySeriesResultEvent : MatchZyMatchEvent
     [JsonPropertyName("team2_series_score")]
     public required int Team2SeriesScore { get; init; }
 
-    public MatchZySeriesResultEvent() : base("series_end")
+    public QueratorSeriesResultEvent() : base("series_end")
     {
     }
 }
 
-public class GoingLiveEvent : MatchZyMapEvent
+public class GoingLiveEvent : QueratorMapEvent
 {
     public GoingLiveEvent() : base("going_live")
     {
     }
 }
 
-public class MatchZyRoundEndedEvent : MatchZyTimedRoundEvent
+public class QueratorRoundEndedEvent : QueratorTimedRoundEvent
 {
 
     [JsonPropertyName("reason")]
@@ -155,60 +155,60 @@ public class MatchZyRoundEndedEvent : MatchZyTimedRoundEvent
     public required Winner Winner { get; init; }
 
     [JsonPropertyName("team1")]
-    public required MatchZyStatsTeam StatsTeam1 { get; init; }
+    public required QueratorStatsTeam StatsTeam1 { get; init; }
 
     [JsonPropertyName("team2")]
-    public required MatchZyStatsTeam StatsTeam2 { get; init; }
+    public required QueratorStatsTeam StatsTeam2 { get; init; }
 
-    public MatchZyRoundEndedEvent() : base("round_end")
+    public QueratorRoundEndedEvent() : base("round_end")
     {
     }
 }
 
-public class MapResultEvent : MatchZyMapEvent
+public class MapResultEvent : QueratorMapEvent
 {
     [JsonPropertyName("winner")]
     public required Winner Winner { get; init; }
 
     [JsonPropertyName("team1")]
-    public required MatchZyStatsTeam StatsTeam1 { get; init; }
+    public required QueratorStatsTeam StatsTeam1 { get; init; }
 
     [JsonPropertyName("team2")]
-    public required MatchZyStatsTeam StatsTeam2 { get; init; }
+    public required QueratorStatsTeam StatsTeam2 { get; init; }
 
     public MapResultEvent() : base("map_result")
     {
     }
 }
 
-public class MatchZyMapSelectionEvent : MatchZyMatchTeamEvent
+public class QueratorMapSelectionEvent : QueratorMatchTeamEvent
 {
     [JsonPropertyName("map_name")]
     public required string MapName { get; init; }
 
-    protected MatchZyMapSelectionEvent(string eventName) : base(eventName)
+    protected QueratorMapSelectionEvent(string eventName) : base(eventName)
     {
     }
 }
 
-public class MatchZyMapPickedEvent : MatchZyMapSelectionEvent
+public class QueratorMapPickedEvent : QueratorMapSelectionEvent
 {
     [JsonPropertyName("map_number")]
     public required int MapNumber { get; init; }
 
-    public MatchZyMapPickedEvent() : base("map_picked")
+    public QueratorMapPickedEvent() : base("map_picked")
     {
     }
 }
 
-public class MatchZyMapVetoedEvent : MatchZyMapSelectionEvent
+public class QueratorMapVetoedEvent : QueratorMapSelectionEvent
 {
-    public MatchZyMapVetoedEvent() : base("map_vetoed")
+    public QueratorMapVetoedEvent() : base("map_vetoed")
     {
     }
 }
 
-public class MatchZySidePickedEvent : MatchZyMapSelectionEvent
+public class QueratorSidePickedEvent : QueratorMapSelectionEvent
 {
     [JsonPropertyName("map_number")]
     public required int MapNumber { get; init; }
@@ -216,12 +216,12 @@ public class MatchZySidePickedEvent : MatchZyMapSelectionEvent
     [JsonPropertyName("side")]
     public required string Side { get; init; }
 
-    public MatchZySidePickedEvent() : base("side_picked")
+    public QueratorSidePickedEvent() : base("side_picked")
     {
     }
 }
 
-public class MatchZyDemoUploadedEvent : MatchZyMatchEvent
+public class QueratorDemoUploadedEvent : QueratorMatchEvent
 {
     [JsonPropertyName("map_number")]
     public required int MapNumber { get; init; }
@@ -232,7 +232,7 @@ public class MatchZyDemoUploadedEvent : MatchZyMatchEvent
     [JsonPropertyName("success")]
     public bool Success { get; set; }
 
-    public MatchZyDemoUploadedEvent() : base("demo_upload_ended")
+    public QueratorDemoUploadedEvent() : base("demo_upload_ended")
     {
     }
 }

@@ -6,9 +6,9 @@ using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Text.RegularExpressions;
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
         [ConsoleCommand("css_whitelist", "Toggles Whitelisting of players")]
         [ConsoleCommand("css_wl", "Toggles Whitelisting of players")]

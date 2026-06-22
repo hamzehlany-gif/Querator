@@ -2,7 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 
-namespace MatchZy;
+namespace Querator;
 public class GrenadeThrownData
 {
     public Vector Position { get; private set; }

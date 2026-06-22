@@ -13,9 +13,9 @@ using Newtonsoft.Json.Linq;
 using System.Drawing;
 
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
         public const string warmupCfgPath = "MatchZy/warmup.cfg";
         public const string knifeCfgPath = "MatchZy/knife.cfg";
@@ -319,7 +319,7 @@ namespace MatchZy
 
             // Storing 0-0 score backup file as lastBackupFileName, so that .stop functions properly in first round.
             lastBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.txt";
-            lastMatchZyBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.json";
+            lastQueratorBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.json";
 
             // This is to reload the map once it is over so that all flags are reset accordingly
             Server.ExecuteCommand("mp_match_end_restart true");
@@ -396,7 +396,7 @@ namespace MatchZy
                 isPreVeto = false;
 
                 lastBackupFileName = "";
-                lastMatchZyBackupFileName = "";
+                lastQueratorBackupFileName = "";
 
                 isRoundRestorePending = false;
                 playerHasTakenDamage = false;
@@ -874,8 +874,8 @@ namespace MatchZy
                 MatchId = liveMatchId,
                 MapNumber = currentMapNumber,
                 Winner = new Winner(t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2", t1score > t2score ? "team1" : "team2"),
-                StatsTeam1 = new MatchZyStatsTeam(matchzyTeam1.id, matchzyTeam1.teamName, team1SeriesScore, t1score, 0, 0, new List<StatsPlayer>()),
-                StatsTeam2 = new MatchZyStatsTeam(matchzyTeam2.id, matchzyTeam2.teamName, team2SeriesScore, t2score, 0, 0, new List<StatsPlayer>())
+                StatsTeam1 = new QueratorStatsTeam(matchzyTeam1.id, matchzyTeam1.teamName, team1SeriesScore, t1score, 0, 0, new List<StatsPlayer>()),
+                StatsTeam2 = new QueratorStatsTeam(matchzyTeam2.id, matchzyTeam2.teamName, team2SeriesScore, t2score, 0, 0, new List<StatsPlayer>())
             };
 
             Task.Run(async () =>
@@ -1058,7 +1058,7 @@ namespace MatchZy
                     int tTeamNum = reverseTeamSides["TERRORIST"] == matchzyTeam1 ? 1 : 2;
                     Winner winner = new(@event.Winner.ToString(), t1score > t2score ? "team1" : "team2");
 
-                    var roundEndEvent = new MatchZyRoundEndedEvent
+                    var roundEndEvent = new QueratorRoundEndedEvent
                     {
                         MatchId = liveMatchId,
                         MapNumber = matchConfig.CurrentMapNumber,
@@ -1066,8 +1066,8 @@ namespace MatchZy
                         Reason = @event.Reason,
                         RoundTime = 0,
                         Winner = winner,
-                        StatsTeam1 = new MatchZyStatsTeam(matchzyTeam1.id, matchzyTeam1.teamName, 0, t1score, 0, 0, playerStatsListTeam1),
-                        StatsTeam2 = new MatchZyStatsTeam(matchzyTeam2.id, matchzyTeam2.teamName, 0, t2score, 0, 0, playerStatsListTeam2),
+                        StatsTeam1 = new QueratorStatsTeam(matchzyTeam1.id, matchzyTeam1.teamName, 0, t1score, 0, 0, playerStatsListTeam1),
+                        StatsTeam2 = new QueratorStatsTeam(matchzyTeam2.id, matchzyTeam2.teamName, 0, t2score, 0, 0, playerStatsListTeam2),
                     };
 
                     Task.Run(async () =>
@@ -1079,8 +1079,8 @@ namespace MatchZy
 
                     string round = GetRoundNumer().ToString("D2");
                     lastBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt";
-                    lastMatchZyBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
-                    Log($"[HandlePostRoundEndEvent] Setting lastBackupFileName to {lastBackupFileName} and lastMatchZyBackupFileName to {lastMatchZyBackupFileName}");
+                    lastQueratorBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
+                    Log($"[HandlePostRoundEndEvent] Setting lastBackupFileName to {lastBackupFileName} and lastQueratorBackupFileName to {lastQueratorBackupFileName}");
 
                     // One of the team did not use .stop command hence display the proper message after the round has ended.
                     if (stopData["ct"] && !stopData["t"])

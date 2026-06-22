@@ -21,7 +21,7 @@
 | Language / TF | C# / **.NET 8.0** class library → `MatchZy.dll` |
 | Min CSSharp API | `[MinimumApiVersion(227)]` |
 | CSSharp API pkg | `CounterStrikeSharp.API` **1.0.342** (compile-only; runtime provided by server) |
-| Code shape | **One** `partial class MatchZy : BasePlugin` split across 29 `.cs` files at repo root |
+| Code shape | **One** `partial class Querator : BasePlugin` split across 29 `.cs` files at repo root |
 | Entry point | `Load(bool hotReload)` in [`MatchZy.cs`](../MatchZy.cs) |
 | State model | No formal FSM — a set of `bool`/`int` flags (see [01-architecture](01-architecture.md#state-flags)) |
 | DB | SQLite (default) or MySQL, via Dapper; chosen in `cfg/MatchZy/database.json` |

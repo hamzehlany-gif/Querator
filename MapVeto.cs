@@ -6,9 +6,9 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using System;
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
         public bool isPreVeto = false;
         public bool isVeto = false;
@@ -250,7 +250,7 @@ namespace MatchZy
 
             matchConfig.Maplist.Add(mapRemovedName);
 
-            var mapPickedEvent = new MatchZyMapPickedEvent
+            var mapPickedEvent = new QueratorMapPickedEvent
             {
                 MatchId = liveMatchId,
                 MapName = mapRemovedName,
@@ -280,7 +280,7 @@ namespace MatchZy
                 Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{matchzyTeam.teamName}{ChatColors.Default} banned {ChatColors.LightRed}{mapRemovedName}{ChatColors.Default}");
             }
 
-            var mapMapVetoedEvent = new MatchZyMapVetoedEvent
+            var mapMapVetoedEvent = new QueratorMapVetoedEvent
             {
                 MatchId = liveMatchId,
                 MapName = mapRemovedName,
@@ -531,7 +531,7 @@ namespace MatchZy
 
             Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{matchzyTeam.teamName}{ChatColors.Default} elected to start as {ChatColors.Green}{sideFormatted}{ChatColors.Default} on {ChatColors.Green}{mapName}{ChatColors.Default}.");
 
-            var sidePickedEvent = new MatchZySidePickedEvent
+            var sidePickedEvent = new QueratorSidePickedEvent
             {
                 MatchId = liveMatchId,
                 MapName = mapName,

@@ -6,10 +6,10 @@ using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Events;
 
 
-namespace MatchZy
+namespace Querator
 {
     [MinimumApiVersion(227)]
-    public partial class MatchZy : BasePlugin
+    public partial class Querator : BasePlugin
     {
 
         public override string ModuleName => "MatchZy";

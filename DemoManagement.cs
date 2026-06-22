@@ -7,9 +7,9 @@ using System.IO.Compression;
 using System.Net.Http.Json;
 using System.Text;
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
         public string demoPath = "MatchZy/";
         public string demoNameFormat = "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}";

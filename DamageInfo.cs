@@ -3,10 +3,10 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 
 
-namespace MatchZy
+namespace Querator
 {
 
-    public partial class MatchZy
+    public partial class Querator
     {
 
         private void InitPlayerDamageInfo()

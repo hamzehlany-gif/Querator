@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Text.Json.Serialization;
 using CounterStrikeSharp.API;
 
-namespace MatchZy
+namespace Querator
 {
 
     public class Team 
@@ -32,7 +32,7 @@ namespace MatchZy
         public int seriesScore = 0;
     }
 
-    public partial class MatchZy
+    public partial class Querator
     {
         [ConsoleCommand("css_coach", "Sets coach for the requested team")]
         public void OnCoachCommand(CCSPlayerController? player, CommandInfo command) 

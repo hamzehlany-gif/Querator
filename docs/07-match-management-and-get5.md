@@ -28,7 +28,7 @@ Both refuse if `isMatchSetup` already, and on parse/validation failure call `Res
 5. `GetCvarValues` (the `cvars` block → `ChangedCvars`/`OriginalCvars`).
 6. `LoadClientNames()`, set up maplist/sides, change map if needed, `readyAvailable=true`,
    `ExecuteChangedConvars()`, `StartWarmup()`, `isMatchSetup=true`, `SetTeamNames()`, `UpdateHostname()`, fire
-   **`MatchZySeriesStartedEvent`** (`series_start`).
+   **`QueratorSeriesStartedEvent`** (`series_start`).
 
 ---
 
@@ -178,8 +178,8 @@ friendlies_flashed, knife_kills, headshot_kills, rounds_played, bomb_defuses, bo
 1v1, 1v2, 1v3, 1v4, 1v5, first_kills_t, first_kills_ct, first_deaths_t, first_deaths_ct, trade_kills, kast, score,
 mvp`.
 
-Wrappers: `StatsPlayer` (`steamid`, `name`, `stats`), `MatchZyTeamWrapper` (`id`, `name`),
-`MatchZyStatsTeam` (+ `series_score`, `score`, `score_ct`, `score_t`, `players`), `Winner` (`side`, `team`).
+Wrappers: `StatsPlayer` (`steamid`, `name`, `stats`), `QueratorTeamWrapper` (`id`, `name`),
+`QueratorStatsTeam` (+ `series_score`, `score`, `score_ct`, `score_t`, `players`), `Winner` (`side`, `team`).
 
 > ⚠️ Note these `PlayerStats` JSON fields are a **different, richer set** than the DB's
 > `matchzy_stats_players` columns (which use names like `enemy5ks`, `utility_successes`, `v1_count`, and notably
