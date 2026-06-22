@@ -55,7 +55,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Deploy:** none (prose only).
 - **Rollback:** delete/revert `rebrand-a-sp1-prose`.
 
-### SP2 — code identifiers (Phase A) — 2026-06-21 — ✅ build green; in-game load pending
+### SP2 — code identifiers (Phase A) — 2026-06-21 — ✅ build green; ✅ VM load smoke passed (2026-06-22)
 - **Branch:** `rebrand-a-sp2-identifiers` (off `rebrand-a`). Repo: **Querator only**.
 - **Changes (internal identifiers; case-sensitive allow-list, never a blanket replace):** `namespace MatchZy`→`Querator`
   (all files); `partial class MatchZy`→`Querator`; the `MatchZy*Event` / `MatchZyStatsTeam` / `MatchZyTeamWrapper` DTO
@@ -68,6 +68,19 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Deferred (internal camelCase, later identifier sweep):** `matchzyTeam1`/`matchzyTeam2` and other lowercase-`matchzy`
   fields.
 - **Verification:** ✅ `dotnet publish` exit 0 (compiles). DLL still `MatchZy.dll`, `ModuleName` still "MatchZy" →
-  node-agent/lanyBot detection unaffected. Deployed to the local server. **In-game load smoke (`css_plugins reload` +
-  `.help`) pending before merge to `rebrand-a`.**
-- **Rollback:** delete/revert `rebrand-a-sp2-identifiers` (not yet merged).
+  node-agent/lanyBot detection unaffected. ✅ **VM load smoke (2026-06-22, `82.212.83.229`):** deployed flat to
+  `plugins/MatchZy/`, `cs2` restarted → CSSharp `Finished loading plugin MatchZy` at 19:56:31 (74 ms), **zero
+  errors/exceptions/warns**. Deployed DLL verified to carry **31 `Querator`** namespace/class markers + all
+  `Querator*Event` DTOs, and 5 retained `MatchZy` string literals (= the "Kept (5)" count). The renamed
+  `partial class Querator` instantiates fine — CSSharp locates the `BasePlugin` subclass by type-scan, not by name.
+- **Ops notes (not rebrand changes, logged for traceability):**
+  - Discovered the VM's node-agent plugin-install is **nested one level too deep** (real DLL was at
+    `plugins/MatchZy/addons/counterstrikesharp/plugins/MatchZy/MatchZy.dll`, with a duplicate `cfg/MatchZy/` inside the
+    plugin folder). Moved the cruft to `/tmp/matchzy-botched-bak/` and deployed flat to the correct path. Filed as a
+    **TODO for SP-B2/SP-C1** — see the plan's §8a (likely affects the whole fleet).
+  - Fixed `scripts/deploy-to-vm.ps1`: `Compress-Archive`+`unzip` emitted a backslash-separator warning → `unzip` exit 1
+    → that broke the `&& systemctl restart` chain (files updated but server never restarted). Switched to `tar.gz`
+    (forward slashes, exit 0) + base64-piped remote script + a post-restart load-poll that confirms a clean reload.
+- **Merge:** ✅ merged `rebrand-a-sp2-identifiers` → `rebrand-a` (local, no push) after the gate passed.
+- **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP2 tip; the `rebrand-a-sp2-identifiers`
+  branch is retained.
