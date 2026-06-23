@@ -13,7 +13,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | MatchZy (project identity / branding, docs, comments) | Querator | SP1 / SP3 | in progress |
 | `namespace MatchZy` / `class MatchZy` | `namespace Querator` / `class Querator` | SP2 | done |
 | `MatchZy*Event` / `MatchZyStats*` (DTO type names) | `Querator*Event` / `QueratorStats*` | SP2 | done |
-| `ModuleName "MatchZy"` | `"Querator"` | SP-B1 (coupled) | planned |
+| `ModuleName "MatchZy"` | `"Querator"` | SP-B1 (coupled) | done (branches; deploy deferred) |
 | `ModuleVersion 0.8.15` | `1.0.0` | SP3 | done |
 | `ModuleAuthor "WD-…"` | `Lany (https://lany.gg)` | SP3 | done |
 | `MatchZy.dll` / `plugins/MatchZy` | `Querator.dll` / `plugins/Querator` | SP-B2 (coupled) | planned |
@@ -131,3 +131,40 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Merge:** merged `rebrand-a-sp3-cosmetics` → `rebrand-a` (local) after the build gate.
 - **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP3 tip; the `rebrand-a-sp3-cosmetics`
   branch is retained.
+
+## Phase B — coupled contract renames (lockstep, multi-repo)
+
+> **Phase A (SP1–SP3) merged into `dev`** (merge `016246b`, 2026-06-23); `main` untouched (no release cut). Phase B
+> changes land on **same-named `rebrand-b*` branches in every affected repo** and are **NOT deployed to the fleet**
+> until the cutover window — the deployed prod node-agent/lanyBot keep matching the upstream "MatchZy" the fleet still
+> runs (plan §1/§2). Validate on the test VM (which runs the fork).
+
+### SP-B1 — `ModuleName "MatchZy"` → `"Querator"` (Phase B) — 2026-06-23 — ✅ build/lint/test green (3 repos); ⏳ deploy deferred to cutover
+- **Branches (same name in each repo):** `rebrand-b-b1-modulename` off `rebrand-b` — **Querator + lanyBot + lany-node-agent**.
+- **Why coupled:** the plugin's `ModuleName` is the literal string the consumers parse out of `css_plugins list` to
+  (a) confirm the plugin is `[#N:LOADED]` and (b) read its version. Renaming it alone breaks detection, so the plugin
+  and both detectors must flip together.
+- **Changes:**
+  - **Querator** `MatchZy.cs:15` — `ModuleName "MatchZy"` → `"Querator"`. (The `[{ModuleName} {ModuleVersion} LOADED]`
+    banner now prints `[Querator 1.0.0 LOADED] Querator by Lany …` — the SP3 auto-flip via the `{ModuleName}` token.)
+  - **lanyBot** `src/services/cs2.service.ts` — `matchzyLoadedInCssList` regex `/"MatchZy"/i` → `/"Querator"/i`;
+    detail strings + doc comments "MatchZy" → "Querator". Test `cs2.service.test.ts` fixtures + `it()` titles updated.
+  - **lany-node-agent** `src/services/versions/rconDetector.js:60` — `parseMatchzyVersion` regex
+    `/"MatchZy"\s+\(([^)]+)\)/i` → `/"Querator"\s+…/i`; doc comments updated. Test `rconVersions.test.js` fixture +
+    version assertion (`'0.8.15'` → `'1.0.0'`) updated.
+- **Kept (deferred — internal lowercase `matchzy`, later camelCase sweep):** lanyBot `matchzy:` bool field +
+  `matchzyLoadedInCssList` method; node-agent `parseMatchzyVersion` fn name. These carry no user-facing "MatchZy" and
+  don't trip a branding grep that matters yet; renamed when the wider identifier sweep lands.
+- **Out of scope (other sub-phases, NOT touched):** DLL name `MatchZy.dll` + `plugins/MatchZy` (SP-B2 — note
+  node-agent `versions.test.js` still asserts `MatchZy.dll`, correct until SP-B2); `matchzy_*` cvars (SP-B3);
+  release-URL parsing `…shobhit-pathak/MatchZy…` (SP-C1).
+- **Verification (per-repo gates, §10):** ✅ Querator `dotnet publish` exit 0; ✅ lanyBot `npm run build` + `lint`
+  (0 errors, pre-existing warnings only) + `test` (49 suites / 455 tests passed); ✅ node-agent `npm test`
+  (37 suites / 267 tests passed) + `lint` (clean). No VM e2e yet.
+- **⚠️ Deploy / sequencing:** **NOT deployed.** Fleet still runs upstream MatchZy (ModuleName "MatchZy"); the detector
+  changes must deploy in lockstep with the fork cutover (Phase B-end / Phase C) or fleet detection breaks. Deployed
+  prod node-agent/lanyBot stay on `main` (matching "MatchZy") until then.
+- **Artifacts updated:** this log + `LANY.md` (contract + status) + each affected repo's `CLAUDE.md` + agent memory.
+- **Merge:** sub-phase branch → `rebrand-b` in each repo (local; not pushed/deployed).
+- **Rollback:** revert/delete the `rebrand-b-b1-modulename` branches across the 3 repos as a unit (then redeploy is a
+  no-op since nothing was deployed).

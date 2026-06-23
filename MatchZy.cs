@@ -12,7 +12,7 @@ namespace Querator
     public partial class Querator : BasePlugin
     {
 
-        public override string ModuleName => "MatchZy";
+        public override string ModuleName => "Querator";
 
         public override string ModuleVersion => "1.0.0";
 
