@@ -7,14 +7,14 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
         public bool isStopCommandAvailable = true;
         public bool pauseAfterRoundRestore = true;
         public string lastBackupFileName = "";
-        public string lastMatchZyBackupFileName = "";
+        public string lastQueratorBackupFileName = "";
 
         public bool isRoundRestoring = false;
         public bool isRoundRestorePending = false;
@@ -94,14 +94,14 @@ namespace MatchZy
                 }
                 if (stopData["t"] && stopData["ct"])
                 {
-                    if (lastMatchZyBackupFileName != "")
+                    if (lastQueratorBackupFileName != "")
                     {
-                        RestoreRoundBackup(player, lastMatchZyBackupFileName);
+                        RestoreRoundBackup(player, lastQueratorBackupFileName);
                     }
                     else
                     {
-                        // This should not happen, lastMatchZyBackupFileName should not be empty in a live game!
-                        Log($"[OnStopCommand] lastMatchZyBackupFileName not found, unable to restore round!");
+                        // This should not happen, lastQueratorBackupFileName should not be empty in a live game!
+                        Log($"[OnStopCommand] lastQueratorBackupFileName not found, unable to restore round!");
                     }
 
                 }

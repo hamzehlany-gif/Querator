@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Text.Json;
 
 
-namespace MatchZy
+namespace Querator
 {
     public class Position
     {
@@ -115,7 +115,7 @@ namespace MatchZy
         }
     }
 
-    public partial class MatchZy
+    public partial class Querator
     {
         int maxLastGrenadesSavedLimit = 512;
         Dictionary<int, List<GrenadeThrownData>> lastGrenadesData = new();

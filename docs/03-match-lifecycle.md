@@ -118,7 +118,7 @@ stateDiagram-v2
      `CurrentMapNumber`, `ChangeMap(nextMap)`, reset to warmup, `StartWarmup()`, `SetMapSides()`.
 
 10. **`EndSeries()`** ([`MatchManagement.cs:578`](../MatchManagement.cs)): announce winner/draw, fire
-    `MatchZySeriesResultEvent`, `database.SetMatchEndData(...)`, reset cvars if `resetCvarsOnSeriesEnd`,
+    `QueratorSeriesResultEvent`, `database.SetMatchEndData(...)`, reset cvars if `resetCvarsOnSeriesEnd`,
     `isMatchLive=false`, then after `restartDelay` → `ResetMatch(false)`.
 
 11. **`ResetMatch(bool warmupCfgRequired=true)`** ([`Utility.cs:372`](../Utility.cs)): stops demo if recording,

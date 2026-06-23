@@ -4,9 +4,9 @@ using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Modules.Cvars;
 using System.Text.Json;
 
-namespace MatchZy;
+namespace Querator;
 
-public partial class MatchZy
+public partial class Querator
 {
 
     public CounterStrikeSharp.API.Modules.Timers.Timer? coachKillTimer = null;

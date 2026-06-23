@@ -6,7 +6,7 @@ The shared-helper grab-bag, the localization system, and the `.cfg`/`.json` file
 
 ## 1. `Utility.cs` — the shared helper layer (~2050 lines)
 
-Half of the "core" (with `MatchZy.cs`). Everything here is part of the one `partial class MatchZy`, so these methods
+Half of the "core" (with `MatchZy.cs`). Everything here is part of the one `partial class Querator`, so these methods
 are callable from anywhere. Use this as a **navigable index** — grep the name to jump to it.
 
 ### Phase transitions & match flow (detailed in [03](03-match-lifecycle.md))

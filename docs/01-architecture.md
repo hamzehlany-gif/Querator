@@ -18,16 +18,17 @@ other doc can assume this context.
 - The class is annotated `[MinimumApiVersion(227)]` and extends `BasePlugin` (the CSSharp base type that provides
   `Load()`, event registration, timers, `Localizer`, `ModuleDirectory`, etc.).
 
-> **Naming note:** the fork is called *Querator* but the code still identifies itself as *MatchZy* everywhere
-> (class name, module name, chat prefix, ConVar prefix `matchzy_`, lang keys `matchzy.*`, namespace `MatchZy`).
-> Renaming is a deliberate future decision — see [12-customization-for-lany.md](12-customization-for-lany.md).
+> **Naming note:** the fork is *Querator*. The **C# namespace + class are already `Querator`** (renamed in SP2);
+> the rest still uses the MatchZy name (module name `"MatchZy"`, chat prefix, ConVar prefix `matchzy_`, lang keys
+> `matchzy.*`, `MatchZy.dll`/`plugins/MatchZy`/`cfg/MatchZy`, `matchzy_stats_*` tables, string-literal paths).
+> Renaming is **in progress** (a multi-sub-phase program) — see [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 > For now, treat "MatchZy" in code as the identity of Querator.
 
 ---
 
 ## 2. The single-partial-class design
 
-**The entire plugin is one class: `public partial class MatchZy : BasePlugin`.** It is split across ~29 `.cs` files
+**The entire plugin is one class: `public partial class Querator : BasePlugin`.** It is split across ~29 `.cs` files
 at the repo root *by feature area*, but they all compile into the same class and **share every field and method**.
 There is **no per-file encapsulation, no sub-modules, no DI**. A field declared in `MatchZy.cs` is directly readable
 and writable from `PracticeMode.cs`, `MapVeto.cs`, etc.
@@ -93,7 +94,7 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 | File | ~Size | Responsibility |
 |---|---:|---|
 | [`EventHandlers.cs`](../EventHandlers.cs) | 15K | Named game-event handler methods (connect, disconnect, round start/freeze-end, win panels, nade detonations, etc.). |
-| [`Events.cs`](../Events.cs) | 6K | `MatchZyEvent` DTO class hierarchy (the JSON shapes sent to the remote log). |
+| [`Events.cs`](../Events.cs) | 6K | `QueratorEvent` DTO class hierarchy (the JSON shapes sent to the remote log). |
 | [`PublishEvents.cs`](../PublishEvents.cs) | 2K | Fires/serializes those events to the remote log endpoint. |
 | [`G5API.cs`](../G5API.cs) | 10K | `get5_status`-style payloads and Get5 panel compatibility surface. |
 | [`MatchConfig.cs`](../MatchConfig.cs) | 3K | `MatchConfig` model (maplist, teams, num_maps, sides, cvars…). |

@@ -4,10 +4,10 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 
 
-namespace MatchZy
+namespace Querator
 {
 
-    public partial class MatchZy
+    public partial class Querator
     {
         public const string sleepCfgPath = "MatchZy/sleep.cfg";
 

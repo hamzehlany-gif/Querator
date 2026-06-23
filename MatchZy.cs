@@ -6,21 +6,21 @@ using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Events;
 
 
-namespace MatchZy
+namespace Querator
 {
     [MinimumApiVersion(227)]
-    public partial class MatchZy : BasePlugin
+    public partial class Querator : BasePlugin
     {
 
         public override string ModuleName => "MatchZy";
 
-        public override string ModuleVersion => "0.8.15";
+        public override string ModuleVersion => "1.0.0";
 
-        public override string ModuleAuthor => "WD- (https://github.com/shobhit-pathak/)";
+        public override string ModuleAuthor => "Lany (https://lany.gg)";
 
         public override string ModuleDescription => "A plugin for running and managing CS2 practice/pugs/scrims/matches!";
 
-        public string chatPrefix = $"[{ChatColors.Green}MatchZy{ChatColors.Default}]";
+        public string chatPrefix = $"[{ChatColors.Green}Querator{ChatColors.Default}]";
         public string adminChatPrefix = $"[{ChatColors.Red}ADMIN{ChatColors.Default}]";
 
         // Plugin start phase data
@@ -542,7 +542,7 @@ namespace MatchZy
             RegisterEventHandler<EventMolotovDetonate>(EventMolotovDetonateHandler);
             RegisterEventHandler<EventDecoyStarted>(EventDecoyDetonateHandler);
 
-            Console.WriteLine($"[{ModuleName} {ModuleVersion} LOADED] MatchZy by WD- (https://github.com/shobhit-pathak/)");
+            Console.WriteLine($"[{ModuleName} {ModuleVersion} LOADED] Querator by Lany (https://lany.gg)");
         }
     }
 }

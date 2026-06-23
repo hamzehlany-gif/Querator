@@ -5,7 +5,7 @@ using CounterStrikeSharp.API.Modules.Commands;
 using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 
-namespace MatchZy
+namespace Querator
 {
     public class Get5Status
     {
@@ -90,7 +90,7 @@ namespace MatchZy
         public string PluginVersion { get; } = "0.15.0";
     }
 
-    public partial class MatchZy
+    public partial class Querator
     {
         [ConsoleCommand("get5_status", "Returns get5 status")]
         public void Get5StatusCommand(CCSPlayerController? player, CommandInfo command)
@@ -177,7 +177,7 @@ namespace MatchZy
 
         private Get5GameState getGet5Gamestate()
         {
-            // Get state from MatchZy state phase data and map to get5 state
+            // Get state from Querator state phase data and map to get5 state
             // Get5 states: pre_veto, veto, warmup, knife, waiting_for_knife_decision, going_live, live, pending_restore, post_game
             // Please note, that Get5 have moved from integer based states to string based states, so the integer based states are not used.
             //

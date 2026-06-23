@@ -8,10 +8,10 @@ using CounterStrikeSharp.API.Modules.Utils;
 using Newtonsoft.Json.Linq;
 
 
-namespace MatchZy
+namespace Querator
 {
 
-    public partial class MatchZy
+    public partial class Querator
     {
         public MatchConfig matchConfig = new();
 
@@ -368,7 +368,7 @@ namespace MatchZy
             UpdatePlayersMap();
             UpdateHostname();
 
-            var seriesStartedEvent = new MatchZySeriesStartedEvent
+            var seriesStartedEvent = new QueratorSeriesStartedEvent
             {
                 MatchId = liveMatchId,
                 NumberOfMaps = matchConfig.NumMaps,
@@ -590,7 +590,7 @@ namespace MatchZy
 
             string winnerTeam = (winnerName == null) ? "none" : matchzyTeam1.seriesScore > matchzyTeam2.seriesScore ? "team1" : "team2";
 
-            var seriesResultEvent = new MatchZySeriesResultEvent()
+            var seriesResultEvent = new QueratorSeriesResultEvent()
             {
                 MatchId = matchId,
                 Winner = new Winner(t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2", winnerTeam),
