@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Querator is a [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) plugin for CS2 (Counter-Strike 2) that runs and manages practice/pugs/scrims/matches. It is a C# class library targeting **.NET 8.0** that compiles to a DLL loaded by the CounterStrikeSharp runtime inside a CS2 dedicated server. There is no standalone executable — the plugin runs in-process with the game server.
 
-> **Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy)** (MIT; see `CREDITS` / `LICENSE`). A rebrand from MatchZy → Querator is **in progress** — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md). The *project* is "Querator" and the **C# namespace + class are now `Querator`** (renamed in SP2), but many identifiers still use the MatchZy name (`matchzy_*` cvars, `MatchZy.dll`, `cfg/MatchZy/`, `plugins/MatchZy/`, `matchzy_stats_*` tables, `matchzy.*` lang keys, `/api/matchzy`, string-literal paths, …) and are renamed in later sub-phases. **The MatchZy-named code references in this document are current and accurate** until those sub-phases land.
+> **Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy)** (MIT; see `CREDITS` / `LICENSE`). A rebrand from MatchZy → Querator is **in progress** — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md). The *project* is "Querator". Done (on `rebrand-b` branches, not yet deployed): **C# namespace + class** (`Querator`, SP2), **`ModuleName`** → `"Querator"` (SP-B1), **cosmetics** (version `1.0.0`, author, banner, chat-prefix, credits; SP3), and the **DLL + entry source file** → `Querator.dll` / `Querator.cs` (SP-B2). Still using the MatchZy name (renamed in later, mostly cross-repo coupled sub-phases): `matchzy_*` cvars, the on-fleet `cfg/MatchZy/` + `plugins/MatchZy/` paths, `matchzy_stats_*` tables, `matchzy.*` lang keys, `/api/matchzy`, `x-matchzy-secret`, string-literal paths. **The MatchZy-named code references in this document are current and accurate** until those sub-phases land.
 
 ## Build & develop
 
@@ -20,7 +20,7 @@ There are **no unit tests** in this repo — verification is done by loading the
 
 The `lang/` and `spawns/` folders are copied to the plugin output dir (see `.csproj`), and the GitHub release workflow also bundles `cfg/` into `csgo/cfg/`.
 
-The version string lives in **one place**: `ModuleVersion` in `MatchZy.cs`. The release pipeline greps it from there to tag releases, and bumping it is the conventional first line of a release commit (see `CHANGELOG.md`).
+The version string lives in **one place**: `ModuleVersion` in `Querator.cs`. The release pipeline greps it from there to tag releases, and bumping it is the conventional first line of a release commit (see `CHANGELOG.md`).
 
 ## CI / release
 
@@ -32,11 +32,11 @@ The version string lives in **one place**: `ModuleVersion` in `MatchZy.cs`. The 
 
 The entire plugin is **one class — `partial class Querator : BasePlugin`** — split across ~19 `.cs` files at the repo root by feature area (e.g. `PracticeMode.cs`, `MapVeto.cs`, `MatchManagement.cs`, `Coach.cs`, `Pausing.cs`, `BackupManagement.cs`, `DamageInfo.cs`). All these files share the same fields and methods; there is no per-file encapsulation. When adding a feature, add a new partial-class file rather than a new class, following the existing split.
 
-`Load()` in `MatchZy.cs` is the single entry point: it loads admins, initializes the database, executes `cfg/MatchZy/config.cfg`, builds the `commandActions` dictionary, and registers all event handlers. Read it first to understand wiring.
+`Load()` in `Querator.cs` is the single entry point: it loads admins, initializes the database, executes `cfg/MatchZy/config.cfg`, builds the `commandActions` dictionary, and registers all event handlers. Read it first to understand wiring.
 
 ### Command dispatch (two distinct systems)
 
-1. **Chat commands** (`.ready`, `.pause`, `.spawn`, etc.) — handled inside the `EventPlayerChat` handler in `MatchZy.cs`:
+1. **Chat commands** (`.ready`, `.pause`, `.spawn`, etc.) — handled inside the `EventPlayerChat` handler in `Querator.cs`:
    - Exact-match, no-argument commands are routed through the `commandActions` dictionary (`Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>`). To add one, add an entry mapping the chat string to a handler method.
    - Commands that take arguments (`.map`, `.savenade`, `.ban`, `.coach`, …) are matched with `message.StartsWith(...)` and dispatched to a `Handle*Command` method. Note these take chat strings starting with `.`; players also commonly type `!` which CS2 maps to the same.
 

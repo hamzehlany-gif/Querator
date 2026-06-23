@@ -10,7 +10,7 @@ catalog + routing/permission model.
 
 A given handler method is usually reachable **three ways**:
 
-1. **`.cmd` in chat** → caught by MatchZy's own `EventPlayerChat` handler in [`MatchZy.cs`](../MatchZy.cs):
+1. **`.cmd` in chat** → caught by MatchZy's own `EventPlayerChat` handler in [`Querator.cs`](../Querator.cs):
    - exact, no-arg → `commandActions` dictionary
    - arg-bearing → `message.StartsWith(".cmd")` → `Handle*Command`
 2. **`!cmd` in chat** and **`css_cmd` in server console / RCON** → CSSharp's `[ConsoleCommand("css_cmd")]`
@@ -54,7 +54,7 @@ Permission flags actually used in the code:
 
 ## 3. Player chat commands — exact match (`commandActions`)
 
-Source: the `commandActions` dictionary in [`MatchZy.cs`](../MatchZy.cs) `Load()`. (`.`/`!` both work.)
+Source: the `commandActions` dictionary in [`Querator.cs`](../Querator.cs) `Load()`. (`.`/`!` both work.)
 
 | Command(s) | Handler | Purpose |
 |---|---|---|
@@ -89,7 +89,7 @@ Source: the `commandActions` dictionary in [`MatchZy.cs`](../MatchZy.cs) `Load()
 
 ## 4. Player chat commands — arg-bearing (`StartsWith`)
 
-Source: `EventPlayerChat` `message.StartsWith(...)` chain in [`MatchZy.cs`](../MatchZy.cs).
+Source: `EventPlayerChat` `message.StartsWith(...)` chain in [`Querator.cs`](../Querator.cs).
 
 | Command(s) | Handler | Purpose |
 |---|---|---|

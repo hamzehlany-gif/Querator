@@ -161,7 +161,7 @@ bots/noflash, runs `ExecUnpracCommands()` (strip cheats), then `ExecDryRunCFG()`
 competitive-ish ruleset ending in `mp_restartgame; mp_warmup_end`), and sets `isDryRun=true` while **`isPractice`
 stays true**. Net effect: a live-*like* round to test nades against, with no knife/veto and **no DB recording**
 (`matchStarted` stays false). To go truly live you still `.exitprac`/`.match`. The `EventRoundEnd` (Post) handler in
-[`MatchZy.cs`](../MatchZy.cs) detects `isDryRun` and re-enters practice after the dry round.
+[`Querator.cs`](../Querator.cs) detects `isDryRun` and re-enters practice after the dry round.
 
 ---
 
