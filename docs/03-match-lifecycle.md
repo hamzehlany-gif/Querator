@@ -2,7 +2,7 @@
 
 How a server moves through phases, who flips which flags, and which `.cfg` runs when. Primary sources:
 [`Utility.cs`](../Utility.cs), [`MatchManagement.cs`](../MatchManagement.cs), [`ReadySystem.cs`](../ReadySystem.cs),
-[`SleepMode.cs`](../SleepMode.cs), and the knife/round-end hooks in [`MatchZy.cs`](../MatchZy.cs).
+[`SleepMode.cs`](../SleepMode.cs), and the knife/round-end hooks in [`Querator.cs`](../Querator.cs).
 
 > Recall: there is **no formal FSM**. "Phase" = the current combination of the flags catalogued in
 > [01-architecture.md](01-architecture.md#state-flags). The functions below are the *only* legitimate way those flags
@@ -88,7 +88,7 @@ stateDiagram-v2
    readyAvailable=false; isWarmup=false`; execs `MatchZy/knife.cfg` (+ `mp_restartgame 1; mp_warmup_end`), or a
    hardcoded knife fallback; prints "KNIFE!".
 
-6. **Knife end** — handled in the **`EventRoundEnd` (Pre)** lambda in [`MatchZy.cs`](../MatchZy.cs) (~line 268):
+6. **Knife end** — handled in the **`EventRoundEnd` (Pre)** lambda in [`Querator.cs`](../Querator.cs) (~line 268):
    `DetermineKnifeWinner()` sets `knifeWinner` (3=CT, 2=T); the handler rewrites `@event.Winner`/`Reason`, sets
    `isSideSelectionPhase=true; isKnifeRound=false`, and calls **`StartAfterKnifeWarmup()`**
    ([`Utility.cs:280`](../Utility.cs)) which re-enters warmup, computes `knifeWinnerName`, shows the damage report,

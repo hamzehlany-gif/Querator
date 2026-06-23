@@ -16,7 +16,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `ModuleName "MatchZy"` | `"Querator"` | SP-B1 (coupled) | done (branches; deploy deferred) |
 | `ModuleVersion 0.8.15` | `1.0.0` | SP3 | done |
 | `ModuleAuthor "WD-…"` | `Lany (https://lany.gg)` | SP3 | done |
-| `MatchZy.dll` / `plugins/MatchZy` | `Querator.dll` / `plugins/Querator` | SP-B2 (coupled) | planned |
+| `MatchZy.dll`/`MatchZy.cs`/`MatchZy.csproj` / `plugins/MatchZy` | `Querator.dll`/`.cs`/`.csproj` / `plugins/Querator` | SP-B2 (coupled) | **Querator side done (branch)**; node-agent + lany + fleet path = pending TODO |
 | `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | planned |
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | planned |
@@ -168,3 +168,41 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Merge:** sub-phase branch → `rebrand-b` in each repo (local; not pushed/deployed).
 - **Rollback:** revert/delete the `rebrand-b-b1-modulename` branches across the 3 repos as a unit (then redeploy is a
   no-op since nothing was deployed).
+
+### SP-B2 — DLL/source rename `MatchZy.dll`/`MatchZy.cs` → `Querator.dll`/`Querator.cs` (Phase B) — 2026-06-23 — ✅ Querator side done (branch); 🔴 CONSUMERS NOT DONE (critical pending TODO, user doing later)
+- **Branch:** `rebrand-b-b2-dll` off `rebrand-b`. **Querator only this round** (per request: do only the in-repo work,
+  leave the coupled cross-repo work as a TODO note in each relevant repo).
+- **Querator-side changes (done, build-verified):**
+  - `git mv MatchZy.cs → Querator.cs`; `git mv MatchZy.csproj → Querator.csproj` ⇒ `dotnet publish` now outputs
+    **`Querator.dll`** (no `<AssemblyName>` override needed — defaults to the project filename). Clean build verified
+    (wiped `bin`/`obj`, published; output = `Querator.dll`/`.pdb`, **no `MatchZy.dll`**, exit 0).
+  - `.github/workflows/build.yml` — version-grep file refs `MatchZy.cs`→`Querator.cs`, `MatchZy.csproj`→`Querator.csproj`
+    (L31/L35). **Left** the release publish path `plugins/MatchZy` + asset names `MatchZy-*.zip` — those are the
+    fleet-consumed artifacts, renamed in **SP-C1 / Phase C** in lockstep with the fleet asset regex.
+  - `scripts/deploy-to-vm.ps1` — `PluginDir "MatchZy"`→`"Querator"` + caveat comment: the first `Querator.dll` deploy
+    must remove the old `plugins/MatchZy` folder or CSSharp double-loads the plugin.
+  - Engineering docs + `CLAUDE.md` — `MatchZy.cs`/`.csproj`/`.dll` file refs → `Querator.*` across 11 files; fixed the
+    two "still-MatchZy" naming notes (`CLAUDE.md` §What-this-is, `docs/01-architecture.md` §Naming note) that were
+    stale after SP1/SP3/SP-B1.
+- **NOT renamed (still MatchZy — later sub-phases):** `cfg/MatchZy/` dir (SP-B2/B3, coupled to `MATCHZY_CONFIG_PATH`);
+  `matchzy_*` cvars (SP-B3); `MatchZy-*` HTTP headers in `Utility.cs` (header sweep); demo/data dirs + `matchzy.db`
+  (SP-B7); release asset `MatchZy-*.zip` (SP-C1).
+- **🔴 CRITICAL PENDING TODO — coupled cross-repo work (NOT done; user will do later). Until done the renamed DLL
+  CANNOT be deployed (detection + install break).** A `REBRAND-TODO.md` was added to each relevant repo. Work needed:
+  1. **lany-node-agent** — `src/services/versions/detector.js` (~L265) + `plugin.js` (~L254): the `/^matchzy$/i`
+     plugin/DLL-name match → accept `querator`; `MATCHZY_PLUGIN_PATH` default `…/plugins/MatchZy` → `…/plugins/Querator`
+     (`src/config/index.js` + `.env.example`). (SP-B1 ModuleName detector is already on node-agent `rebrand-b`.)
+  2. **lany (frontend)** — `MATCHZY_TEMPLATE_URL` / any template/asset/UI string naming `MatchZy.dll` / `plugins/MatchZy`.
+  3. **node-agent §8a nested-install bug** — fix in the SAME change (plan §8a option (c): ship a flat `Querator-*.zip`
+     with the DLL at archive root + extract into `plugins/Querator`). SP-B2 and §8a touch the same install path.
+  4. **Deploy migration** — on first `Querator.dll` deploy, remove the old `plugins/MatchZy` (+ §8a nested cruft).
+  5. **Release pipeline (SP-C1/Phase C)** — `build.yml` publish path + `MatchZy-*.zip` asset → `Querator`; fleet asset
+     regex (`updateResolver.service.ts`) + `ORCHESTRATOR_MATCHZY_RELEASE_URL`.
+- **How to do it:** branch `rebrand-b-b2-dll` in node-agent + lany; **re-grep first** (e.g.
+  `grep -rIn -i 'matchzy\.dll\|plugins/matchzy\|\^matchzy\|MATCHZY_PLUGIN_PATH\|MATCHZY_TEMPLATE_URL' src/`); make the
+  renames; gate (node-agent `npm test`+`lint`, lany `npm run build`+`lint`+`test`); deploy the whole set together
+  (Querator `Querator.dll` + node-agent + frontend) in a maintenance window WITH the `plugins/MatchZy`→`plugins/Querator`
+  migration; cross-repo smoke: install → `css_plugins list` shows `"Querator"` → a match runs end-to-end.
+- **Verification (this round):** ✅ `dotnet publish` clean → `Querator.dll`, exit 0. No consumer build / VM e2e (consumers not done).
+- **Merge:** `rebrand-b-b2-dll` → `rebrand-b` (Querator, local + pushed). **Not deployed.**
+- **Rollback:** revert/delete `rebrand-b-b2-dll` (`git mv` back); no deploy to undo.

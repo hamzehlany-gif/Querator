@@ -1,6 +1,6 @@
 # 02 — Build, Test & Deploy
 
-How Querator goes from source → `MatchZy.dll` → running on a CS2 server. This doc is the *engineering* reference;
+How Querator goes from source → `Querator.dll` → running on a CS2 server. This doc is the *engineering* reference;
 the concrete copy-paste runbook for **your** server is [13-build-and-test-on-server.md](13-build-and-test-on-server.md).
 
 ---
@@ -10,7 +10,7 @@ the concrete copy-paste runbook for **your** server is [13-build-and-test-on-ser
 ### To build (dev machine)
 - **.NET 8.0 SDK.** ⚠️ As of this writing the SDK is **not installed on the current dev machine** (`dotnet` is not on
   PATH). Install from <https://dotnet.microsoft.com/download/dotnet/8.0> before building.
-- NuGet restore pulls the deps listed in [`MatchZy.csproj`](../MatchZy.csproj) — needs internet on first restore.
+- NuGet restore pulls the deps listed in [`Querator.csproj`](../Querator.csproj) — needs internet on first restore.
 - No IDE required (CLI is enough), but VS / Rider / VS Code work.
 
 ### To run (game server)
@@ -26,12 +26,12 @@ the concrete copy-paste runbook for **your** server is [13-build-and-test-on-ser
 
 ```bash
 dotnet restore     # restore NuGet deps (first time / after csproj changes)
-dotnet build       # compile Debug → bin/Debug/net8.0/MatchZy.dll
+dotnet build       # compile Debug → bin/Debug/net8.0/Querator.dll
 dotnet publish     # compile + gather deps → bin/Release/net8.0/publish/
 ```
 
 - `dotnet publish` (default config = Release in .NET 8) is what produces the **loadable plugin set**:
-  `bin/Release/net8.0/publish/` containing `MatchZy.dll`, the dependency DLLs (Dapper, CsvHelper,
+  `bin/Release/net8.0/publish/` containing `Querator.dll`, the dependency DLLs (Dapper, CsvHelper,
   Microsoft.Data.Sqlite, MySqlConnector, Newtonsoft.Json, SQLitePCLRaw + native `e_sqlite3`), and the copied
   `lang/` and `spawns/` folders.
 - **`CounterStrikeSharp.API.dll` is intentionally NOT emitted** for runtime use — the csproj sets
@@ -48,7 +48,7 @@ There are **no unit tests** in this repo. "Testing" = loading the DLL into a liv
 `.github/workflows/build.yml` runs **on push to `main`** (ignoring `documentation/**` changes) — note the working
 branch here is **`dev`**, so releases only happen after merging `dev → main`:
 
-1. Sets up .NET 8, greps `MATCHZY_VERSION` from `ModuleVersion` in `MatchZy.cs`, and `CSSHARP_VERSION` from the
+1. Sets up .NET 8, greps `MATCHZY_VERSION` from `ModuleVersion` in `Querator.cs`, and `CSSHARP_VERSION` from the
    `CounterStrikeSharp.API` package version in the csproj.
 2. `dotnet publish -o package/addons/counterstrikesharp/plugins/MatchZy` and `cp -r cfg package` → zips
    **`MatchZy-<ver>.zip`** (plugin-only; extract into `csgo/`).
@@ -72,7 +72,7 @@ The server's game dir is `.../game/csgo/`. After `dotnet publish`:
 
 1. Copy the **contents of** `bin/Release/net8.0/publish/` into
    `csgo/addons/counterstrikesharp/plugins/MatchZy/`
-   (so you get `.../plugins/MatchZy/MatchZy.dll`, the dep DLLs, `lang/`, `spawns/`).
+   (so you get `.../plugins/MatchZy/Querator.dll`, the dep DLLs, `lang/`, `spawns/`).
    - Skip `CounterStrikeSharp.API.dll` / `.pdb` if present (the server provides its own).
 2. Copy the repo's **`cfg/`** into `csgo/cfg/` (so `cfg/MatchZy/*.cfg` + `*.json` land at `csgo/cfg/MatchZy/`).
    The plugin executes `MatchZy/config.cfg`, the phase configs, and reads `admins.json`/`database.json`/
@@ -91,7 +91,7 @@ will desync from a fresh `Load()`. Restart the server instead. Hot-reload is onl
 
 ## 5. Versioning & release hygiene
 
-- **Single source of truth:** `ModuleVersion` in [`MatchZy.cs`](../MatchZy.cs). The pipeline tags releases from it.
+- **Single source of truth:** `ModuleVersion` in [`Querator.cs`](../Querator.cs). The pipeline tags releases from it.
 - Convention (from upstream): the **first line of a release commit bumps the version** and the change is logged in
   [`CHANGELOG.md`](../CHANGELOG.md). The current branch tip is `0.8.15: noclip command fix`.
 - The release tag/name is just the bare version string (e.g. `0.8.15`).

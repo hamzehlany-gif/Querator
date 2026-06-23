@@ -16,13 +16,13 @@
 |---|---|
 | Project | Querator (fork of MatchZy) |
 | Upstream | `shobhit-pathak/MatchZy` (MIT) |
-| Plugin identity | `ModuleName = "MatchZy"`, `ModuleVersion = "0.8.15"` (see [`MatchZy.cs`](../MatchZy.cs)) |
+| Plugin identity | `ModuleName = "MatchZy"`, `ModuleVersion = "0.8.15"` (see [`Querator.cs`](../Querator.cs)) |
 | Runtime | CounterStrikeSharp plugin, loaded in-process by a CS2 dedicated server |
-| Language / TF | C# / **.NET 8.0** class library → `MatchZy.dll` |
+| Language / TF | C# / **.NET 8.0** class library → `Querator.dll` |
 | Min CSSharp API | `[MinimumApiVersion(227)]` |
 | CSSharp API pkg | `CounterStrikeSharp.API` **1.0.342** (compile-only; runtime provided by server) |
 | Code shape | **One** `partial class Querator : BasePlugin` split across 29 `.cs` files at repo root |
-| Entry point | `Load(bool hotReload)` in [`MatchZy.cs`](../MatchZy.cs) |
+| Entry point | `Load(bool hotReload)` in [`Querator.cs`](../Querator.cs) |
 | State model | No formal FSM — a set of `bool`/`int` flags (see [01-architecture](01-architecture.md#state-flags)) |
 | DB | SQLite (default) or MySQL, via Dapper; chosen in `cfg/MatchZy/database.json` |
 | Tests | **None.** Verified only by loading into a live CS2 server |
@@ -69,7 +69,7 @@ Suggested order for a newcomer:
 
 ## Conventions used in these notes
 
-- File references link to the real source (e.g. [`MatchZy.cs`](../MatchZy.cs)); line numbers may drift as code
+- File references link to the real source (e.g. [`Querator.cs`](../Querator.cs)); line numbers may drift as code
   changes — treat them as hints, search the symbol to confirm.
 - "Chat command" = a `.`/`!` command players type in game chat. "Console command / ConVar" = a `matchzy_*`
   server-console command (often with a `get5_*` alias).

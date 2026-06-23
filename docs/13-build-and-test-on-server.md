@@ -25,7 +25,7 @@ From the repo root (`G:\nodeprojects-lany\Querator`):
 dotnet restore
 dotnet publish
 ```
-Output lands in **`bin/Release/net8.0/publish/`**: `MatchZy.dll` + dependency DLLs (Dapper, CsvHelper,
+Output lands in **`bin/Release/net8.0/publish/`**: `Querator.dll` + dependency DLLs (Dapper, CsvHelper,
 Microsoft.Data.Sqlite, MySqlConnector, Newtonsoft.Json, SQLitePCLRaw + native `e_sqlite3`) + the `lang/` and
 `spawns/` folders. (`CounterStrikeSharp.API.dll` is intentionally **not** emitted for runtime.)
 
@@ -48,7 +48,7 @@ The server must have:
 
 > **Shortcut for a fresh server:** the upstream release ships `MatchZy-<ver>-with-cssharp-linux.zip` /
 > `-windows.zip` that bundle a matching CSSharp runtime — install Metamod, extract that zip into `csgo/`, then
-> overlay your freshly built `MatchZy.dll`. This avoids version-matching CSSharp by hand.
+> overlay your freshly built `Querator.dll`. This avoids version-matching CSSharp by hand.
 
 ## Step 4 — Deploy the build
 

@@ -28,11 +28,11 @@ jobs:
       - name: Get MatchZy Version
         id: MATCHZY_VERSION
         run: |
-            MATCHZY_VERSION=$(grep -oP 'ModuleVersion\s*=>\s*"\K[^"]*' MatchZy.cs)
+            MATCHZY_VERSION=$(grep -oP 'ModuleVersion\s*=>\s*"\K[^"]*' Querator.cs)
             echo "MATCHZY_VERSION=$MATCHZY_VERSION" >> $GITHUB_ENV
       - name: Build and Release Artifacts
         run: |
-          CSSHARP_VERSION=$(grep -Po '<PackageReference Include="CounterStrikeSharp.API" Version="\K\d+(\.\d+)*' MatchZy.csproj)
+          CSSHARP_VERSION=$(grep -Po '<PackageReference Include="CounterStrikeSharp.API" Version="\K\d+(\.\d+)*' Querator.csproj)
           echo "Creating MatchZy base package with version: $MATCHZY_VERSION"
           dotnet publish -o package/addons/counterstrikesharp/plugins/MatchZy
           cp -r cfg package 

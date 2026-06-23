@@ -35,7 +35,7 @@ Compares the two sides via `GetAlivePlayers(team)` (alive count + total HP, excl
 2. Tie → more **total HP** wins.
 3. Still tie → **random** (`knifeWinner = random 2|3`).
 
-`knifeWinner`: **3 = CT, 2 = T**. Called from the `EventRoundEnd` (Pre) lambda in [`MatchZy.cs`](../MatchZy.cs), which
+`knifeWinner`: **3 = CT, 2 = T**. Called from the `EventRoundEnd` (Pre) lambda in [`Querator.cs`](../Querator.cs), which
 also rewrites `@event.Winner/Reason` (so the win panel shows the right team), sets `isSideSelectionPhase=true`,
 `isKnifeRound=false`, and runs `StartAfterKnifeWarmup()` (re-warmup + repeating "type `.stay`/`.switch`" prompt).
 (`HandleKnifeWinner` is an older path kept around but the live flow uses the `EventRoundEnd` lambda — `EventCsWinPanelRound`
@@ -102,7 +102,7 @@ removed from play.
   forces still-alive coaches back to spectating their team.
 - **`TransferCoachBomb`**: if a coach is given the C4 (`EventPlayerGivenC4`), it's moved to the first alive non-coach T.
 - Coaches are made silent on team-change events and their suicide isn't broadcast (Pre handlers in
-  [`MatchZy.cs`](../MatchZy.cs)).
+  [`Querator.cs`](../Querator.cs)).
 
 ### Coach spawns
 `GetCoachSpawns()` loads `<ModuleDir>/spawns/coach/<map>.json` (the bundled files for the 8 active-duty maps): a

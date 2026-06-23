@@ -32,10 +32,10 @@ the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
 ### Tier A — cosmetic / internal (safe, do first)
 | What | Where | Notes |
 |---|---|---|
-| `ModuleName`, `ModuleAuthor`, `ModuleDescription` | [`MatchZy.cs`](../MatchZy.cs) | `ModuleName "MatchZy"` → `"Querator"`. Changes the load banner + `css_plugins` name. |
-| Chat prefix default | `MatchZy.cs` `chatPrefix` + `config.cfg` `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` → `[{Green}Querator{Default}]` (or Lany branding). |
+| `ModuleName`, `ModuleAuthor`, `ModuleDescription` | [`Querator.cs`](../Querator.cs) | `ModuleName "MatchZy"` → `"Querator"`. Changes the load banner + `css_plugins` name. |
+| Chat prefix default | `Querator.cs` `chatPrefix` + `config.cfg` `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` → `[{Green}Querator{Default}]` (or Lany branding). |
 | Namespace + class name | every `.cs` (`namespace MatchZy`, `class MatchZy`) | Mechanical rename (`MatchZy` → `Querator`). The class is `partial`, so rename consistently across all files. |
-| Assembly / DLL name | rename `MatchZy.csproj` → `Querator.csproj` | Produces `Querator.dll`; deploy folder becomes `plugins/Querator/`. **Update lany-node-agent's plugin path/manifest.** |
+| Assembly / DLL name | rename `Querator.csproj` → `Querator.csproj` | Produces `Querator.dll`; deploy folder becomes `plugins/Querator/`. **Update lany-node-agent's plugin path/manifest.** |
 | `get5_status` `plugin_version` string, credits message | `G5API.cs`, `Utility.cs` | Optional vanity. |
 
 ### Tier B — coupled to external systems (coordinate before changing)
