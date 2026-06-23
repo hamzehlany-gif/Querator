@@ -14,8 +14,8 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `namespace MatchZy` / `class MatchZy` | `namespace Querator` / `class Querator` | SP2 | done |
 | `MatchZy*Event` / `MatchZyStats*` (DTO type names) | `Querator*Event` / `QueratorStats*` | SP2 | done |
 | `ModuleName "MatchZy"` | `"Querator"` | SP-B1 (coupled) | planned |
-| `ModuleVersion 0.8.15` | `1.0.0` | SP3 | planned |
-| `ModuleAuthor "WD-…"` | Lany | SP3 | planned |
+| `ModuleVersion 0.8.15` | `1.0.0` | SP3 | done |
+| `ModuleAuthor "WD-…"` | `Lany (https://lany.gg)` | SP3 | done |
 | `MatchZy.dll` / `plugins/MatchZy` | `Querator.dll` / `plugins/Querator` | SP-B2 (coupled) | planned |
 | `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | planned |
@@ -83,4 +83,39 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
     (forward slashes, exit 0) + base64-piped remote script + a post-restart load-poll that confirms a clean reload.
 - **Merge:** ✅ merged `rebrand-a-sp2-identifiers` → `rebrand-a` (local, no push) after the gate passed.
 - **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP2 tip; the `rebrand-a-sp2-identifiers`
+  branch is retained.
+
+### SP3 — cosmetics: module metadata, banner, chat prefix, credits (Phase A) — 2026-06-23 — ✅ build green
+- **Branch:** `rebrand-a-sp3-cosmetics` (off `rebrand-a`). Repo: **Querator only**.
+- **Changes (runtime-visible branding + module metadata; surgical, no blanket replace):**
+  - `MatchZy.cs:17` — `ModuleVersion` `0.8.15` → `1.0.0`.
+  - `MatchZy.cs:19` — `ModuleAuthor` `"WD- (…shobhit-pathak…)"` → `"Lany (https://lany.gg)"`.
+  - `MatchZy.cs:23` — `chatPrefix` field default `[Green]MatchZy[Default]` → `[Green]Querator[Default]`.
+  - `MatchZy.cs:545` — `[LOADED]` console banner trailing prose `MatchZy by WD- (…)` → `Querator by Lany (https://lany.gg)`.
+    The `[{ModuleName} {ModuleVersion} LOADED]` prefix is unchanged — `{ModuleName}` still resolves to "MatchZy"
+    (coupled, SP-B1), so the banner currently prints `[MatchZy 1.0.0 LOADED] Querator by Lany …` by design; it
+    auto-flips to `[Querator …]` once SP-B1 renames `ModuleName`.
+  - `ConfigConvars.cs:188` — `matchzy_chat_prefix` reset-to-default path → `[Green]Querator[Default]` (kept in sync with
+    the field default above; the chat-prefix default lives in **two** places).
+  - `Utility.cs:790` — credits-on-match-start chat message `MatchZy Plugin by WD-` → `Querator Plugin by Lany`.
+- **Kept (coupled / deferred — NOT touched in SP3):** `ModuleName "MatchZy"` (SP-B1); all `matchzy_*` cvar **names** +
+  their help-text descriptions — incl. the `matchzy_show_credits_on_match_start` description that still quotes
+  `'MatchZy Plugin by WD-'` (`ConfigConvars.cs:23`) and the `matchzy_chat_prefix`/`_admin_chat_prefix` descriptions
+  (`ConfigConvars.cs:179/199`); `cfg/MatchZy/` files incl. the `config.cfg:110` credits comment;
+  `matchzy_hostname_format` default `"MatchZy | {TEAM1} vs {TEAM2}"` (`ConfigConvars.cs:25`) — discovered branding
+  string, **deferred** (decide: late-SP3 vs SP-B3). These ride with SP-B3 (cvar rename) / SP-B2 (cfg path) / docs sweep.
+- **Verification:** ✅ `dotnet publish -c Release` exit 0 (only pre-existing upstream warnings). DLL still `MatchZy.dll`.
+  UTF-16 user-string scan of the built DLL: new branding present (`Querator by Lany` ×1, `Lany (https://lany.gg)` ×1,
+  `Querator`/`Lany`/` Plugin by ` fragments — the credits line is interpolated so it isn't one contiguous literal);
+  old runtime banner `MatchZy by WD-` gone (×0); the single remaining `MatchZy Plugin by WD-` user-string is the
+  intentionally-deferred cvar help text. `ModuleName "MatchZy"` retained in metadata → node-agent/lanyBot load
+  detection ("Finished loading plugin MatchZy") unaffected.
+- **⚠️ Cross-repo flag (ModuleVersion 0.8.15→1.0.0):** lanyBot `updateResolver.service.ts:209` keys on the installed
+  version. `1.0.0` > upstream `0.8.x`, so it won't try to revert us to an upstream MatchZy release (protective), but
+  **confirm lanyBot's update logic before this DLL is deployed to a live server or merged to `main`** (a `main` push
+  cuts a GitHub release tagged from `ModuleVersion`). Pushing `rebrand-a` to origin is inert — CI/release trigger on
+  `main` only.
+- **Deploy:** none yet (cosmetics; optional VM smoke available via `scripts/deploy-to-vm.ps1`).
+- **Merge:** merged `rebrand-a-sp3-cosmetics` → `rebrand-a` (local) after the build gate.
+- **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP3 tip; the `rebrand-a-sp3-cosmetics`
   branch is retained.

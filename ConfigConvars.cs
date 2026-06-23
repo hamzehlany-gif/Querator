@@ -185,7 +185,7 @@ namespace Querator
 
             if (string.IsNullOrEmpty(args))
             {
-                chatPrefix = $"[{ChatColors.Green}MatchZy{ChatColors.Default}]";
+                chatPrefix = $"[{ChatColors.Green}Querator{ChatColors.Default}]";
                 return;
             }
 
