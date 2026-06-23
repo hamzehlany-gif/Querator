@@ -1,11 +1,11 @@
-# deploy-to-vm.ps1 — build Querator, deploy it to the test VM, restart the CS2 server, and verify the reload.
+# deploy-to-vm.ps1 -- build Querator, deploy it to the test VM, restart the CS2 server, and verify the reload.
 #
 # Runs on the Windows dev machine. Builds here (dotnet publish), packs the publish output as tar.gz, copies it to
 # the VM over SSH, extracts it into the plugin folder, restarts the `cs2` systemd service, then polls the
 # CounterStrikeSharp log to confirm the plugin re-loaded cleanly.
 #
 # Why tar.gz (not Compress-Archive/zip): PowerShell's Compress-Archive writes BACKSLASH path separators, which makes
-# Linux `unzip` emit a warning and exit 1 — that non-zero exit silently broke the old `&& systemctl restart` chain,
+# Linux `unzip` emit a warning and exit 1 -- that non-zero exit silently broke the old `&& systemctl restart` chain,
 # so the files updated but the server never restarted. tar uses forward slashes and exits 0, so the chain holds.
 #
 # One-time setup: authorize ~/.ssh/querator_deploy.pub on the VM's root account:
@@ -18,7 +18,7 @@ param(
   [string]$Key       = "$HOME\.ssh\querator_deploy",
   [string]$Csgo      = "/home/cs2/server/game/csgo",
   [string]$Service   = "cs2",            # the CS2 server unit (NOT cs2-agent / node-agent)
-  [string]$PluginDir = "MatchZy"         # plugins/<PluginDir> — rename to "Querator" after SP-B2
+  [string]$PluginDir = "MatchZy"         # plugins/<PluginDir> -- rename to "Querator" after SP-B2
 )
 $ErrorActionPreference = "Stop"
 $dest = "$Csgo/addons/counterstrikesharp/plugins/$PluginDir"
@@ -40,31 +40,35 @@ if ($LASTEXITCODE -ne 0) { throw "scp failed ($LASTEXITCODE)" }
 
 Write-Host "==> extracting into plugins/$PluginDir, restarting $Service, verifying reload ..."
 # Remote script is base64-piped to avoid PowerShell/sh quoting hell. It: snapshots the CSSharp log line count,
-# extracts over the existing plugin folder (keeps runtime data), restarts cs2, then polls up to ~60s for a fresh
-# "Finished loading plugin" beyond the snapshot — printing the surrounding load/error lines.
+# extracts over the existing plugin folder (keeps runtime data), restarts cs2, then polls up to ~90s for a fresh
+# "Finished loading plugin" among the log lines ADDED since the snapshot -- scanning ALL of them, not a fixed tail
+# window, because CS2 startup spam can push the load line out of the last N lines. Prints the surrounding load/errors.
 $bash = @'
 dest="__DEST__"; service="__SERVICE__"; csgo="__CSGO__"
 logglob="$csgo/addons/counterstrikesharp/logs/log-cssharp*.txt"
-L=$(ls -t $logglob 2>/dev/null | head -1)
-before=$( [ -n "$L" ] && wc -l < "$L" || echo 0 )
+Lbefore=$(ls -t $logglob 2>/dev/null | head -1)
+before=$( [ -n "$Lbefore" ] && wc -l < "$Lbefore" || echo 0 )
 mkdir -p "$dest"
 if ! tar -xzf /tmp/querator-deploy.tar.gz -C "$dest"; then echo "[err] tar extract failed"; exit 1; fi
 rm -f /tmp/querator-deploy.tar.gz
 echo "[..] restarting $service"
 systemctl restart "$service"
-for i in $(seq 1 30); do
+# Scan the CSSharp log lines added since the snapshot. Same file -> from line before+1; rotated to a new file ->
+# the whole new file is post-restart (start=1). Scanning all new lines (not a fixed tail) is what makes this reliable.
+for i in $(seq 1 45); do
   sleep 2
   L=$(ls -t $logglob 2>/dev/null | head -1)
-  now=$( [ -n "$L" ] && wc -l < "$L" || echo 0 )
-  if [ "$now" -gt "$before" ] && tail -20 "$L" | grep -q "Finished loading plugin"; then
-    echo "[ok] plugin re-loaded after ~$((i*2))s — recent log:"
-    tail -20 "$L" | grep -iE "loading plugin|finished loading|error|exception|fail" | tail -6
-    err=$(tail -25 "$L" | grep -icE "error|exception|fail")
-    [ "$err" -gt 0 ] && { echo "[warn] $err error/exception line(s) this boot — inspect"; exit 3; }
+  [ -z "$L" ] && continue
+  if [ "$L" = "$Lbefore" ]; then start=$((before+1)); else start=1; fi
+  if tail -n +"$start" "$L" | grep -q "Finished loading plugin"; then
+    echo "[ok] plugin re-loaded after ~$((i*2))s -- new CSSharp log lines of interest:"
+    tail -n +"$start" "$L" | grep -iE "loading plugin|finished loading|error|exception|fail" | tail -10
+    err=$(tail -n +"$start" "$L" | grep -icE "error|exception|fail")
+    [ "$err" -gt 0 ] && { echo "[warn] $err error/exception line(s) in CSSharp log since restart -- inspect"; exit 3; }
     exit 0
   fi
 done
-echo "[warn] no fresh load confirmed within ~60s — inspect: tail -30 $L"
+echo "[warn] no fresh load confirmed within ~90s -- inspect: tail -40 $L"
 exit 2
 '@
 $bash = $bash.Replace("__DEST__", $dest).Replace("__SERVICE__", $Service).Replace("__CSGO__", $Csgo)
@@ -75,6 +79,6 @@ $rc = $LASTEXITCODE
 if ($rc -eq 0) {
   Write-Host "==> done. Deployed '$PluginDir' and verified a clean reload on '$Service'."
 } else {
-  Write-Host "==> deployed, but reload verification returned $rc — inspect the server (see [warn] above)."
+  Write-Host "==> deployed, but reload verification returned $rc -- inspect the server (see [warn] above)."
 }
 exit $rc

@@ -85,7 +85,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP2 tip; the `rebrand-a-sp2-identifiers`
   branch is retained.
 
-### SP3 — cosmetics: module metadata, banner, chat prefix, credits (Phase A) — 2026-06-23 — ✅ build green
+### SP3 — cosmetics: module metadata, banner, chat prefix, credits (Phase A) — 2026-06-23 — ✅ build green; ✅ VM load smoke passed (2026-06-23)
 - **Branch:** `rebrand-a-sp3-cosmetics` (off `rebrand-a`). Repo: **Querator only**.
 - **Changes (runtime-visible branding + module metadata; surgical, no blanket replace):**
   - `MatchZy.cs:17` — `ModuleVersion` `0.8.15` → `1.0.0`.
@@ -115,7 +115,19 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
   **confirm lanyBot's update logic before this DLL is deployed to a live server or merged to `main`** (a `main` push
   cuts a GitHub release tagged from `ModuleVersion`). Pushing `rebrand-a` to origin is inert — CI/release trigger on
   `main` only.
-- **Deploy:** none yet (cosmetics; optional VM smoke available via `scripts/deploy-to-vm.ps1`).
+- **Deploy:** ✅ **VM load smoke passed (2026-06-23, `82.212.83.229` / host `carlos`)** via `scripts/deploy-to-vm.ps1`.
+  `cs2` restarted 09:05:46 UTC; deployed `MatchZy.dll` (mtime 09:05:34) verified to carry `ModuleVersion 1.0.0` + the
+  `LOADED] Querator by Lany (https://lany.gg)` banner string; CSSharp log shows clean
+  `unloading… → Loading plugin MatchZy → Finished loading plugin MatchZy` (09:05:48, ~146 ms), **zero
+  errors/exceptions**. (lanyBot/node-agent detection still keys on ModuleName "MatchZy" — unaffected.)
+- **Ops notes (not rebrand changes, logged for traceability):**
+  - `scripts/deploy-to-vm.ps1` carried 8 em-dashes (U+2014). Windows PowerShell 5.1 reads BOM-less files as ANSI, and
+    the em-dash inside a double-quoted string terminated it early → parse error (script never executed; VM untouched on
+    the first attempt). Replaced all `—`→`--` (ASCII-clean) and re-ran successfully.
+  - The script's reload-poll returned a **false negative** (exit 2 "no fresh load confirmed") although the load
+    succeeded: `tail -20 | grep "Finished loading plugin"` is too narrow — CS2 startup log spam pushes the load line
+    past the last 20 lines before the 2 s poll samples it. **TODO:** scan lines-added-since-snapshot instead of a fixed
+    `tail -20`.
 - **Merge:** merged `rebrand-a-sp3-cosmetics` → `rebrand-a` (local) after the build gate.
 - **Rollback:** revert the merge on `rebrand-a`, or reset `rebrand-a` to its pre-SP3 tip; the `rebrand-a-sp3-cosmetics`
   branch is retained.
