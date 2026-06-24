@@ -9,7 +9,7 @@ namespace Querator
 
     public partial class Querator
     {
-        public const string sleepCfgPath = "MatchZy/sleep.cfg";
+        public const string sleepCfgPath = "Querator/sleep.cfg";
 
         public void StartSleepMode()
         {

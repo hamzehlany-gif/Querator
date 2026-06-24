@@ -34,7 +34,7 @@ server console / RCON / a `.cfg` exec**, never from a player. So players cannot 
 - ConVar `querator_everyone_is_admin` is true, **or**
 - the player satisfies the CSSharp permission check for `permissions` **+ implicit `@css/root`**
   (CSSharp `admins.json`/groups), **or**
-- the player's SteamID is a key in **MatchZy's** `cfg/MatchZy/admins.json`, **or**
+- the player's SteamID is a key in **MatchZy's** `cfg/Querator/admins.json`, **or**
 - `player == null` (invoked by the server console / RCON → always admin).
 
 Permission flags actually used in the code:
@@ -246,7 +246,7 @@ Read directly as `.Value` in code.
 | `querator_remote_log_header_key` / `get5_remote_log_header_key` | "" | `matchConfig.RemoteLogHeaderKey` |
 | `querator_remote_log_header_value` / `get5_remote_log_header_value` | "" | `matchConfig.RemoteLogHeaderValue` |
 
-> Defaults that ship are in `cfg/MatchZy/config.cfg` (executed on load). See
+> Defaults that ship are in `cfg/Querator/config.cfg` (executed on load). See
 > [11-utility-localization-configs.md](11-utility-localization-configs.md) for the file's exact contents.
 
 ## 7. `get5_*` alias index (panel compatibility — keep stable)

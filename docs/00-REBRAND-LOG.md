@@ -17,7 +17,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `ModuleVersion 0.8.15` | `1.0.0` | SP3 | done |
 | `ModuleAuthor "WD-…"` | `Lany (https://lany.gg)` | SP3 | done |
 | `MatchZy.dll`/`MatchZy.cs`/`MatchZy.csproj` / `plugins/MatchZy` | `Querator.dll`/`.cs`/`.csproj` / `plugins/Querator` | SP-B2 (coupled) | **Querator + node-agent + lany done (branches)**; deploy + release pipeline (SP-C1) pending |
-| `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
+| `cfg/MatchZy/` | `cfg/Querator/` | SP-B9 (cfg-dir, coupled) | **code done (Querator + node-agent, branches)**; live-dir move at cutover |
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | **done across all 4 repos (branches)**; deploy/re-seed at cutover |
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
@@ -364,3 +364,21 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ node-agent 267+lint · lanyBot 455 · lany 62.
 - **Merge:** `rebrand-b-b8-env` → `rebrand-b` in each repo (local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b8-env` branches.
+
+### SP-B9 — `cfg/MatchZy/` config dir → `cfg/Querator/` (Phase B) — 2026-06-24 — ✅ code done (branches, gates green); ⏳ live-dir move at cutover
+- **Branches:** `rebrand-b-b9-cfgdir` in **Querator + lany-node-agent**.
+- **Querator:** `git mv cfg/MatchZy → cfg/Querator` (15 bundled config files); the plugin's cfg-path constants in
+  `Utility.cs` (`warmupCfgPath`/`knifeCfgPath`/`liveCfgPath`/`liveWingmanCfgPath`, `admins.json`, `whitelist.cfg`),
+  `PracticeMode.cs` (`prac.cfg`/`dryrun.cfg`/`savednades.json`), `SleepMode.cs` (`sleep.cfg`), `Querator.cs`
+  (`execifexists Querator/config.cfg`), `DatabaseStats.cs` (`cfg/Querator`) → `Querator/…`; the bundled
+  `config.cfg`/`live.cfg`/`live_wingman.cfg` `exec` refs → `Querator/…`; docs. `dotnet publish` → `Querator.dll`, exit 0.
+- **lany-node-agent:** `QUERATOR_CONFIG_PATH` default `…/cfg/MatchZy` → `…/cfg/Querator` (`config/index.js` +
+  `.env.example` + `docs/config.md`); the config-template seed's `exec MatchZy/live_override.cfg` →
+  `exec Querator/live_override.cfg`. 267 tests + lint green.
+- **Kept:** `MatchZy-*` demo-upload HTTP headers in `Utility.cs` (separate header sweep); `matchzy.*` lang keys; the
+  upstream `MatchZy` release source/attribution (Phase C).
+- **⚠️ Deploy:** NOT deployed. At cutover, each server's live `csgo/cfg/MatchZy/` must be moved to `csgo/cfg/Querator/`
+  (or re-synced from the renamed config template), in lockstep — the plugin now execs `Querator/*.cfg`.
+- **Verification:** ✅ Querator publish; ✅ node-agent 267 + lint.
+- **Merge:** `rebrand-b-b9-cfgdir` → `rebrand-b` (Querator + node-agent; local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b9-cfgdir` branches; `git mv` back.

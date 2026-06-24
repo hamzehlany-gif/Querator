@@ -128,8 +128,8 @@ namespace Querator
 
         public Dictionary<byte, List<Position>> coachSpawns = GetEmptySpawnsData();
 
-        public const string practiceCfgPath = "MatchZy/prac.cfg";
-        public const string dryrunCfgPath = "MatchZy/dryrun.cfg";
+        public const string practiceCfgPath = "Querator/prac.cfg";
+        public const string dryrunCfgPath = "Querator/dryrun.cfg";
 
         // This map stores the bots which are being used in prac (probably spawned using .bot). Key is the userid of the bot.
         public Dictionary<int, Dictionary<string, object>> pracUsedBots = new Dictionary<int, Dictionary<string, object>>();
@@ -299,7 +299,7 @@ namespace Querator
                 string nadeType = GetNadeType(player.PlayerPawn.Value.WeaponServices!.ActiveWeapon.Value!.DesignerName);
 
                 // Define the file path
-                string savednadesfileName = "MatchZy/savednades.json";
+                string savednadesfileName = "Querator/savednades.json";
                 string savednadesPath = Path.Join(Server.GameDirectory + "/csgo/cfg", savednadesfileName);
 
                 // Check if the file exists, if not, create it with an empty JSON object
@@ -384,7 +384,7 @@ namespace Querator
                 }
 
                 // Define the file path
-                string savednadesfileName = "MatchZy/savednades.json";
+                string savednadesfileName = "Querator/savednades.json";
                 string savednadesPath = Path.Join(Server.GameDirectory + "/csgo/cfg", savednadesfileName);
 
                 try
@@ -465,7 +465,7 @@ namespace Querator
                         string currentMapName = Server.MapName;
 
                         // Define the file path
-                        string savednadesfileName = "MatchZy/savednades.json";
+                        string savednadesfileName = "Querator/savednades.json";
                         string savednadesPath = Path.Join(Server.GameDirectory + "/csgo/cfg", savednadesfileName);
 
                         // Read existing JSON content
@@ -536,7 +536,7 @@ namespace Querator
             if (!isPractice || player == null) return;
 
             // Define the file path
-            string savednadesfileName = "MatchZy/savednades.json";
+            string savednadesfileName = "Querator/savednades.json";
             string savednadesPath = Path.Join(Server.GameDirectory + "/csgo/cfg", savednadesfileName);
 
             try
@@ -598,7 +598,7 @@ namespace Querator
                 string playerSteamID = player.SteamID.ToString();
 
                 // Define the file path
-                string savednadesfileName = "MatchZy/savednades.json";
+                string savednadesfileName = "Querator/savednades.json";
                 string savednadesPath = Path.Join(Server.GameDirectory + "/csgo/cfg", savednadesfileName);
 
                 try

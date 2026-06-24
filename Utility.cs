@@ -17,10 +17,10 @@ namespace Querator
 {
     public partial class Querator
     {
-        public const string warmupCfgPath = "MatchZy/warmup.cfg";
-        public const string knifeCfgPath = "MatchZy/knife.cfg";
-        public const string liveCfgPath = "MatchZy/live.cfg";
-        public const string liveWingmanCfgPath = "MatchZy/live_wingman.cfg";
+        public const string warmupCfgPath = "Querator/warmup.cfg";
+        public const string knifeCfgPath = "Querator/knife.cfg";
+        public const string liveCfgPath = "Querator/live.cfg";
+        public const string liveWingmanCfgPath = "Querator/live_wingman.cfg";
 
         private void PrintToAllChat(string message)
         {
@@ -53,7 +53,7 @@ namespace Querator
 
         private void LoadAdmins()
         {
-            string fileName = "MatchZy/admins.json";
+            string fileName = "Querator/admins.json";
             string filePath = Path.Join(Server.GameDirectory + "/csgo/cfg", fileName);
 
             if (File.Exists(filePath))
@@ -1916,7 +1916,7 @@ namespace Querator
 
         public bool HandlePlayerWhitelist(CCSPlayerController player, string steamId)
         {
-            string whitelistfileName = "MatchZy/whitelist.cfg";
+            string whitelistfileName = "Querator/whitelist.cfg";
             string whitelistPath = Path.Join(Server.GameDirectory + "/csgo/cfg", whitelistfileName);
             string? directoryPath = Path.GetDirectoryName(whitelistPath);
             if (directoryPath != null)

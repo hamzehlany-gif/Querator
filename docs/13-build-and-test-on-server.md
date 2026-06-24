@@ -55,7 +55,7 @@ The server must have:
 Into the server's game dir (`.../game/csgo/`):
 1. Copy the **contents of** `bin/Release/net8.0/publish/` → `csgo/addons/counterstrikesharp/plugins/MatchZy/`
    (skip `CounterStrikeSharp.API.dll`/`.pdb` if present).
-2. Copy the repo's **`cfg/`** → `csgo/cfg/` (so `cfg/MatchZy/*` lands at `csgo/cfg/MatchZy/`). Don't overwrite a
+2. Copy the repo's **`cfg/`** → `csgo/cfg/` (so `cfg/Querator/*` lands at `csgo/cfg/Querator/`). Don't overwrite a
    server operator's customized `admins.json`/`database.json`/`*_override.cfg`.
 
 ## Step 5 — Load & confirm

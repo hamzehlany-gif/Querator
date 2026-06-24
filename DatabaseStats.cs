@@ -551,7 +551,7 @@ namespace Querator
         private void SetDatabaseConfig(string directory)
         {
             string fileName = "database.json";
-            string configFile = Path.Combine(Server.GameDirectory + "/csgo/cfg/MatchZy", fileName);
+            string configFile = Path.Combine(Server.GameDirectory + "/csgo/cfg/Querator", fileName);
             if (!File.Exists(configFile))
             {
                 // Create a default configuration if the file doesn't exist

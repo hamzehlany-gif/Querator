@@ -10,7 +10,7 @@ All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substa
 - **`InitializeDatabase(directory)`** → `ConnectDatabase` → `connection.Open()` → create tables. Wrapped in
   try/catch that logs `[InitializeDatabase - FATAL]` and continues (no throw — game-frame safety).
 - **`SetDatabaseConfig`** reads `database.json` from a **hardcoded** path:
-  `Server.GameDirectory + "/csgo/cfg/MatchZy/database.json"` (the `directory` arg is ignored here; it's only used for
+  `Server.GameDirectory + "/csgo/cfg/Querator/database.json"` (the `directory` arg is ignored here; it's only used for
   the SQLite file location). Missing → writes a default. The `DatabaseConfig` DTO: `DatabaseType`, `MySqlHost`,
   `MySqlDatabase`, `MySqlUsername`, `MySqlPassword`, `MySqlPort`.
 - **Selection:** MySQL is chosen **only** if `DatabaseType` (trimmed, lowercased) == `"mysql"`. Anything else — typo,

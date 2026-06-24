@@ -42,7 +42,7 @@ the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
 | What | Where | Coupling / risk |
 |---|---|---|
 | **ConVar prefix** `querator_*` | `ConfigConvars.cs`, `ConsoleCommands.cs`, all `config.cfg`/cfgs | **lany-node-agent config sync + lanyBot RCON likely send `querator_*`.** Safest: add `querator_*` **aliases** (like the existing `get5_*`) and keep `querator_*` working, then migrate callers. Don't hard-rename in one shot. |
-| **cfg folder** `MatchZy/` | `Utility.cs` path consts (`warmupCfgPath`…), `SleepMode.cs`, `PracticeMode.cs`, deploy layout | Renaming `cfg/MatchZy/` → `cfg/Querator/` breaks deployed configs + lany-node-agent's config templates. Coordinate the move. |
+| **cfg folder** `MatchZy/` | `Utility.cs` path consts (`warmupCfgPath`…), `SleepMode.cs`, `PracticeMode.cs`, deploy layout | Renaming `cfg/Querator/` → `cfg/Querator/` breaks deployed configs + lany-node-agent's config templates. Coordinate the move. |
 | **lang keys** `matchzy.*` | all `lang/*.json` + every `Localizer["matchzy…"]` call | Mechanical but large; purely internal (no external consumer) → safe-ish, just big. Can defer. |
 | **DB table names** `querator_stats_*` | `DatabaseStats.cs` (both dialects) | ⚠️ **Renaming breaks existing data and any direct SQL readers.** lanyBot stores match data in **MongoDB** (via events), so it likely doesn't read these tables — *verify*. If nothing reads them directly, a rename is low-risk but pointless; recommend **leaving table names** for data continuity. |
 | **get5_\*** aliases | `*.cs` | Keep/drop per §7. |

@@ -9,7 +9,7 @@ Whereas, `querator_stats_players` stores data/stats of every player who played i
 
 ### Using MySQL Database with MatchZy
 
-To use MySQL Database with MatchZy, open `csgo/cfg/MatchZy/database.json` file. It's content will be like this:
+To use MySQL Database with MatchZy, open `csgo/cfg/Querator/database.json` file. It's content will be like this:
 ```json
 {
     "DatabaseType": "SQLite",
