@@ -1,6 +1,6 @@
 ## GOTV Broadcast
 
-MatchZy makes no changes to the broadcasting part of the GOTV, but will automatically adjust the
+Querator makes no changes to the broadcasting part of the GOTV, but will automatically adjust the
 [`mp_match_restart_delay`](https://totalcsgo.com/command/mpmatchrestartdelay) when a map ends if GOTV is enabled to
 ensure that it won't be shorter than what is required for the GOTV broadcast to finish.
 
@@ -12,7 +12,7 @@ ensure that it won't be shorter than what is required for the GOTV broadcast to 
 
 ## Recording Demos
 
-MatchZy records the demos automatically. It recording starts once all teams have readied up and ends following a map result.
+Querator records the demos automatically. It recording starts once all teams have readied up and ends following a map result.
 
 Path of demos can be configured using `querator_demo_path <directory>/`. If defined, it must not start with a slash and must end with a slash. Set to empty string to use the csgo root.
 
@@ -21,12 +21,12 @@ Demo files will be named according to `querator_demo_name_format`. The default f
 !!! info "Broadcast delay on GOTV recording"
 
     When the GOTV recording stops, the server will flush its framebuffer to disk. This may cause a lag spike or a
-    complete freeze of the GOTV broadcast if you have a substantial `tv_delay`, so MatchZy will wait until the entire match
+    complete freeze of the GOTV broadcast if you have a substantial `tv_delay`, so Querator will wait until the entire match
     has been broadcast before it stops recording the demo.
 
 ## Automatic Upload
 
-In addition to recording demos, MatchZy can also upload them to a URL when the recording stops. You can define the upload URL with
+In addition to recording demos, Querator can also upload them to a URL when the recording stops. You can define the upload URL with
 `querator_demo_upload_url <upload_url>`. The HTTP body will be the zipped demo file, and you can
 read the [headers](#headers) for file metadata.
 
@@ -34,17 +34,17 @@ Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"`
 
 ### Headers
 
-MatchZy will add these HTTP headers to its demo upload request:
+Querator will add these HTTP headers to its demo upload request:
 
-1. `MatchZy-FileName` is the name of the demo file
-2. `MatchZy-MapNumber` is the zero-indexed map number in the series.
-3. `MatchZy-MatchId` Unique ID of the match.
+1. `Querator-FileName` is the name of the demo file
+2. `Querator-MapNumber` is the zero-indexed map number in the series.
+3. `Querator-MatchId` Unique ID of the match.
 
 
 ### Example
 
 This is an example of how a [Node.js](https://nodejs.org/en/) web server using [Express](https://expressjs.com/) might
-read the demo upload request sent by MatchZy.
+read the demo upload request sent by Querator.
 
 !!! warning "Proof of concept only"
  
@@ -61,10 +61,10 @@ const port = 3000;
 
 app.post('/upload', function (req, res) {
 
-    // Read the MatchZy headers to know what to do with the file.
-    const filename = req.header('MatchZy-FileName');
-    const matchId = req.header('MatchZy-MatchId');
-    const mapNumber = req.header('MatchZy-MapNumber');
+    // Read the Querator headers to know what to do with the file.
+    const filename = req.header('Querator-FileName');
+    const matchId = req.header('Querator-MatchId');
+    const mapNumber = req.header('Querator-MapNumber');
  
     // Put all demos for the same match in a folder.
     const folder = path.join(__dirname, 'demos', matchId);

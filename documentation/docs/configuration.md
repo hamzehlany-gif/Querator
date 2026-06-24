@@ -1,9 +1,9 @@
 # Configuration
 
-All the configuration files related to MatchZy can be found in `csgo/cfg/Querator` (If you have extracted the contents properly, `MatchZy` folder should be there inside the cfg folder).
+All the configuration files related to Querator can be found in `csgo/cfg/Querator` (If you have extracted the contents properly, `Querator` folder should be there inside the cfg folder).
 
 ### Creating Admins
-There are two ways to create an admin for MatchZy; you can choose the most convenient one according to your preference.
+There are two ways to create an admin for Querator; you can choose the most convenient one according to your preference.
 
 1. **Using CSSharp's Admin system:**
 
@@ -36,7 +36,7 @@ There are two ways to create an admin for MatchZy; you can choose the most conve
     - `@css/chat`: Grants access to send admin chat messages using `!asay <message>`
 
 
-2. **Using MatchZy's Admin system:**
+2. **Using Querator's Admin system:**
 
     Inside `csgo/cfg/Querator`, a file named `admins.json` should be present. If it is not there, it will be automatically created when the plugin is loaded. You can add Steam64 id of admins in that JSON file like mentioned in the below example:
 
@@ -47,8 +47,8 @@ There are two ways to create an admin for MatchZy; you can choose the most conve
     }
     ```
 
-### Configuring MatchZy Settings (ConVars)
-Again, inside `csgo/cfg/Querator`, a file named `config.cfg` should be present. This file is executed whenever the plugin is loaded. If you make any changes in this file and want to reload the config, simply execute `exec MatchZy/config.cfg` command on the server.
+### Configuring Querator Settings (ConVars)
+Again, inside `csgo/cfg/Querator`, a file named `config.cfg` should be present. This file is executed whenever the plugin is loaded. If you make any changes in this file and want to reload the config, simply execute `exec Querator/config.cfg` command on the server.
 
 ####`querator_knife_enabled_default`
 :   Whether knife round is enabled by default or not. This is the default value, but knife can be toggled by [admins](#creating-admins) using .roundknife command.<br>**`Default: true`**
@@ -72,7 +72,7 @@ Again, inside `csgo/cfg/Querator`, a file named `config.cfg` should be present. 
 :   Whether to kick all clients and prevent anyone from joining the server if no match is loaded. This means if server is in match mode, a match needs to be set-up using `querator_loadmatch`/`querator_loadmatch_url` to load and configure a match.<br>**`Default: false`**
 
 ####`querator_demo_path`
-:   Path of folder in which demos will be saved. If defined, it must not start with a slash and must end with a slash. Set to empty string to use the csgo root. Example: `querator_demo_path MatchZy/`<br>**`Default: MatchZy/`**
+:   Path of folder in which demos will be saved. If defined, it must not start with a slash and must end with a slash. Set to empty string to use the csgo root. Example: `querator_demo_path Querator/`<br>**`Default: Querator/`**
 
 ####`querator_demo_name_format`
 :   Format of demo filname. You may use {TIME}, {MATCH_ID}, {MAP}, {MAPNUMBER}, {TEAM1} and {TEAM2}. Demo files will be named according to the format specified. Do not include .dem format, it will be added automatically. Make sure to keep {TIME} in the format to create a unique demo file everytime.<br>**`Default: "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"`**
@@ -85,13 +85,13 @@ Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"` <
 :   Whether to kick all clients and prevent anyone from joining the server if no match is loaded. This means if server is in match mode, a match needs to be set-up using `querator_loadmatch`/`querator_loadmatch_url` to load and configure a match.<br>**`Default: false`**
 
 ####`querator_chat_prefix`
-:   Chat prefix to show whenever a MatchZy message is sent to players. Available Colors: {Default}, {Darkred}, {Green}, {LightYellow}, {LightBlue}, {Olive}, {Lime}, {Red}, {Purple}, {Grey}, {Yellow}, {Gold}, {Silver}, {Blue}, {DarkBlue}, {BlueGrey}, {Magenta} and {LightRed}. Make sure to end your prefix with {Default} to avoid coloring the messages in your prefix color.<br>**`Default: [{Green}MatchZy{Default}]`**
+:   Chat prefix to show whenever a Querator message is sent to players. Available Colors: {Default}, {Darkred}, {Green}, {LightYellow}, {LightBlue}, {Olive}, {Lime}, {Red}, {Purple}, {Grey}, {Yellow}, {Gold}, {Silver}, {Blue}, {DarkBlue}, {BlueGrey}, {Magenta} and {LightRed}. Make sure to end your prefix with {Default} to avoid coloring the messages in your prefix color.<br>**`Default: [{Green}Querator{Default}]`**
 
 ####`querator_admin_chat_prefix`
 :   Chat prefix to show whenever an admin sends message using `.asay <message>`. Avaiable Colors are mentioned above.<br>**`Default: [{Red}ADMIN{Default}]`**
 
 ####`querator_chat_messages_timer_delay`
-:   Number of seconds of delay before sending reminder messages from MatchZy (like unready message, paused message, etc). Note: Changing this timer wont affect the active timer, so if you change this setting in warmup, you will have to restart warmup to make the change effective.<br>**`Default: 13[{Red}ADMIN{Default}]`**
+:   Number of seconds of delay before sending reminder messages from Querator (like unready message, paused message, etc). Note: Changing this timer wont affect the active timer, so if you change this setting in warmup, you will have to restart warmup to make the change effective.<br>**`Default: 13[{Red}ADMIN{Default}]`**
 
 ####`querator_playout_enabled_default`
 :   Whether playout (play max rounds) is enabled. This is the default value, but playout can be toggled by admin using `.playout` command.<br>**`Default: false`**
@@ -118,13 +118,13 @@ Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"` <
 :   If enabled, the smoke's color will be changed to player's team color (player's color seen in the radar) .<br>**`Default: false`**
 
 ####`querator_everyone_is_admin`
-:   If set to true, everyone will be granted admin permissions for MatchZy.<br>**`Default: false`**
+:   If set to true, everyone will be granted admin permissions for Querator.<br>**`Default: false`**
 
 ####`querator_show_credits_on_match_start`
-:   Whether to show 'MatchZy Plugin by WD-' message on match start.<br>**`Default: true`**
+:   Whether to show 'Querator Plugin by Lany' message on match start.<br>**`Default: true`**
 
 ####`querator_hostname_format`
-:   The server hostname to use. Set to "" to disable/use existing. Available variables: {TIME}, {MATCH_ID}, {MAP}, {MAPNUMBER}, {TEAM1}, {TEAM2}, {TEAM1_SCORE}, {TEAM2_SCORE}<br>**`Default: MatchZy | {TEAM1} vs {TEAM2}`**
+:   The server hostname to use. Set to "" to disable/use existing. Available variables: {TIME}, {MATCH_ID}, {MAP}, {MAPNUMBER}, {TEAM1}, {TEAM2}, {TEAM1_SCORE}, {TEAM2_SCORE}<br>**`Default: Querator | {TEAM1} vs {TEAM2}`**
 
 ####`querator_match_start_message`
 :   Message to show when the match starts. Use $$$ to break message into multiple lines. Set to "" to disable. Available Colors: {Default}, {Darkred}, {Green}, {LightYellow}, {LightBlue}, {Olive}, {Lime}, {Red}, {Purple}, {Grey}, {Yellow}, {Gold}, {Silver}, {Blue}, {DarkBlue}. Example usage: querator_match_start_message {Green} Welcome to the server! {Default} $$$ Agent models are not allowed and may lead to {Red}disqualification!{Default}
@@ -137,7 +137,7 @@ Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"` <
 :   Loads a match backup from a remote host by sending an HTTP(S) GET to the given URL. You may optionally provide an HTTP header and value pair using the header name and header value arguments. You should put all arguments inside quotation marks ("").
 
 ####`querator_remote_backup_url`
-:   If defined, MatchZy will automatically send backups to this URL in an HTTP POST request. If no protocol is provided, http:// will be prepended to this value. Requires the SteamWorks extension. 
+:   If defined, Querator will automatically send backups to this URL in an HTTP POST request. If no protocol is provided, http:// will be prepended to this value. Requires the SteamWorks extension. 
 
 ####`querator_remote_backup_header_key`
 :   If this and querator_remote_backup_header_value are defined, this header name and value will be used for your backup upload HTTP request. **`Default: "Authorization"`**
@@ -159,7 +159,7 @@ Again, inside `csgo/cfg/Querator`, files named `warmup.cfg`, `knife.cfg`, `live.
 
 You can modify these files according to your requirements, or add live_override.cfg / live_wingman_override.cfg to make "overriding" config.
 
-If these configs are not found in the expected location, MatchZy executes the default configs which are present in the code.
+If these configs are not found in the expected location, Querator executes the default configs which are present in the code.
 
 ### Whitelisting players
 Again, inside `csgo/cfg/Querator`, there will be a file called `whitelist.cfg`. You can add Steam64 id of whitelisted players like mentioned in the below example:
@@ -174,13 +174,13 @@ steamid3
 
 ### Database Stats
 
-MatchZy comes with a default database (SQLite), which configures itself automatically. MySQL Database can also be used with MatchZy!
+Querator comes with a default database (SQLite), which configures itself automatically. MySQL Database can also be used with Querator!
 Currently we are using 2 tables, `querator_stats_matches` and `querator_stats_players`. As their names suggest, `querator_stats_matches` holds the data of every match, like matchid, team names, scores, etc.
 Whereas, `querator_stats_players` stores data/stats of every player who played in that match. It stores data like matchid, kills, deaths, assists, and other important stats!
 
-### Using MySQL Database with MatchZy
+### Using MySQL Database with Querator
 
-To use MySQL Database with MatchZy, open `csgo/cfg/Querator/database.json` file. It's content will be like this:
+To use MySQL Database with Querator, open `csgo/cfg/Querator/database.json` file. It's content will be like this:
 ```json
 {
     "DatabaseType": "SQLite",

@@ -10,7 +10,7 @@ catalog + routing/permission model.
 
 A given handler method is usually reachable **three ways**:
 
-1. **`.cmd` in chat** → caught by MatchZy's own `EventPlayerChat` handler in [`Querator.cs`](../Querator.cs):
+1. **`.cmd` in chat** → caught by Querator's own `EventPlayerChat` handler in [`Querator.cs`](../Querator.cs):
    - exact, no-arg → `commandActions` dictionary
    - arg-bearing → `message.StartsWith(".cmd")` → `Handle*Command`
 2. **`!cmd` in chat** and **`css_cmd` in server console / RCON** → CSSharp's `[ConsoleCommand("css_cmd")]`
@@ -34,7 +34,7 @@ server console / RCON / a `.cfg` exec**, never from a player. So players cannot 
 - ConVar `querator_everyone_is_admin` is true, **or**
 - the player satisfies the CSSharp permission check for `permissions` **+ implicit `@css/root`**
   (CSSharp `admins.json`/groups), **or**
-- the player's SteamID is a key in **MatchZy's** `cfg/Querator/admins.json`, **or**
+- the player's SteamID is a key in **Querator's** `cfg/Querator/admins.json`, **or**
 - `player == null` (invoked by the server console / RCON → always admin).
 
 Permission flags actually used in the code:
@@ -47,7 +47,7 @@ Permission flags actually used in the code:
 | `@css/rcon` | `css_rcon` / `.rcon` |
 | `@css/chat` | `css_asay` / `.asay` |
 
-> The fork's simplest admin path is **MatchZy `admins.json`** (steamid → role string); empty role = full admin. See
+> The fork's simplest admin path is **Querator `admins.json`** (steamid → role string); empty role = full admin. See
 > [11-utility-localization-configs.md](11-utility-localization-configs.md).
 
 ---
@@ -208,7 +208,7 @@ Read directly as `.Value` in code.
 | `querator_max_tech_pauses_allowed` | int | 2 | max tech pauses/team (`maxTechPausesAllowed`) |
 | `querator_everyone_is_admin` | bool | false | treat all players as admin (`everyoneIsAdmin`) |
 | `querator_show_credits_on_match_start` | bool | true | print credits on start (`showCreditsOnMatchStart`) |
-| `querator_hostname_format` | string | `MatchZy \| {TEAM1} vs {TEAM2}` | hostname template (`hostnameFormat`) |
+| `querator_hostname_format` | string | `Querator \| {TEAM1} vs {TEAM2}` | hostname template (`hostnameFormat`) |
 | `querator_enable_damage_report` | bool | true | round damage report (`enableDamageReport`) |
 | `querator_stop_command_no_damage` | bool | false | `.stop` unavailable after cross-team damage (`stopCommandNoDamage`) |
 | `querator_match_start_message` | string | "" | message on start, `$$$`=newline (`matchStartMessage`) |
@@ -224,7 +224,7 @@ Read directly as `.Value` in code.
 | `querator_kick_when_no_match_loaded` | false | `matchModeOnly` |
 | `querator_reset_cvars_on_series_end` | true | `resetCvarsOnSeriesEnd` |
 | `querator_minimum_ready_required` | **2** (field) / config.cfg sets 2 | `minimumReadyRequired` (help text says "1" — stale) |
-| `querator_demo_path` | `MatchZy/` (config.cfg) | `demoPath` (must end with `/`, not start with `/` or `.`) |
+| `querator_demo_path` | `Querator/` (config.cfg) | `demoPath` (must end with `/`, not start with `/` or `.`) |
 | `querator_demo_name_format` | `{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}` | `demoNameFormat` |
 | `querator_demo_recording_enabled` | true | `isDemoRecordingEnabled` |
 | `querator_demo_upload_url` / `get5_demo_upload_url` | "" | `demoUploadURL` |
@@ -233,7 +233,7 @@ Read directly as `.Value` in code.
 | `querator_stop_command_available` | false | `isStopCommandAvailable` |
 | `querator_use_pause_command_for_tactical_pause` | false | `isPauseCommandForTactical` |
 | `querator_pause_after_restore` | true | `pauseAfterRoundRestore` |
-| `querator_chat_prefix` | `[{Green}MatchZy{Default}]` | `chatPrefix` |
+| `querator_chat_prefix` | `[{Green}Querator{Default}]` | `chatPrefix` |
 | `querator_admin_chat_prefix` | `[{Red}ADMIN{Default}]` | `adminChatPrefix` |
 | `querator_chat_messages_timer_delay` | **13** (field) / help says 12 | `chatTimerDelay` |
 | `querator_autostart_mode` | 1 | `autoStartMode` (0 none / 1 match / 2 practice) |

@@ -13,7 +13,7 @@ other doc can assume this context.
   live game server.
 - It declares `[MinimumApiVersion(227)]` — CSSharp must expose API ≥ 227 or the plugin won't load.
 - Identity lives in [`Querator.cs`](../Querator.cs):
-  - `ModuleName => "MatchZy"`, `ModuleVersion => "0.8.15"`, `ModuleAuthor`, `ModuleDescription`.
+  - `ModuleName => "Querator"`, `ModuleVersion => "0.8.15"`, `ModuleAuthor`, `ModuleDescription`.
   - ⚠️ The version string lives in **exactly one place** (`ModuleVersion`); the release pipeline greps it from there.
 - The class is annotated `[MinimumApiVersion(227)]` and extends `BasePlugin` (the CSSharp base type that provides
   `Load()`, event registration, timers, `Localizer`, `ModuleDirectory`, etc.).
@@ -21,10 +21,10 @@ other doc can assume this context.
 > **Naming note:** the fork is *Querator*. Done (on `rebrand-b` branches, not yet deployed): **C# namespace + class**
 > (`Querator`, SP2), **module name** → `"Querator"` (SP-B1), **cosmetics** (version/author/banner/chat-prefix, SP3),
 > the **DLL + entry file** → `Querator.dll` / `Querator.cs` (SP-B2); the **ConVar prefix** `matchzy_` → `querator_`
-> (SP-B3); the **`/api/matchzy`** routes → `/api/querator` (SP-B4). The rest still uses the MatchZy name (lang keys
-> `matchzy.*`, the upstream `MatchZy` release/attribution, `MatchZy-*` headers, camelCase/file-name stragglers)
-> — renamed in later,
-> mostly cross-repo coupled sub-phases. See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
+> (SP-B3); the **`/api/matchzy`** routes → `/api/querator` (SP-B4); the lang keys `matchzy.*` → `querator.*`, the
+> `MatchZy-*` demo-upload headers → `Querator-*`, and the camelCase/file-name stragglers. The only remaining MatchZy
+> name is intentional **upstream attribution** (the `shobhit-pathak/MatchZy` release/credits/`ModuleAuthor` lineage).
+> See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 
 ---
 
@@ -113,7 +113,7 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 1. **`LoadAdmins()`** — read `cfg/Querator/admins.json` into `loadedAdmins` (steamid → permission string).
 2. **`database.InitializeDatabase(ModuleDirectory)`** — read `database.json`, pick SQLite/MySQL, create tables if
    missing.
-3. **`Server.ExecuteCommand("execifexists MatchZy/config.cfg")`** — apply default ConVars from
+3. **`Server.ExecuteCommand("execifexists Querator/config.cfg")`** — apply default ConVars from
    `cfg/Querator/config.cfg`.
 4. **Seed team-side maps**: `teamSides[team1]="CT"`, `teamSides[team2]="TERRORIST"`, and the reverse map.
 5. **`AutoStart()`** (always; on hot-reload it first calls `UpdatePlayersMap()`). AutoStart picks the initial phase
@@ -121,7 +121,7 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 6. **Build `commandActions`** — the big `Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>` mapping exact
    chat strings (`.ready`, `.pause`, `.spawn`, …) to handler methods. This is dispatch system #1 (see §5).
 7. **Register event handlers & listeners** — both named methods and inline lambdas (see §6).
-8. Log `"[MatchZy 0.8.15 LOADED] …"`.
+8. Log `"[Querator 0.8.15 LOADED] …"`.
 
 **Hot-reload behavior:** CSSharp supports hot-reload, and `Load()` handles `hotReload == true` by refreshing player
 maps. **But never hot-reload during a live match** — the state flags set mid-match get out of sync with a fresh
@@ -290,7 +290,7 @@ is NOT copied by the csproj** — it is bundled into the release zip separately 
   `IsBot` / `IsHLTV` before acting on a player.
 - **Chat output:** use `PrintToAllChat` / `PrintToPlayerChat` / `ReplyToUserCommand` (they prepend `chatPrefix`).
   Don't call `Server.PrintToChatAll` directly for normal messages.
-- **Localization:** user-facing strings go through `Localizer["matchzy.<key>", args...]` backed by `lang/*.json`
+- **Localization:** user-facing strings go through `Localizer["querator.<key>", args...]` backed by `lang/*.json`
   (12 locales, 126 keys). Add new keys to `lang/en.json`. (See
   [11-utility-localization-configs.md](11-utility-localization-configs.md).)
 - **Async/threading:** game API calls must happen on the game thread. Background work (HTTP, DB) is marshalled back

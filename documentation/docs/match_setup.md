@@ -1,11 +1,11 @@
 ## What is it?
 
-A match configuration file contains everything that MatchZy and your server needs to host a series. This includes locking
+A match configuration file contains everything that Querator and your server needs to host a series. This includes locking
 players to their correct team and side, setting the map(s) and configuring the game rules.
 
-**Note:** MatchZy can still be used for pug/scrim/practice without setting up matches (if `querator_kick_when_no_match_loaded` if set to `false`). Match setup is only required when you want to host a series and lock players in their correct team and side.
+**Note:** Querator can still be used for pug/scrim/practice without setting up matches (if `querator_kick_when_no_match_loaded` if set to `false`). Match setup is only required when you want to host a series and lock players in their correct team and side.
 
-In this documentation, we'll see how we can setup a match in MatchZy using a JSON file (structure of the JSON file is given below).
+In this documentation, we'll see how we can setup a match in Querator using a JSON file (structure of the JSON file is given below).
 There are 2 commands available which can be used to load a match:
 
 1. `querator_loadmatch <filepath>`: Loads a JSON match configuration file relative to the `csgo` directory.
@@ -59,7 +59,7 @@ There are 2 commands available which can be used to load a match:
   "clinch_series": true,
   "players_per_team": 5,
   "cvars": {
-    "hostname": "MatchZy: Astralis vs NaVi #27",
+    "hostname": "Querator: Astralis vs NaVi #27",
     "mp_friendlyfire": "0"
   }
 }

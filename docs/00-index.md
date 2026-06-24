@@ -16,7 +16,7 @@
 |---|---|
 | Project | Querator (fork of MatchZy) |
 | Upstream | `shobhit-pathak/MatchZy` (MIT) |
-| Plugin identity | `ModuleName = "MatchZy"`, `ModuleVersion = "0.8.15"` (see [`Querator.cs`](../Querator.cs)) |
+| Plugin identity | `ModuleName = "Querator"`, `ModuleVersion = "0.8.15"` (see [`Querator.cs`](../Querator.cs)) |
 | Runtime | CounterStrikeSharp plugin, loaded in-process by a CS2 dedicated server |
 | Language / TF | C# / **.NET 8.0** class library → `Querator.dll` |
 | Min CSSharp API | `[MinimumApiVersion(227)]` |

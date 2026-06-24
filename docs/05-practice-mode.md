@@ -25,7 +25,7 @@ command catalog is in [04](04-commands-and-convars.md); this doc is the **mechan
 | `maxLastGrenadesSavedLimit` | int (512) | History cap (`querator_max_saved_last_grenades`; 0 disables). |
 | `isDryRun` | bool | Dryrun sub-state (see §7). |
 | `collisionGroupTimer` | Timer? | **Single shared** bot-collision restore timer. |
-| `practiceCfgPath` / `dryrunCfgPath` | const | `MatchZy/prac.cfg` / `MatchZy/dryrun.cfg`. |
+| `practiceCfgPath` / `dryrunCfgPath` | const | `Querator/prac.cfg` / `Querator/dryrun.cfg`. |
 
 ---
 

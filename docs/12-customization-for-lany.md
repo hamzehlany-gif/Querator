@@ -83,7 +83,7 @@ This is the template for "workaround → core function": **detect in-plugin, emi
 This is the contract with lanyBot/clipper — make it complete and reliable. Concrete fixes (all documented in
 [10](10-demos-backups-events-damage.md)):
 
-- **Fire `demo_upload_ended`.** The `MatchZyDemoUploadedEvent` class exists but `UploadFileAsync` never sends it.
+- **Fire `demo_upload_ended`.** The `QueratorDemoUploadedEvent` class exists but `UploadFileAsync` never sends it.
   lany-clipper needs to know when a demo is uploaded/ready — wire this event (with `success` + filename) so the clip
   pipeline can trigger. **High value, low effort.**
 - **Decide on demo zipping.** `System.IO.Compression` is imported but unused; demos upload raw. If R2/bandwidth or
@@ -120,7 +120,7 @@ This is the contract with lanyBot/clipper — make it complete and reliable. Con
 |---|---|---|
 | `TechPause` is WIP dead code; tech-pause cvars only gate normal pausing | `Pausing.cs` | [08](08-readiness-knife-pausing-coaching.md#3-pausing) |
 | `demo_upload_ended` never fired; demos not zipped | `DemoManagement.cs` | [10](10-demos-backups-events-damage.md#1-demos-demomanagementcs) |
-| `lastBackupFileName` unused; `lastMatchZyBackupFileName` assigned off-file | `BackupManagement.cs` | [10](10-demos-backups-events-damage.md#2-backups--restore) |
+| `lastBackupFileName` unused; `lastQueratorBackupFileName` assigned off-file | `BackupManagement.cs` | [10](10-demos-backups-events-damage.md#2-backups--restore) |
 | Imported nade lineups lack `Type` → break `.listnades`, default to smoke | `PracticeMode.cs` | [05](05-practice-mode.md#6-saved-nades-lineups) |
 | Global-nade flag honored in save/delete, ignored in import/load | `PracticeMode.cs` | [05](05-practice-mode.md) |
 | `collisionGroupTimer` shared field → orphaned bot-collision restore | `PracticeMode.cs` | [05](05-practice-mode.md#4-bots-described-in-code-as-a-lot-of-workarounds) |

@@ -1,10 +1,10 @@
 #  Events & Forwards
 
-MatchZy contains an event-logging system (heavily inspired by Get5) that logs many details about what is happening in the game.
+Querator contains an event-logging system (heavily inspired by Get5) that logs many details about what is happening in the game.
 
 ## HTTP
 
-To receive MatchZy events on a web server, define a [URL for event logging](../configuration#querator_remote_log_url). MatchZy
+To receive Querator events on a web server, define a [URL for event logging](../configuration#querator_remote_log_url). Querator
 will send all events to the URL as JSON over HTTP. You may add
 a [custom HTTP header](../configuration#querator_remote_log_header_key) to authenticate your request.
 
@@ -15,4 +15,4 @@ a [custom HTTP header](../configuration#querator_remote_log_header_key) to authe
 
 ## Events
 
-OpenAPI documentation of the events sent by MatchZy is available [here](events.html).
+OpenAPI documentation of the events sent by Querator is available [here](events.html).

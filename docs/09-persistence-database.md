@@ -1,6 +1,6 @@
 # 09 — Persistence: the `Database` class & CSV stats
 
-All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substantial non-`partial MatchZy` class. Uses
+All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substantial non-`partial Querator` class. Uses
 **Dapper** for every query. Backs SQLite (default) or MySQL.
 
 ---

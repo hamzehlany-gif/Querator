@@ -1,15 +1,15 @@
 ### Match/Players Stats and Data
 
-MatchZy comes with a default database (SQLite), which configures itself automatically. MySQL Database can also be used with MatchZy!
+Querator comes with a default database (SQLite), which configures itself automatically. MySQL Database can also be used with Querator!
 Currently we are using 3 tables, `querator_stats_matches`, `querator_stats_maps` and `querator_stats_players`.
  
 As their names suggest, `querator_stats_matches` holds the data of every match, like matchid, team names, scores, etc.
 `querator_stats_maps` stores data of every map in a match.
 Whereas, `querator_stats_players` stores data/stats of every player who played in that match. It stores data like matchid, kills, deaths, assists, and other important stats!
 
-### Using MySQL Database with MatchZy
+### Using MySQL Database with Querator
 
-To use MySQL Database with MatchZy, open `csgo/cfg/Querator/database.json` file. It's content will be like this:
+To use MySQL Database with Querator, open `csgo/cfg/Querator/database.json` file. It's content will be like this:
 ```json
 {
     "DatabaseType": "SQLite",

@@ -57,7 +57,7 @@ stateDiagram-v2
    - `2` → `StartPracticeMode()`
 
 2. **Warmup** — `StartWarmup()` ([`Utility.cs:230`](../Utility.cs)): sets `isWarmup=true`, runs `ExecWarmupCfg()`
-   (execs `MatchZy/warmup.cfg`, or a hardcoded fallback string if the file is missing), and starts a **repeating
+   (execs `Querator/warmup.cfg`, or a hardcoded fallback string if the file is missing), and starts a **repeating
    "unready players" chat timer** (`unreadyPlayerMessageTimer`, every `chatTimerDelay`≈13s) via
    `SendUnreadyPlayersMessage()`.
 
@@ -81,11 +81,11 @@ stateDiagram-v2
      - `isPreVeto` → **`CreateVeto()`** (veto runs first; see [06-map-veto.md](06-map-veto.md)).
      - else `isKnifeRequired` → **`StartKnifeRound()`**.
      - else → `StartDemoRecording(); StartLive()`.
-   - Optionally prints the "MatchZy Plugin by WD-" credit (`querator_show_credits_on_match_start`) and the
+   - Optionally prints the "Querator Plugin by Lany" credit (`querator_show_credits_on_match_start`) and the
      `querator_match_start_message` (split on `$$$`, color-treated).
 
 5. **Knife** — `StartKnifeRound()` ([`Utility.cs:239`](../Utility.cs)): `matchStarted=true; isKnifeRound=true;
-   readyAvailable=false; isWarmup=false`; execs `MatchZy/knife.cfg` (+ `mp_restartgame 1; mp_warmup_end`), or a
+   readyAvailable=false; isWarmup=false`; execs `Querator/knife.cfg` (+ `mp_restartgame 1; mp_warmup_end`), or a
    hardcoded knife fallback; prints "KNIFE!".
 
 6. **Knife end** — handled in the **`EventRoundEnd` (Pre)** lambda in [`Querator.cs`](../Querator.cs) (~line 268):
@@ -130,16 +130,16 @@ stateDiagram-v2
 
 ## 3. CFG execution model (important)
 
-Each phase **executes a `.cfg` file** via `Server.ExecuteCommand("exec MatchZy/<phase>.cfg")`. The canonical paths
+Each phase **executes a `.cfg` file** via `Server.ExecuteCommand("exec Querator/<phase>.cfg")`. The canonical paths
 are constants in [`Utility.cs`](../Utility.cs):
 
 | Constant | Path | Used by |
 |---|---|---|
-| `warmupCfgPath` | `MatchZy/warmup.cfg` | `ExecWarmupCfg()` |
-| `knifeCfgPath` | `MatchZy/knife.cfg` | `StartKnifeRound()` |
-| `liveCfgPath` | `MatchZy/live.cfg` | `ExecLiveCFG()` (5v5) |
-| `liveWingmanCfgPath` | `MatchZy/live_wingman.cfg` | `ExecLiveCFG()` (wingman) |
-| `sleepCfgPath` | `MatchZy/sleep.cfg` | `StartSleepMode()` |
+| `warmupCfgPath` | `Querator/warmup.cfg` | `ExecWarmupCfg()` |
+| `knifeCfgPath` | `Querator/knife.cfg` | `StartKnifeRound()` |
+| `liveCfgPath` | `Querator/live.cfg` | `ExecLiveCFG()` (5v5) |
+| `liveWingmanCfgPath` | `Querator/live_wingman.cfg` | `ExecLiveCFG()` (wingman) |
+| `sleepCfgPath` | `Querator/sleep.cfg` | `StartSleepMode()` |
 
 **Robustness pattern:** every `Exec*Cfg` checks `File.Exists(...)`; if the cfg is missing it falls back to a giant
 **hardcoded ConVar string** baked into the C#. So the plugin still runs competitive settings even without the cfg
@@ -168,7 +168,7 @@ defaults" for 5v5 and wingman.
 ## 5. Sleep mode
 
 `StartSleepMode()` ([`SleepMode.cs`](../SleepMode.cs)): refuses if `matchStarted`; sets `isSleep=true` and clears all
-other phase flags; execs `MatchZy/sleep.cfg` if present, else `ExecUnpracCommands()` + `gamemode_competitive.cfg`.
+other phase flags; execs `Querator/sleep.cfg` if present, else `ExecUnpracCommands()` + `gamemode_competitive.cfg`.
 Entered automatically when `autoStartMode==0`, or manually via `css_sleep` (admin: `@css/map` or `@custom/prac`).
 This is the "server is idle / nobody's playing" resting state.
 

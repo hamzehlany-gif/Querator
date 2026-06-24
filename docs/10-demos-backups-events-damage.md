@@ -10,7 +10,7 @@ The plugin's IO / observability surface. Sources: [`DemoManagement.cs`](../DemoM
 
 | Field | Default | Meaning |
 |---|---|---|
-| `demoPath` | `MatchZy/` | Demo subfolder under `csgo/` (must end with `/`, not start with `/`/`.`). |
+| `demoPath` | `Querator/` | Demo subfolder under `csgo/` (must end with `/`, not start with `/`/`.`). |
 | `demoNameFormat` | `{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}` | Filename template. |
 | `demoUploadURL` / `demoUploadHeaderKey` / `demoUploadHeaderValue` | "" | HTTP upload target + optional custom header. |
 | `activeDemoFile` | "" | Path of the demo currently/last recording. |
@@ -24,8 +24,8 @@ The plugin's IO / observability surface. Sources: [`DemoManagement.cs`](../DemoM
 - **GOTV flush:** the only caller, `HandleMatchEnd`, computes `tvFlushDelay = GetTvDelay() + 15` and also extends
   `mp_match_restart_delay` so the map doesn't change before GOTV finishes. `GetTvDelay()` returns the larger of
   `tv_delay`/`tv_delay1` (0 if `tv_enable` off). **`tv_enable 1` is required for demos.**
-- **Upload** (`UploadFileAsync`): POSTs the raw file as `application/octet-stream` with headers `MatchZy-FileName`,
-  `MatchZy-MatchId`, `MatchZy-MapNumber`, `MatchZy-RoundNumber` (+ `Get5-*` duplicates), plus the optional custom
+- **Upload** (`UploadFileAsync`): POSTs the raw file as `application/octet-stream` with headers `Querator-FileName`,
+  `Querator-MatchId`, `Querator-MapNumber`, `Querator-RoundNumber` (+ `Get5-*` duplicates), plus the optional custom
   header. ⚠️ **Findings:** demos are **not zipped** (despite `System.IO.Compression` being imported), and the
   `QueratorDemoUploadedEvent` (`demo_upload_ended`) is **defined but never fired** on this path.
 
@@ -39,10 +39,10 @@ Two parallel backup layers kept in lock-step:
 `mp_backup_round_auto 1` (set in every live cfg) makes the engine write one `.txt`/round. `SetupRoundBackupFile()`
 sets `mp_backup_round_file querator_<liveMatchId>_<CurrentMapNumber>` → engine writes
 `csgo/querator_<id>_<map>_round<NN>.txt`. Restore uses `mp_backup_restore_load_file`. The `.txt` is the authoritative
-low-level snapshot (positions, money, score) — MatchZy treats it as an opaque blob.
+low-level snapshot (positions, money, score) — Querator treats it as an opaque blob.
 
-### MatchZy JSON backups
-`CreateMatchZyRoundDataBackup()` runs at each round start (from `HandlePostRoundStartEvent`; early-returns if
+### Querator JSON backups
+`CreateQueratorRoundDataBackup()` runs at each round start (from `HandlePostRoundStartEvent`; early-returns if
 `!isMatchLive || isRoundRestoring`). Writes `csgo/QueratorDataBackup/querator_<id>_<map>_round<NN>.json` — a
 `Dictionary<string,string>` with: `matchid, timestamp, map_name, mapnumber, round, team1/team2` (full Team JSON),
 `team1_name/flag/tag/side` (+team2), `team1_score/team2_score`, `team1_series_score/team2_series_score`,
@@ -133,7 +133,7 @@ The "To/From" report printed at the end of each round (and after knife). Gated b
 - **Demos:** if a panel expects zipped demos or a `demo_upload_ended` event, both are gaps to fix (see §1).
 - **Backups:** the JSON backup is self-contained (carries the Valve `.txt`), which is what makes cross-map/cross-restart
   restore work — keep that invariant if you change the format. Score is engine-restored, not JSON-restored.
-- **Events:** adding a new forward = a new `MatchZy*Event` DTO + a `Task.Run(() => SendEventAsync(evt))` at the right
+- **Events:** adding a new forward = a new `Querator*Event` DTO + a `Task.Run(() => SendEventAsync(evt))` at the right
   point; keep JSON field names aligned with `event_schema.yml` for panel/consumer compatibility.
 - A self-hosted event/demo/backup receiver is a natural Lany integration point (e.g. [`lany-node-agent`](../../lany-node-agent)
   or [`lanyBot`](../../lanyBot)) — see [12-customization-for-lany.md](12-customization-for-lany.md).

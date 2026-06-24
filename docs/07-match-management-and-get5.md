@@ -95,8 +95,8 @@ Players are a **steamid64 → name** map. Only Steam64 is supported (no Steam2/S
 
 ### The `Team` class
 Fields: `id`, `teamName` (required), `teamFlag`, `teamTag`, `teamPlayers` (`JToken` — the steamid→name map),
-`coach` (`HashSet<CCSPlayerController>`, JSON-ignored), `seriesScore` (int). Two instances: `matchzyTeam1`,
-`matchzyTeam2`. `teamSides`/`reverseTeamSides` map a `Team` ↔ `"CT"`/`"TERRORIST"`.
+`coach` (`HashSet<CCSPlayerController>`, JSON-ignored), `seriesScore` (int). Two instances: `queratorTeam1`,
+`queratorTeam2`. `teamSides`/`reverseTeamSides` map a `Team` ↔ `"CT"`/`"TERRORIST"`.
 
 ### Live roster commands
 | Command | Behavior |

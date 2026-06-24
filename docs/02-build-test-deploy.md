@@ -48,20 +48,20 @@ There are **no unit tests** in this repo. "Testing" = loading the DLL into a liv
 `.github/workflows/build.yml` runs **on push to `main`** (ignoring `documentation/**` changes) — note the working
 branch here is **`dev`**, so releases only happen after merging `dev → main`:
 
-1. Sets up .NET 8, greps `MATCHZY_VERSION` from `ModuleVersion` in `Querator.cs`, and `CSSHARP_VERSION` from the
+1. Sets up .NET 8, greps `QUERATOR_VERSION` from `ModuleVersion` in `Querator.cs`, and `CSSHARP_VERSION` from the
    `CounterStrikeSharp.API` package version in the csproj.
-2. `dotnet publish -o package/addons/counterstrikesharp/plugins/MatchZy` and `cp -r cfg package` → zips
-   **`MatchZy-<ver>.zip`** (plugin-only; extract into `csgo/`).
+2. `dotnet publish -o package/addons/counterstrikesharp/plugins/Querator` and `cp -r cfg package` → zips
+   **`Querator-<ver>.zip`** (plugin-only; extract into `csgo/`).
 3. Downloads `counterstrikesharp-with-runtime-linux-<CSSHARP_VERSION>` into the package, re-publishes, zips
-   **`MatchZy-<ver>-with-cssharp-linux.zip`**.
-4. Same for Windows → **`MatchZy-<ver>-with-cssharp-windows.zip`**.
+   **`Querator-<ver>-with-cssharp-linux.zip`**.
+4. Same for Windows → **`Querator-<ver>-with-cssharp-windows.zip`**.
 5. Creates a GitHub Release tagged `<ver>` with those 3 zips, and posts to Discord.
 
 `.github/workflows/ci.yml` runs on push to `main` and deploys the `documentation/` MkDocs site to GitHub Pages
 (`mkdocs gh-deploy`).
 
-> **Takeaway for the fork:** if you want Querator releases, you either reproduce this workflow under your repo (and it
-> will still name artifacts `MatchZy-*` and grep the same `ModuleVersion`) or just build locally and copy. The "with
+> **Takeaway for the fork:** if you want Querator releases, you either reproduce this workflow under your repo (it
+> names artifacts `Querator-*` and greps the same `ModuleVersion`) or just build locally and copy. The "with
 > CSSharp" zips are the easiest first-time install because they bundle the matching CSSharp runtime.
 
 ---
@@ -71,19 +71,19 @@ branch here is **`dev`**, so releases only happen after merging `dev → main`:
 The server's game dir is `.../game/csgo/`. After `dotnet publish`:
 
 1. Copy the **contents of** `bin/Release/net8.0/publish/` into
-   `csgo/addons/counterstrikesharp/plugins/MatchZy/`
-   (so you get `.../plugins/MatchZy/Querator.dll`, the dep DLLs, `lang/`, `spawns/`).
+   `csgo/addons/counterstrikesharp/plugins/Querator/`
+   (so you get `.../plugins/Querator/Querator.dll`, the dep DLLs, `lang/`, `spawns/`).
    - Skip `CounterStrikeSharp.API.dll` / `.pdb` if present (the server provides its own).
 2. Copy the repo's **`cfg/`** into `csgo/cfg/` (so `cfg/Querator/*.cfg` + `*.json` land at `csgo/cfg/Querator/`).
-   The plugin executes `MatchZy/config.cfg`, the phase configs, and reads `admins.json`/`database.json`/
+   The plugin executes `Querator/config.cfg`, the phase configs, and reads `admins.json`/`database.json`/
    `savednades.json` from there.
 3. (First time) make sure Metamod + CSSharp are installed and loading — verify with `meta list` and
    `css_plugins list` in the server console.
-4. Load: restart the server, or `css_plugins load MatchZy` (hot path), then check the console for
-   `[MatchZy 0.8.15 LOADED] …`.
+4. Load: restart the server, or `css_plugins load Querator` (hot path), then check the console for
+   `[Querator 0.8.15 LOADED] …`.
 
 ### Hot-reload caveat (important)
-CSSharp supports hot-reload (`css_plugins reload MatchZy`), and `Load()` handles `hotReload=true`. **But never
+CSSharp supports hot-reload (`css_plugins reload Querator`), and `Load()` handles `hotReload=true`. **But never
 hot-reload while a match is live** — mid-match state flags (`isMatchLive`, `matchStarted`, scores, restore state…)
 will desync from a fresh `Load()`. Restart the server instead. Hot-reload is only for iterating on non-match logic.
 
