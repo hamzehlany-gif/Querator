@@ -16,7 +16,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `ModuleName "MatchZy"` | `"Querator"` | SP-B1 (coupled) | done (branches; deploy deferred) |
 | `ModuleVersion 0.8.15` | `1.0.0` | SP3 | done |
 | `ModuleAuthor "WD-…"` | `Lany (https://lany.gg)` | SP3 | done |
-| `MatchZy.dll`/`MatchZy.cs`/`MatchZy.csproj` / `plugins/MatchZy` | `Querator.dll`/`.cs`/`.csproj` / `plugins/Querator` | SP-B2 (coupled) | **Querator side done (branch)**; node-agent + lany + fleet path = pending TODO |
+| `MatchZy.dll`/`MatchZy.cs`/`MatchZy.csproj` / `plugins/MatchZy` | `Querator.dll`/`.cs`/`.csproj` / `plugins/Querator` | SP-B2 (coupled) | **Querator + node-agent + lany done (branches)**; deploy + release pipeline (SP-C1) pending |
 | `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | planned |
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | planned |
@@ -169,7 +169,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Rollback:** revert/delete the `rebrand-b-b1-modulename` branches across the 3 repos as a unit (then redeploy is a
   no-op since nothing was deployed).
 
-### SP-B2 — DLL/source rename `MatchZy.dll`/`MatchZy.cs` → `Querator.dll`/`Querator.cs` (Phase B) — 2026-06-23 — ✅ Querator side done (branch); 🔴 CONSUMERS NOT DONE (critical pending TODO, user doing later)
+### SP-B2 — DLL/source rename `MatchZy.dll`/`MatchZy.cs` → `Querator.dll`/`Querator.cs` (Phase B) — 2026-06-23 — ✅ Querator side done (branch); ✅ consumers done 2026-06-24 (branches, gates green — see follow-up entry below); ⏳ deploy at cutover
 - **Branch:** `rebrand-b-b2-dll` off `rebrand-b`. **Querator only this round** (per request: do only the in-repo work,
   leave the coupled cross-repo work as a TODO note in each relevant repo).
 - **Querator-side changes (done, build-verified):**
@@ -206,3 +206,32 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification (this round):** ✅ `dotnet publish` clean → `Querator.dll`, exit 0. No consumer build / VM e2e (consumers not done).
 - **Merge:** `rebrand-b-b2-dll` → `rebrand-b` (Querator, local + pushed). **Not deployed.**
 - **Rollback:** revert/delete `rebrand-b-b2-dll` (`git mv` back); no deploy to undo.
+
+### SP-B2 (consumers: lany-node-agent + lany) — Phase B — 2026-06-24 — ✅ done on branches, gates green; ⏳ deploy at cutover
+- **Branches:** `rebrand-b-b2-dll` in **lany-node-agent** and **lany** (off each repo's `rebrand-b`). Done now at the
+  user's request ("leave nothing for later"); reviewable independently. Per-repo detail: each repo's `REBRAND-TODO.md`.
+- **lany-node-agent (consumer of the DLL/path):**
+  - `src/services/versions/detector.js` — disk-detect DLL `MatchZy.dll` → `Querator.dll` (+ doc prose).
+  - `src/config/index.js` + `.env.example` — `matchzyPluginPath` / `MATCHZY_PLUGIN_PATH` default `plugins/MatchZy` →
+    `plugins/Querator` (env var NAME kept → SP-B8).
+  - `src/services/updates/plugin.js` — post-install version-gate `/^matchzy$/i` → `/^(matchzy|querator)$/i` so the
+    version-record still fires for a `plugins/Querator`-derived name (+ log prose).
+  - `src/api/routes/actions.js` — route comment prose. `tests/versions.test.js` — disk-detect fixtures → `Querator.dll`.
+  - **Kept (deferred):** the `matchzy` component key (`VmState` Mongo schema, `versions.matchzy`,
+    `recordSuccessfulInstall('matchzy')`), camelCase var names, config-root `'matchzy'`, `cfg/MatchZy` — SP-B3/B5/B6/B8.
+- **lany (frontend):** `OperationsTab.tsx` install-`targetPath` placeholder `plugins/MatchZy` → `plugins/Querator`. Kept:
+  `MATCHZY_TEMPLATE_URL` (release source → SP-C1), the `matchzy` component key + UI labels + `CONFIG_ROOTS` (key sweep / SP-B6).
+- **§8a finding (no code change):** the node-agent installer is generic + correct — it copies an archive into the
+  caller's `targetPath`. §8a (one-dir-too-deep) is a `targetPath`/zip-structure MISMATCH: the MatchZy/Querator zip is
+  **csgo-rooted**, so the correct target is the csgo root (which the frontend template already uses via
+  `MATCHZY_TEMPLATE_PATH`). The proper fix is a **flat `Querator-*.zip`** (SP-C1 / `build.yml`) + extract into
+  `plugins/Querator` + re-provision the fleet at cutover — not a node-agent code change. Optional installer hardening
+  (detect a csgo-rooted archive and refuse/redirect) is noted for SP-C1.
+- **Verification:** ✅ node-agent `npm test` (267) + `lint` clean; ✅ lany `npm run build` + `lint` (0 errors) + `test`
+  (62 vitest). No deploy / VM e2e (cutover only).
+- **⚠️ Deploy:** **NOT deployed.** The detector now matches `Querator`/`Querator.dll`; deployed prod node-agent stays on
+  `main` (matches `MatchZy`) until the lockstep cutover, else fleet detection/install breaks.
+- **Merge:** `rebrand-b-b2-dll` → `rebrand-b` in node-agent + lany (local + pushed).
+- **What's left for SP-B2 to be *deployable*:** SP-C1 (flat `Querator-*.zip` + fleet source switch) + the cutover window
+  (deploy all repos together + the `plugins/MatchZy`→`plugins/Querator` migration). The **code** for SP-B2 is now
+  complete across all four repos.
