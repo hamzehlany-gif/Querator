@@ -160,11 +160,11 @@ namespace Querator
                 // Server.PrintToChatAll($"{chatPrefix} Unready players: {unreadyPlayerList}. Please type .ready to ready up! {minimumReadyRequiredMessage}");
                 if (isRoundRestorePending)
                 {
-                    PrintToAllChat(Localizer["matchzy.ready.readytotestorebackupinfomessage", unreadyPlayerList, minimumReadyRequiredMessage]);
+                    PrintToAllChat(Localizer["querator.ready.readytotestorebackupinfomessage", unreadyPlayerList, minimumReadyRequiredMessage]);
                 }
                 else
                 {
-                    PrintToAllChat(Localizer["matchzy.utility.unreadyplayers", unreadyPlayerList, minimumReadyRequiredMessage]);
+                    PrintToAllChat(Localizer["querator.utility.unreadyplayers", unreadyPlayerList, minimumReadyRequiredMessage]);
                 }
             }
             else
@@ -173,12 +173,12 @@ namespace Querator
                 if (isMatchSetup)
                 {
                     // Server.PrintToChatAll($"{chatPrefix} Current ready players: {ChatColors.Green}{countOfReadyPlayers}{ChatColors.Default}");
-                    PrintToAllChat(Localizer["matchzy.utility.readyplayers", countOfReadyPlayers]);
+                    PrintToAllChat(Localizer["querator.utility.readyplayers", countOfReadyPlayers]);
                 }
                 else
                 {
                     // Server.PrintToChatAll($"{chatPrefix} Minimum ready players required {ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}, current ready players: {ChatColors.Green}{countOfReadyPlayers}{ChatColors.Default}");
-                    PrintToAllChat(Localizer["matchzy.utility.minimumreadyplayers", minimumReadyRequired, countOfReadyPlayers]);
+                    PrintToAllChat(Localizer["querator.utility.minimumreadyplayers", minimumReadyRequired, countOfReadyPlayers]);
                 }
             }
         }
@@ -190,23 +190,23 @@ namespace Querator
                 var pauseTeamName = unpauseData["pauseTeam"];
                 if ((string)pauseTeamName == "Admin")
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.adminpausedthematch"]);
+                    PrintToAllChat(Localizer["querator.pause.adminpausedthematch"]);
                 }
                 else if ((string)pauseTeamName == "RoundRestore" && !(bool)unpauseData["t"] && !(bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.pausedbecauserestore"]);
+                    PrintToAllChat(Localizer["querator.pause.pausedbecauserestore"]);
                 }
                 else if ((bool)unpauseData["t"] && !(bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.teamwantstounpause", reverseTeamSides["TERRORIST"].teamName, reverseTeamSides["CT"].teamName]);
+                    PrintToAllChat(Localizer["querator.pause.teamwantstounpause", reverseTeamSides["TERRORIST"].teamName, reverseTeamSides["CT"].teamName]);
                 }
                 else if (!(bool)unpauseData["t"] && (bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.teamwantstounpause", reverseTeamSides["CT"].teamName, reverseTeamSides["TERRORIST"].teamName]);
+                    PrintToAllChat(Localizer["querator.pause.teamwantstounpause", reverseTeamSides["CT"].teamName, reverseTeamSides["TERRORIST"].teamName]);
                 }
                 else if (!(bool)unpauseData["t"] && !(bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.pausedthematch", pauseTeamName]);
+                    PrintToAllChat(Localizer["querator.pause.pausedthematch", pauseTeamName]);
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace Querator
         private void SendSideSelectionMessage()
         {
             if (!isSideSelectionPhase) return;
-            PrintToAllChat(Localizer["matchzy.knife.sidedecisionpending", knifeWinnerName]);
+            PrintToAllChat(Localizer["querator.knife.sidedecisionpending", knifeWinnerName]);
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{knifeWinnerName}{ChatColors.Default} Won the knife. Waiting for them to type {ChatColors.Green}.stay{ChatColors.Default} or {ChatColors.Green}.switch{ChatColors.Default}");
         }
 
@@ -283,7 +283,7 @@ namespace Querator
             ExecWarmupCfg();
             knifeWinnerName = knifeWinner == 3 ? reverseTeamSides["CT"].teamName : reverseTeamSides["TERRORIST"].teamName;
             ShowDamageInfo();
-            PrintToAllChat(Localizer["matchzy.knife.sidedecisionpending", knifeWinnerName]);
+            PrintToAllChat(Localizer["querator.knife.sidedecisionpending", knifeWinnerName]);
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{knifeWinnerName}{ChatColors.Default} Won the knife. Waiting for them to type {ChatColors.Green}.stay{ChatColors.Default} or {ChatColors.Green}.switch{ChatColors.Default}");
             sideSelectionMessageTimer ??= AddTimer(chatTimerDelay, SendSideSelectionMessage, TimerFlags.REPEAT);
         }
@@ -623,7 +623,7 @@ namespace Querator
             if (matchStarted)
             {
                 // ReplyToUserCommand(player, $"Map cannot be changed once the match is started!");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.matchstarted"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.matchstarted"]);
                 return;
             }
 
@@ -663,20 +663,20 @@ namespace Querator
                     minimumReadyRequired = readyRequired;
                     string minimumReadyRequiredFormatted = (player == null) ? $"{minimumReadyRequired}" : $"{ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}";
                     // ReplyToUserCommand(player, $"Minimum ready players required to start the match are now set to: {minimumReadyRequiredFormatted}");
-                    ReplyToUserCommand(player, Localizer["matchzy.utility.minreadyplayers", minimumReadyRequiredFormatted]);
+                    ReplyToUserCommand(player, Localizer["querator.utility.minreadyplayers", minimumReadyRequiredFormatted]);
                     CheckLiveRequired();
                 }
                 else
                 {
                     // ReplyToUserCommand(player, $"Invalid value for readyrequired. Please specify a valid non-negative number. Usage: !readyrequired <number_of_ready_players_required>");
-                    ReplyToUserCommand(player, Localizer["matchzy.utility.rrinvalidvalue"]);
+                    ReplyToUserCommand(player, Localizer["querator.utility.rrinvalidvalue"]);
                 }
             }
             else
             {
                 string minimumReadyRequiredFormatted = (player == null) ? $"{minimumReadyRequired}" : $"{ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}";
                 // ReplyToUserCommand(player, $"Current Ready Required: {minimumReadyRequiredFormatted} .Usage: !readyrequired <number_of_ready_players_required>");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.currentreadyrequired", minimumReadyRequiredFormatted]);
+                ReplyToUserCommand(player, Localizer["querator.utility.currentreadyrequired", minimumReadyRequiredFormatted]);
             }
         }
 
@@ -1149,30 +1149,30 @@ namespace Querator
             if (isMatchLive && isPaused)
             {
                 // ReplyToUserCommand(player, "Match is already paused!");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.paused"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.paused"]);
                 return;
             }
             if (IsHalfTimePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command during halftime.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.duringhalftime"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.duringhalftime"]);
                 return;
             }
             if (IsPostGamePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command after the game has ended.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.matchended"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.matchended"]);
                 return;
             }
             if (IsTacticalTimeoutActive())
             {
                 // ReplyToUserCommand(player, "You cannot use this command when tactical timeout is active.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.tacticaltimeout"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.tacticaltimeout"]);
                 return;
             }
             if (!techPauseEnabled.Value && player != null)
             {
-                PrintToPlayerChat(player, Localizer["matchzy.pause.techpausenotenabled"]);
+                PrintToPlayerChat(player, Localizer["querator.pause.techpausenotenabled"]);
                 return;
             }
             if(!string.IsNullOrEmpty(techPausePermission.Value) && techPausePermission.Value != "\"\"")
@@ -1203,7 +1203,7 @@ namespace Querator
                 {
                     return;
                 }
-                PrintToAllChat(Localizer["matchzy.pause.pausedthematch", pauseTeamName]);
+                PrintToAllChat(Localizer["querator.pause.pausedthematch", pauseTeamName]);
                 // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{pauseTeamName}{ChatColors.Default} has paused the match. Type .unpause to unpause the match");
 
                 SetMatchPausedFlags();
@@ -1221,33 +1221,33 @@ namespace Querator
             if (isMatchLive && isPaused)
             {
                 // ReplyToUserCommand(player, "Match is already paused!");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.paused"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.paused"]);
                 return;
             }
             if (IsHalfTimePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command during halftime.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.duringhalftime"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.duringhalftime"]);
                 return;
             }
             if (IsPostGamePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command after the game has ended.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.matchended"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.matchended"]);
                 return;
             }
             if (IsTacticalTimeoutActive())
             {
                 // ReplyToUserCommand(player, "You cannot use this command when tactical timeout is active.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.tacticaltimeout"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.tacticaltimeout"]);
                 return;
             }
             unpauseData["pauseTeam"] = "Admin";
-            PrintToAllChat(Localizer["matchzy.pause.adminpausedthematch"]);
+            PrintToAllChat(Localizer["querator.pause.adminpausedthematch"]);
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}Admin{ChatColors.Default} has paused the match.");
             if (player == null)
             {
-                Server.PrintToConsole($"[MatchZy] {Localizer["matchzy.pause.adminpausedthematch"]}");
+                Server.PrintToConsole($"[MatchZy] {Localizer["querator.pause.adminpausedthematch"]}");
             }
             SetMatchPausedFlags();
         }
@@ -1261,7 +1261,7 @@ namespace Querator
                     SendPlayerNotAdminMessage(player);
                     return;
                 }
-                PrintToAllChat(Localizer["matchzy.pause.adminunpausedthematch"]);
+                PrintToAllChat(Localizer["querator.pause.adminunpausedthematch"]);
                 UnpauseMatch();
 
                 if (player == null)
@@ -1343,7 +1343,7 @@ namespace Querator
         private void SendPlayerNotAdminMessage(CCSPlayerController? player)
         {
             // ReplyToUserCommand(player, "You do not have permission to use this command!");
-            ReplyToUserCommand(player, Localizer["matchzy.utility.dontpermission"]);
+            ReplyToUserCommand(player, Localizer["querator.utility.dontpermission"]);
         }
 
         private string GetColorTreatedString(string message)
@@ -1880,10 +1880,10 @@ namespace Querator
                 using ByteArrayContent content = new(fileContent);
                 content.Headers.Add("Content-Type", "application/octet-stream");
 
-                content.Headers.Add("MatchZy-FileName", Path.GetFileName(filePath));
-                content.Headers.Add("MatchZy-MatchId", matchId.ToString());
-                content.Headers.Add("MatchZy-MapNumber", mapNumber.ToString());
-                content.Headers.Add("MatchZy-RoundNumber", roundNumber.ToString());
+                content.Headers.Add("Querator-FileName", Path.GetFileName(filePath));
+                content.Headers.Add("Querator-MatchId", matchId.ToString());
+                content.Headers.Add("Querator-MapNumber", mapNumber.ToString());
+                content.Headers.Add("Querator-RoundNumber", roundNumber.ToString());
 
                 // For Get5 Panel
                 content.Headers.Add("Get5-FileName", Path.GetFileName(filePath));

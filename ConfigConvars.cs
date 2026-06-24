@@ -233,7 +233,7 @@ namespace Querator
                     else
                     {
                         // ReplyToUserCommand(player, $"Invalid value for querator_chat_messages_timer_delay. Please specify a valid non-negative number.");
-                        ReplyToUserCommand(player, Localizer["matchzy.cvars.invalidvalue"]);
+                        ReplyToUserCommand(player, Localizer["querator.cvars.invalidvalue"]);
                     }
                 }
             } else if (command.ArgCount == 1) {
@@ -277,7 +277,7 @@ namespace Querator
             else
             {
                 // command.ReplyToCommand("Usage: querator_max_saved_last_grenades <number>");
-                ReplyToUserCommand(player, Localizer["matchzy.cc.usage", $"querator_max_saved_last_grenades <number>"]);
+                ReplyToUserCommand(player, Localizer["querator.cc.usage", $"querator_max_saved_last_grenades <number>"]);
             }
         }
 

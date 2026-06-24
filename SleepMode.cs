@@ -51,7 +51,7 @@ namespace Querator
             if (matchStarted)
             {
                 // ReplyToUserCommand(player, "Sleep Mode cannot be started when a match has been started!");
-                ReplyToUserCommand(player, Localizer["matchzy.sleep.sleepwhenmatchstared"]);
+                ReplyToUserCommand(player, Localizer["querator.sleep.sleepwhenmatchstared"]);
                 return;
             }
             StartSleepMode();

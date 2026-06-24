@@ -47,24 +47,24 @@ namespace Querator
                 if (IsHalfTimePhase())
                 {
                     // ReplyToUserCommand(player, "You cannot use this command during halftime.");
-                    ReplyToUserCommand(player, Localizer["matchzy.backup.stopduringhalftime"]);
+                    ReplyToUserCommand(player, Localizer["querator.backup.stopduringhalftime"]);
                     return;
                 }
                 if (IsPostGamePhase())
                 {
                     // ReplyToUserCommand(player, "You cannot use this command after the game has ended.");
-                    ReplyToUserCommand(player, Localizer["matchzy.backup.stopmatchended"]);
+                    ReplyToUserCommand(player, Localizer["querator.backup.stopmatchended"]);
                     return;
                 }
                 if (IsTacticalTimeoutActive())
                 {
                     // ReplyToUserCommand(player, "You cannot use this command when tactical timeout is active.");
-                    ReplyToUserCommand(player, Localizer["matchzy.backup.stoptacticaltimeout"]);
+                    ReplyToUserCommand(player, Localizer["querator.backup.stoptacticaltimeout"]);
                     return;
                 }
                 if (playerHasTakenDamage && stopCommandNoDamage.Value)
                 {
-                    ReplyToUserCommand(player, Localizer["matchzy.restore.stopcommandrequiresnodamage"]);
+                    ReplyToUserCommand(player, Localizer["querator.restore.stopcommandrequiresnodamage"]);
                     return;
                 }
                 string stopTeamName = "";
@@ -107,7 +107,7 @@ namespace Querator
                 }
                 else
                 {
-                    PrintToAllChat(Localizer["matchzy.restore.teamwantstorestore", stopTeamName, remainingStopTeam]);
+                    PrintToAllChat(Localizer["querator.restore.teamwantstorestore", stopTeamName, remainingStopTeam]);
                     // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{stopTeamName}{ChatColors.Default} wants to restore the game to the beginning of the current round. {ChatColors.Green}{remainingStopTeam}{ChatColors.Default}, please write !stop to confirm.");
                 }
             }
@@ -128,7 +128,7 @@ namespace Querator
             }
             else
             {
-                ReplyToUserCommand(player, Localizer["matchzy.cc.usage", "!restore <round>"]);
+                ReplyToUserCommand(player, Localizer["querator.cc.usage", "!restore <round>"]);
             }
         }
 
@@ -152,13 +152,13 @@ namespace Querator
                 else
                 {
                     // ReplyToUserCommand(player, $"Invalid value for restore command. Please specify a valid non-negative number. Usage: !restore <round>");
-                    ReplyToUserCommand(player, Localizer["matchzy.backup.restoreinvalidvalue"]);
+                    ReplyToUserCommand(player, Localizer["querator.backup.restoreinvalidvalue"]);
                 }
             }
             else
             {
                 // ReplyToUserCommand(player, $"Usage: !restore <round>");
-                ReplyToUserCommand(player, Localizer["matchzy.cc.usage", "!restore <round>"]);
+                ReplyToUserCommand(player, Localizer["querator.cc.usage", "!restore <round>"]);
             }
         }
         public static string ExtractJsonFileName(string input)
@@ -210,17 +210,17 @@ namespace Querator
 
             if (IsHalfTimePhase())
             {
-                ReplyToUserCommand(player, Localizer["matchzy.backup.restoreduringhalftime"]);
+                ReplyToUserCommand(player, Localizer["querator.backup.restoreduringhalftime"]);
                 return;
             }
             if (IsPostGamePhase())
             {
-                ReplyToUserCommand(player, Localizer["matchzy.backup.restorematchended"]);
+                ReplyToUserCommand(player, Localizer["querator.backup.restorematchended"]);
                 return;
             }
             if (IsTacticalTimeoutActive())
             {
-                ReplyToUserCommand(player, Localizer["matchzy.backup.restoretacticaltimeout"]);
+                ReplyToUserCommand(player, Localizer["querator.backup.restoretacticaltimeout"]);
                 return;
             }
             string backupFolder = Path.Combine(Server.GameDirectory, "csgo", "QueratorDataBackup");
@@ -229,7 +229,7 @@ namespace Querator
  
             if (!File.Exists(filePath))
             {
-                ReplyToUserCommand(player, Localizer["matchzy.backup.restoredoesntexist", fileName]);
+                ReplyToUserCommand(player, Localizer["querator.backup.restoredoesntexist", fileName]);
                 Log($"[RestoreRoundBackup FATAL] Required backup data file does not exist! File: {filePath}");
                 return;
             }
@@ -327,7 +327,7 @@ namespace Querator
                     {
                         isRoundRestorePending = true;
                         pendingRestoreFileName = fileName;
-                        PrintToAllChat(Localizer["matchzy.restore.loadedsuccessfully", fileName]);
+                        PrintToAllChat(Localizer["querator.restore.loadedsuccessfully", fileName]);
                         return;
                     }
                     else
@@ -379,7 +379,7 @@ namespace Querator
                 return;
             }
 
-            PrintToAllChat(Localizer["matchzy.restore.restoredsuccessfully", fileName]);
+            PrintToAllChat(Localizer["querator.restore.restoredsuccessfully", fileName]);
             if (pauseAfterRoundRestore)
             {
                 Server.ExecuteCommand("mp_pause_match;");
@@ -576,7 +576,7 @@ namespace Querator
 
             if (!IsValidUrl(url))
             {
-                ReplyToUserCommand(player, Localizer["matchzy.mm.invalidurl", url]);
+                ReplyToUserCommand(player, Localizer["querator.mm.invalidurl", url]);
                 Log($"[LoadBackupFromURL] Invalid URL: {url}. Please provide a valid URL to load the backup!");
                 return;
             }
@@ -608,7 +608,7 @@ namespace Querator
                 }
                 else
                 {
-                    ReplyToUserCommand(player, Localizer["matchzy.mm.httprequestfailed", response.StatusCode]);
+                    ReplyToUserCommand(player, Localizer["querator.mm.httprequestfailed", response.StatusCode]);
                     Log($"[LoadBackupFromURL] HTTP request failed with status code: {response.StatusCode}");
                 }
             }

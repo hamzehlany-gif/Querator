@@ -401,3 +401,15 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **⚠️ Deploy:** NOT released/deployed. Pushing Querator `main` cuts the public release + Discord; the fleet-source
   switch takes effect when lanyBot deploys. Full manual steps: **`docs/CUTOVER-RUNBOOK.md`** (added this sub-phase).
 - **State:** committed on `rebrand-c` (off `rebrand-b`) in Querator/lanyBot/lany; pushed; not merged to `dev`/`main`.
+
+### SP-C3 (partial) — cosmetic sweeps toward `grep -ri matchzy` = 0 (Phase C) — 2026-06-24 — ✅ lang keys + headers done (branch); ⏳ camelCase/file-names/UI-labels/lany-docs remain
+- **Branch:** `rebrand-c` (Querator + lanyBot).
+- **Done:** Querator `matchzy.*` lang keys → `querator.*` (~1686 across `lang/*.json` keys + `Localizer[...]` calls;
+  verified 0 leftover, `dotnet publish` green); the coupled demo-upload headers
+  `MatchZy-{FileName,MatchId,MapNumber,RoundNumber}` → `Querator-*` (Querator `Utility.cs` sends ↔ lanyBot
+  `matchzy.controller.ts` reads — renamed together; lanyBot 455 green).
+- **Remaining (non-coupled cosmetic, post-cutover-optional — runbook §8):** camelCase var/fn names (node-agent
+  `matchzyConfigPath`/`parseMatchzyVersion`/…; lanyBot `matchzyService`/`MatchzyService`), `matchzy.*.ts` file names
+  (lanyBot), lany `MatchZy` UI display labels, and **SP-C2** the `lany-docs` prose sweep. Then `grep -ri matchzy` = 0
+  except the kept upstream attribution.
+- **⚠️ Deploy:** NOT deployed (rides with the cutover).

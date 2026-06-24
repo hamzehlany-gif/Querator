@@ -104,7 +104,7 @@ public partial class Querator
         if (playerCount < minReady) 
         {
             // ReplyToUserCommand(player, $"You must have at least {minReady} player(s) on the server to ready up.");
-            ReplyToUserCommand(player, Localizer["matchzy.rs.minreadyplayers", minReady]);
+            ReplyToUserCommand(player, Localizer["querator.rs.minreadyplayers", minReady]);
             return;
         }
 
@@ -114,7 +114,7 @@ public partial class Querator
             if (playerData[key].TeamNum == player.TeamNum) {
                 playerReadyStatus[key] = true;
                 // ReplyToUserCommand(playerData[key], $"Your team was force-readied by {player.PlayerName}");
-                ReplyToUserCommand(playerData[key], Localizer["matchzy.rs.forcereadiedby", player.PlayerName]);
+                ReplyToUserCommand(playerData[key], Localizer["querator.rs.forcereadiedby", player.PlayerName]);
             }
         }
 
