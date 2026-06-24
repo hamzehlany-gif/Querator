@@ -35,7 +35,7 @@
     "matchzy.backup.restoretacticaltimeout": "你不能在战术暂停期间使用此命令.",
     "matchzy.backup.restoredoesntexist": "备份文件 {0} 不存在, 请确认你正在恢复的是一个有效的备份文件.",
   
-    "matchzy.cvars.invalidvalue": "matchzy_chat_messages_timer_delay 命令的参数不合法. 请输入一个有效的非负数的数值.",
+    "matchzy.cvars.invalidvalue": "querator_chat_messages_timer_delay 命令的参数不合法. 请输入一个有效的非负数的数值.",
   
     "matchzy.cc.enabled": "{green}已启用{default}",
     "matchzy.cc.disabled": "{red}已关闭{default}",
@@ -67,7 +67,7 @@
     "matchzy.cc.nomorepauses": "你的战术暂停次数已使用完!",
   
     "matchzy.mm.matchisalreadysetup": "[载入比赛] 比赛已被设定 id: {green}{0}{default}, 无法载入新比赛!",
-    "matchzy.mm.filedoesntexist": "[载入比赛] 提供的文件不存在! 使用示例: matchzy_loadmatch <filename>",
+    "matchzy.mm.filedoesntexist": "[载入比赛] 提供的文件不存在! 使用示例: querator_loadmatch <filename>",
     "matchzy.mm.matchloadfailed": "比赛载入失败! 正在重置当前比赛",
     "matchzy.mm.get5matchisalreadysetup": "[载入比赛数据命令] 比赛已被载入, id 为: {0}, 无法载入新比赛!",
     "matchzy.mm.invalidurl": "[载入比赛数据命令] 无效的 URL: {green}{0}{default}. 请提供一个有效的 URL 地址用以加载比赛!",

@@ -20,10 +20,10 @@ other doc can assume this context.
 
 > **Naming note:** the fork is *Querator*. Done (on `rebrand-b` branches, not yet deployed): **C# namespace + class**
 > (`Querator`, SP2), **module name** → `"Querator"` (SP-B1), **cosmetics** (version/author/banner/chat-prefix, SP3),
-> and the **DLL + entry file** → `Querator.dll` / `Querator.cs` (SP-B2). The rest still uses the MatchZy name (ConVar
-> prefix `matchzy_`, lang keys `matchzy.*`, the on-fleet `plugins/MatchZy`/`cfg/MatchZy` paths, `matchzy_stats_*`
-> tables, `/api/matchzy`, `x-matchzy-secret`, string-literal paths) — renamed in later, mostly cross-repo coupled
-> sub-phases. See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
+> the **DLL + entry file** → `Querator.dll` / `Querator.cs` (SP-B2); the **ConVar prefix** `matchzy_` → `querator_`
+> (SP-B3). The rest still uses the MatchZy name (lang keys `matchzy.*`, the on-fleet `plugins/MatchZy`/`cfg/MatchZy`
+> paths, `matchzy_stats_*` tables, `/api/matchzy`, `x-matchzy-secret`, string-literal paths) — renamed in later,
+> mostly cross-repo coupled sub-phases. See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 
 ---
 
@@ -79,7 +79,7 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 ### Commands / config
 | File | ~Size | Responsibility |
 |---|---:|---|
-| [`ConsoleCommands.cs`](../ConsoleCommands.cs) | 33K | `[ConsoleCommand("matchzy_*")]` server commands + `get5_*` aliases (admin/match management). |
+| [`ConsoleCommands.cs`](../ConsoleCommands.cs) | 33K | `[ConsoleCommand("querator_*")]` server commands + `get5_*` aliases (admin/match management). |
 | [`ConfigConvars.cs`](../ConfigConvars.cs) | 17K | `FakeConVar<T>` server cvars + config ConsoleCommands; default values. |
 
 ### Persistence / IO
@@ -154,7 +154,7 @@ Complete catalog (file = where declared):
 | `playerHasTakenDamage` | bool | false | Querator.cs | A cross-team damage occurred (gates `.stop`). |
 | `mapReloadRequired` | bool | false | Querator.cs | A map reload is queued. |
 | `liveMatchId` | long | -1 | Querator.cs | DB id of the current live match (-1 = none). |
-| `autoStartMode` | int | 1 | Querator.cs | 0=none, 1=match, 2=practice (from `matchzy_autostart_mode`). |
+| `autoStartMode` | int | 1 | Querator.cs | 0=none, 1=match, 2=practice (from `querator_autostart_mode`). |
 | `isMatchSetup` | bool | false | MatchManagement.cs | A match config has been loaded (match mode). |
 | `matchModeOnly` | bool | false | MatchManagement.cs | Server restricted to match mode (kick non-roster players). |
 | `resetCvarsOnSeriesEnd` | bool | true | MatchManagement.cs | Reset cvars when a series ends. |
@@ -197,18 +197,18 @@ Two sub-mechanisms:
 The chat handler resolves the `CCSPlayerController` from `playerData` (rebuilding the map via `UpdatePlayersMap()` if
 the player isn't found), then runs the matching dispatch.
 
-### System #2 — Console commands / ConVars (`matchzy_*`)
-Methods decorated with `[ConsoleCommand("matchzy_...")]`, mostly in [`ConfigConvars.cs`](../ConfigConvars.cs) and
+### System #2 — Console commands / ConVars (`querator_*`)
+Methods decorated with `[ConsoleCommand("querator_...")]`, mostly in [`ConfigConvars.cs`](../ConfigConvars.cs) and
 [`ConsoleCommands.cs`](../ConsoleCommands.cs). Many also register a **`get5_*` alias** for Get5 config compatibility.
 
 - **Server-side ConVar values** use **`FakeConVar<T>`** (CSSharp). There are exactly **11** of them, all in
-  `ConfigConvars.cs` (e.g. `matchzy_smoke_color_enabled`, `matchzy_enable_tech_pause`, `matchzy_tech_pause_duration`,
-  `matchzy_max_tech_pauses_allowed`, `matchzy_everyone_is_admin`, `matchzy_show_credits_on_match_start`,
-  `matchzy_hostname_format`, `matchzy_enable_damage_report`, `matchzy_stop_command_no_damage`,
-  `matchzy_match_start_message`, `matchzy_tech_pause_flag`). Their `.Value` is read directly in code.
+  `ConfigConvars.cs` (e.g. `querator_smoke_color_enabled`, `querator_enable_tech_pause`, `querator_tech_pause_duration`,
+  `querator_max_tech_pauses_allowed`, `querator_everyone_is_admin`, `querator_show_credits_on_match_start`,
+  `querator_hostname_format`, `querator_enable_damage_report`, `querator_stop_command_no_damage`,
+  `querator_match_start_message`, `querator_tech_pause_flag`). Their `.Value` is read directly in code.
 - **Everything else** is a `[ConsoleCommand]` method that parses `command.ArgString` and sets a plain field. The
   conventional guard at the top is `if (player != null) return;` — i.e. **reject if a player (not the server console)
-  invoked it**. This makes `matchzy_*` commands server/RCON-only.
+  invoked it**. This makes `querator_*` commands server/RCON-only.
 
 > The full ConVar + console-command catalog (with defaults, `get5_*` aliases, and which field each writes) is in
 > [04-commands-and-convars.md](04-commands-and-convars.md).

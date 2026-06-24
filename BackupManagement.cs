@@ -33,7 +33,7 @@ namespace Querator
 
         public void SetupRoundBackupFile()
         {
-            string backupFilePrefix = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}";
+            string backupFilePrefix = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}";
             Server.ExecuteCommand($"mp_backup_round_file {backupFilePrefix}");
         }
         [ConsoleCommand("css_stop", "Restore the backup of the current round (Both teams need to type .stop to restore the current round)")]
@@ -146,7 +146,7 @@ namespace Querator
                 if (int.TryParse(commandArg, out int roundNumber) && roundNumber >= 0)
                 {
                     string round = roundNumber.ToString("D2");
-                    string requiredBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
+                    string requiredBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
                     RestoreRoundBackup(player, requiredBackupFileName);
                 }
                 else
@@ -349,7 +349,7 @@ namespace Querator
                     string tempFileName = fileName.Replace(".json", ".txt");
                     if (backupData.TryGetValue("round", out var roundNumber))
                     {
-                        tempFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{roundNumber}.txt";
+                        tempFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{roundNumber}.txt";
                     }
                     string tempFilePath = Path.Combine(Server.GameDirectory, "csgo", tempFileName);
 
@@ -400,7 +400,7 @@ namespace Querator
                 (int t1score, int t2score) = GetTeamsScore();
                 int roundNumber = t1score + t2score;
                 string round = roundNumber.ToString("D2");
-                string matchZyBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
+                string matchZyBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
                 string filePath = Path.Combine(Server.GameDirectory, "csgo", "MatchZyDataBackup", matchZyBackupFileName);
 
                 string? directoryPath = Path.GetDirectoryName(filePath);
@@ -410,7 +410,7 @@ namespace Querator
                 }
 
                 var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
-                string lastBackupFilePath = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt"; ;
+                string lastBackupFilePath = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt"; ;
                 bool lastBackupExists = File.Exists(Path.Combine(Server.GameDirectory, "csgo", lastBackupFilePath));
                 lastBackupFilePath = Path.Combine(Server.GameDirectory, "csgo", lastBackupFilePath);
 
@@ -475,7 +475,7 @@ namespace Querator
             var directoryInfo = new DirectoryInfo(backupDir);
             var files = directoryInfo.GetFiles();
 
-            var pattern = $"matchzy_{matchID}_";
+            var pattern = $"querator_{matchID}_";
             var backups = new List<string>();
 
             foreach (var file in files)
@@ -543,7 +543,7 @@ namespace Querator
         }
 
         [ConsoleCommand("get5_loadbackup", "Restore the backup from the provided file")]
-        [ConsoleCommand("matchzy_loadbackup", "Restore the backup from the provided file")]
+        [ConsoleCommand("querator_loadbackup", "Restore the backup from the provided file")]
         [CommandHelper(minArgs: 1, usage: "<backup_file_name>")]
         public void OnLoadBackupCommand(CCSPlayerController? player, CommandInfo command)
         {
@@ -562,7 +562,7 @@ namespace Querator
         }
 
         [ConsoleCommand("get5_loadbackup_url", "Loads a backup from the given URL")]
-        [ConsoleCommand("matchzy_loadbackup_url", "Loads a backup from the given URL")]
+        [ConsoleCommand("querator_loadbackup_url", "Loads a backup from the given URL")]
         public void LoadBackupFromURL(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
@@ -620,7 +620,7 @@ namespace Querator
         }
 
         [ConsoleCommand("get5_listbackups", "List all the backups for the provided matchid")]
-        [ConsoleCommand("matchzy_listbackups", "List all the backups for the provided matchid")]
+        [ConsoleCommand("querator_listbackups", "List all the backups for the provided matchid")]
         public void OnListBackupCommand(CCSPlayerController? player, CommandInfo command)
         {
             if (!IsPlayerAdmin(player, "css_restore", "@css/config"))

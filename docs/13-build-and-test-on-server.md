@@ -70,9 +70,9 @@ Minimal sanity pass (one client is enough for several):
 - `.help` → command list prints (confirms chat dispatch + localization).
 - `.prac` → practice mode loads; `.bot`, `.spawn 1`, `.rethrow` → confirms practice/bot/grenade systems.
 - `.exitprac` → back to warmup.
-- Pug flow (needs 2 clients or `matchzy_minimum_ready_required 1`): both `.ready` → knife → `.stay`/`.switch` → LIVE.
+- Pug flow (needs 2 clients or `querator_minimum_ready_required 1`): both `.ready` → knife → `.stay`/`.switch` → LIVE.
 - Match flow: write a small match JSON (see [07](07-match-management-and-get5.md#3-match-json-contract-input)),
-  `matchzy_loadmatch <file>` from console, ready up, play, confirm a row appears in `matchzy.db` (SQLite) and a CSV in
+  `querator_loadmatch <file>` from console, ready up, play, confirm a row appears in `matchzy.db` (SQLite) and a CSV in
   `csgo/MatchZy_Stats/`.
 - Demo check: with `tv_enable 1`, confirm a `.dem` appears under `csgo/MatchZy/` after a map ends.
 

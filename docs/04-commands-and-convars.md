@@ -20,10 +20,10 @@ A given handler method is usually reachable **three ways**:
 
 **Consequence for editing:** if you add a player-facing command, wire it in **both** places to match existing UX
 (a `commandActions`/`StartsWith` entry for `.`, and a `[ConsoleCommand("css_…")]` for `!`/console). ConVar setters
-(`matchzy_*`) are the exception — they're console-only.
+(`querator_*`) are the exception — they're console-only.
 
 ### ConVar setters are server-only
-Every `matchzy_*` / `get5_*` config command starts with `if (player != null) return;` — i.e. it **only runs from the
+Every `querator_*` / `get5_*` config command starts with `if (player != null) return;` — i.e. it **only runs from the
 server console / RCON / a `.cfg` exec**, never from a player. So players cannot change config cvars in chat.
 
 ---
@@ -31,7 +31,7 @@ server console / RCON / a `.cfg` exec**, never from a player. So players cannot 
 ## 2. Admin permission model
 
 `IsPlayerAdmin(player, command, params permissions)` ([`Utility.cs:124`](../Utility.cs)) returns true if **any** of:
-- ConVar `matchzy_everyone_is_admin` is true, **or**
+- ConVar `querator_everyone_is_admin` is true, **or**
 - the player satisfies the CSSharp permission check for `permissions` **+ implicit `@css/root`**
   (CSSharp `admins.json`/groups), **or**
 - the player's SteamID is a key in **MatchZy's** `cfg/MatchZy/admins.json`, **or**
@@ -64,7 +64,7 @@ Source: the `commandActions` dictionary in [`Querator.cs`](../Querator.cs) `Load
 | `.stay` | `OnTeamStay` | Knife winner keeps side → go live. |
 | `.switch` `.swap` | `OnTeamSwitch` | Knife winner swaps side → go live. |
 | `.tech` | `OnTechCommand` | Technical pause. |
-| `.p` `.pause` | `OnPauseCommand` | Pause (tactical if `matchzy_use_pause_command_for_tactical_pause`, else normal). |
+| `.p` `.pause` | `OnPauseCommand` | Pause (tactical if `querator_use_pause_command_for_tactical_pause`, else normal). |
 | `.unpause` `.up` | `OnUnpauseCommand` | Request unpause (both teams confirm). |
 | `.forcepause` `.fp` | `OnForcePauseCommand` | Admin pause. |
 | `.forceunpause` `.fup` | `OnForceUnpauseCommand` | Admin unpause. |
@@ -83,7 +83,7 @@ Source: the `commandActions` dictionary in [`Querator.cs`](../Querator.cs) `Load
 | `.tactics` `.prac` | `OnPracCommand` | Enter practice mode. |
 | `.match` `.exitprac` | `OnMatchCommand` | Leave practice → match mode. |
 | `.uncoach` | `OnUnCoachCommand` | Leave coach slot. |
-| `.stop` | `OnStopCommand` | Restore current round (both teams confirm; gated by `matchzy_stop_command_available`). |
+| `.stop` | `OnStopCommand` | Restore current round (both teams confirm; gated by `querator_stop_command_available`). |
 | `.help` | `OnHelpCommand` | Context-sensitive command list. |
 | **Practice** (see [05](05-practice-mode.md)) | | `.showspawns` `.hidespawns` `.dryrun`/`.dry` `.noflash`/`.noblind` `.break` `.bot` `.cbot`/`.crouchbot` `.boost` `.crouchboost` `.nobots` `.solid` `.impacts` `.traj`/`.pip` `.god` `.ff`/`.fastforward` `.clear` `.t` `.ct` `.spec` `.fas`/`.watchme` `.last` `.throw`/`.rethrow`/`.rt` `.throwsmoke`/`.rethrowsmoke` `.thrownade`/`.rethrownade`/`.rethrowgrenade`/`.throwgrenade` `.rethrowflash`/`.throwflash` `.rethrowdecoy`/`.throwdecoy` `.throwmolotov`/`.rethrowmolotov` `.timer` `.lastindex` `.bestspawn` `.worstspawn` `.bestctspawn` `.worstctspawn` `.besttspawn` `.worsttspawn` `.savepos` `.loadpos` |
 
@@ -155,23 +155,23 @@ handler checks one (blank = no explicit check / player-context-only).
 |---|---|
 | `css_coach` | join coach slot (`.coach <t\|ct>`) |
 | `css_uncoach` | leave coach slot |
-| `matchzy_addplayer` / `get5_addplayer` | add player to a team (steamid, team, name) |
-| `matchzy_removeplayer` / `get5_removeplayer` | remove player from all teams |
+| `querator_addplayer` / `get5_addplayer` | add player to a team (steamid, team, name) |
+| `querator_removeplayer` / `get5_removeplayer` | remove player from all teams |
 
 ### Match loading (MatchManagement.cs)
 | Command(s) | Purpose |
 |---|---|
-| `matchzy_loadmatch` | load match from local JSON file (relative to `csgo/`) |
-| `matchzy_loadmatch_url` / `get5_loadmatch_url` | load match from URL (+ optional header name/value) |
+| `querator_loadmatch` | load match from local JSON file (relative to `csgo/`) |
+| `querator_loadmatch_url` / `get5_loadmatch_url` | load match from URL (+ optional header name/value) |
 
 ### Backups / restore (BackupManagement.cs)
 | Command(s) | Purpose |
 |---|---|
 | `css_stop` | both teams `.stop` → restore current round |
 | `css_restore` | admin restore a specific round |
-| `matchzy_loadbackup` / `get5_loadbackup` | restore from a backup file |
-| `matchzy_loadbackup_url` / `get5_loadbackup_url` | restore from a backup URL |
-| `matchzy_listbackups` / `get5_listbackups` | list backups for a matchid |
+| `querator_loadbackup` / `get5_loadbackup` | restore from a backup file |
+| `querator_loadbackup_url` / `get5_loadbackup_url` | restore from a backup URL |
+| `querator_listbackups` / `get5_listbackups` | list backups for a matchid |
 
 ### Get5 panel surface (G5API.cs)
 | Command | Purpose |
@@ -201,50 +201,50 @@ Read directly as `.Value` in code.
 
 | ConVar | Type | Default | Field/effect |
 |---|---|---|---|
-| `matchzy_smoke_color_enabled` | bool | false | per-player smoke color (`smokeColorEnabled`) |
-| `matchzy_enable_tech_pause` | bool | true | `.tech` enabled (`techPauseEnabled`) |
-| `matchzy_tech_pause_flag` | string | "" | flag required for tech pause (`techPausePermission`) |
-| `matchzy_tech_pause_duration` | int | 300 | tech pause seconds (`techPauseDuration`) |
-| `matchzy_max_tech_pauses_allowed` | int | 2 | max tech pauses/team (`maxTechPausesAllowed`) |
-| `matchzy_everyone_is_admin` | bool | false | treat all players as admin (`everyoneIsAdmin`) |
-| `matchzy_show_credits_on_match_start` | bool | true | print credits on start (`showCreditsOnMatchStart`) |
-| `matchzy_hostname_format` | string | `MatchZy \| {TEAM1} vs {TEAM2}` | hostname template (`hostnameFormat`) |
-| `matchzy_enable_damage_report` | bool | true | round damage report (`enableDamageReport`) |
-| `matchzy_stop_command_no_damage` | bool | false | `.stop` unavailable after cross-team damage (`stopCommandNoDamage`) |
-| `matchzy_match_start_message` | string | "" | message on start, `$$$`=newline (`matchStartMessage`) |
+| `querator_smoke_color_enabled` | bool | false | per-player smoke color (`smokeColorEnabled`) |
+| `querator_enable_tech_pause` | bool | true | `.tech` enabled (`techPauseEnabled`) |
+| `querator_tech_pause_flag` | string | "" | flag required for tech pause (`techPausePermission`) |
+| `querator_tech_pause_duration` | int | 300 | tech pause seconds (`techPauseDuration`) |
+| `querator_max_tech_pauses_allowed` | int | 2 | max tech pauses/team (`maxTechPausesAllowed`) |
+| `querator_everyone_is_admin` | bool | false | treat all players as admin (`everyoneIsAdmin`) |
+| `querator_show_credits_on_match_start` | bool | true | print credits on start (`showCreditsOnMatchStart`) |
+| `querator_hostname_format` | string | `MatchZy \| {TEAM1} vs {TEAM2}` | hostname template (`hostnameFormat`) |
+| `querator_enable_damage_report` | bool | true | round damage report (`enableDamageReport`) |
+| `querator_stop_command_no_damage` | bool | false | `.stop` unavailable after cross-team damage (`stopCommandNoDamage`) |
+| `querator_match_start_message` | string | "" | message on start, `$$$`=newline (`matchStartMessage`) |
 
 ### 6b. Config-setter ConVars (`[ConsoleCommand]`, parse `ArgString` → plain field)
 
 | ConVar (+ get5 alias) | Default | Sets |
 |---|---|---|
-| `matchzy_whitelist_enabled_default` | false | `isWhitelistRequired` |
-| `matchzy_knife_enabled_default` | true | `isKnifeRequired` |
-| `matchzy_playout_enabled_default` | false | `isPlayOutEnabled` |
-| `matchzy_save_nades_as_global_enabled` | false | `isSaveNadesAsGlobalEnabled` |
-| `matchzy_kick_when_no_match_loaded` | false | `matchModeOnly` |
-| `matchzy_reset_cvars_on_series_end` | true | `resetCvarsOnSeriesEnd` |
-| `matchzy_minimum_ready_required` | **2** (field) / config.cfg sets 2 | `minimumReadyRequired` (help text says "1" — stale) |
-| `matchzy_demo_path` | `MatchZy/` (config.cfg) | `demoPath` (must end with `/`, not start with `/` or `.`) |
-| `matchzy_demo_name_format` | `{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}` | `demoNameFormat` |
-| `matchzy_demo_recording_enabled` | true | `isDemoRecordingEnabled` |
-| `matchzy_demo_upload_url` / `get5_demo_upload_url` | "" | `demoUploadURL` |
-| `matchzy_demo_upload_header_key` / `get5_demo_upload_header_key` | "" | demo upload header key |
-| `matchzy_demo_upload_header_value` / `get5_demo_upload_header_value` | "" | demo upload header value |
-| `matchzy_stop_command_available` | false | `isStopCommandAvailable` |
-| `matchzy_use_pause_command_for_tactical_pause` | false | `isPauseCommandForTactical` |
-| `matchzy_pause_after_restore` | true | `pauseAfterRoundRestore` |
-| `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` | `chatPrefix` |
-| `matchzy_admin_chat_prefix` | `[{Red}ADMIN{Default}]` | `adminChatPrefix` |
-| `matchzy_chat_messages_timer_delay` | **13** (field) / help says 12 | `chatTimerDelay` |
-| `matchzy_autostart_mode` | 1 | `autoStartMode` (0 none / 1 match / 2 practice) |
-| `matchzy_allow_force_ready` / `get5_allow_force_ready` | true | `allowForceReady` |
-| `matchzy_max_saved_last_grenades` | 512 | `maxLastGrenadesSavedLimit` (0 disables) |
-| `matchzy_remote_backup_url` / `get5_remote_backup_url` | "" | `backupUploadURL` |
-| `matchzy_remote_backup_header_key` / `get5_remote_backup_header_key` | "" | `backupUploadHeaderKey` |
-| `matchzy_remote_backup_header_value` / `get5_remote_backup_header_value` | "" | `backupUploadHeaderValue` |
-| `matchzy_remote_log_url` / `get5_remote_log_url` | "" | `matchConfig.RemoteLogURL` (event forwarding) |
-| `matchzy_remote_log_header_key` / `get5_remote_log_header_key` | "" | `matchConfig.RemoteLogHeaderKey` |
-| `matchzy_remote_log_header_value` / `get5_remote_log_header_value` | "" | `matchConfig.RemoteLogHeaderValue` |
+| `querator_whitelist_enabled_default` | false | `isWhitelistRequired` |
+| `querator_knife_enabled_default` | true | `isKnifeRequired` |
+| `querator_playout_enabled_default` | false | `isPlayOutEnabled` |
+| `querator_save_nades_as_global_enabled` | false | `isSaveNadesAsGlobalEnabled` |
+| `querator_kick_when_no_match_loaded` | false | `matchModeOnly` |
+| `querator_reset_cvars_on_series_end` | true | `resetCvarsOnSeriesEnd` |
+| `querator_minimum_ready_required` | **2** (field) / config.cfg sets 2 | `minimumReadyRequired` (help text says "1" — stale) |
+| `querator_demo_path` | `MatchZy/` (config.cfg) | `demoPath` (must end with `/`, not start with `/` or `.`) |
+| `querator_demo_name_format` | `{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}` | `demoNameFormat` |
+| `querator_demo_recording_enabled` | true | `isDemoRecordingEnabled` |
+| `querator_demo_upload_url` / `get5_demo_upload_url` | "" | `demoUploadURL` |
+| `querator_demo_upload_header_key` / `get5_demo_upload_header_key` | "" | demo upload header key |
+| `querator_demo_upload_header_value` / `get5_demo_upload_header_value` | "" | demo upload header value |
+| `querator_stop_command_available` | false | `isStopCommandAvailable` |
+| `querator_use_pause_command_for_tactical_pause` | false | `isPauseCommandForTactical` |
+| `querator_pause_after_restore` | true | `pauseAfterRoundRestore` |
+| `querator_chat_prefix` | `[{Green}MatchZy{Default}]` | `chatPrefix` |
+| `querator_admin_chat_prefix` | `[{Red}ADMIN{Default}]` | `adminChatPrefix` |
+| `querator_chat_messages_timer_delay` | **13** (field) / help says 12 | `chatTimerDelay` |
+| `querator_autostart_mode` | 1 | `autoStartMode` (0 none / 1 match / 2 practice) |
+| `querator_allow_force_ready` / `get5_allow_force_ready` | true | `allowForceReady` |
+| `querator_max_saved_last_grenades` | 512 | `maxLastGrenadesSavedLimit` (0 disables) |
+| `querator_remote_backup_url` / `get5_remote_backup_url` | "" | `backupUploadURL` |
+| `querator_remote_backup_header_key` / `get5_remote_backup_header_key` | "" | `backupUploadHeaderKey` |
+| `querator_remote_backup_header_value` / `get5_remote_backup_header_value` | "" | `backupUploadHeaderValue` |
+| `querator_remote_log_url` / `get5_remote_log_url` | "" | `matchConfig.RemoteLogURL` (event forwarding) |
+| `querator_remote_log_header_key` / `get5_remote_log_header_key` | "" | `matchConfig.RemoteLogHeaderKey` |
+| `querator_remote_log_header_value` / `get5_remote_log_header_value` | "" | `matchConfig.RemoteLogHeaderValue` |
 
 > Defaults that ship are in `cfg/MatchZy/config.cfg` (executed on load). See
 > [11-utility-localization-configs.md](11-utility-localization-configs.md) for the file's exact contents.
@@ -260,8 +260,8 @@ Read directly as `.Value` in code.
 > rename the plugin, keep the `get5_*` aliases** or you break panel integration.
 
 ## 8. Known code/doc discrepancies (carried from upstream)
-- `matchzy_minimum_ready_required` help says "Default: 1" but the field initializes to **2** and `config.cfg` sets 2.
-- `matchzy_chat_messages_timer_delay` help says "Default: 12" but the field default is **13**.
-- `matchzy_playout_enabled_default` help text is copy-pasted from the knife cvar ("knife round is enabled…").
+- `querator_minimum_ready_required` help says "Default: 1" but the field initializes to **2** and `config.cfg` sets 2.
+- `querator_chat_messages_timer_delay` help says "Default: 12" but the field default is **13**.
+- `querator_playout_enabled_default` help text is copy-pasted from the knife cvar ("knife round is enabled…").
 
 These are harmless but worth knowing when reconciling docs vs behavior.

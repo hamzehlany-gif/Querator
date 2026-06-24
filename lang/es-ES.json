@@ -35,7 +35,7 @@
   "matchzy.backup.restoretacticaltimeout": "No puedes ejecutar este comando durante una pausa táctica.",
   "matchzy.backup.restoredoesntexist": "El archivo de copia de seguridad {0} no existe, por favor, elige una copia de seguridad válida para restaurar.",
 
-  "matchzy.cvars.invalidvalue": "Valor inválido para matchzy_chat_messages_timer_delay. Por favor, especifica un número no negativo válido.",
+  "matchzy.cvars.invalidvalue": "Valor inválido para querator_chat_messages_timer_delay. Por favor, especifica un número no negativo válido.",
 
   "matchzy.cc.enabled": "{green}Habilitado{default}",
   "matchzy.cc.disabled": "{red}Deshabilitado{default}",
@@ -67,7 +67,7 @@
   "matchzy.cc.nomorepauses": "¡No te quedan pausas tácticas!",
 
   "matchzy.mm.matchisalreadysetup": "[LoadMatch] Una partida ya ha sido creda con el id: {green}{0}{default}, ¡no se puede cargar una nueva partida!",
-  "matchzy.mm.filedoesntexist": "[LoadMatch] ¡El fichero proporcionado no existe! Uso: matchzy_loadmatch <nombre_del_fichero>",
+  "matchzy.mm.filedoesntexist": "[LoadMatch] ¡El fichero proporcionado no existe! Uso: querator_loadmatch <nombre_del_fichero>",
   "matchzy.mm.matchloadfailed": "¡Error al cargar el fichero! Reiniciando la partida actual.",
   "matchzy.mm.get5matchisalreadysetup": "[LoadMatchDataCommand] Una partida ya ha sido creda con el id: {0}, ¡no se puede cargar una nueva partida!",
   "matchzy.mm.invalidurl": "[LoadMatchDataCommand] URL inválida: {green}{0}{default}. Por favor, ¡proporciona una URL válida para cargar la partida!",

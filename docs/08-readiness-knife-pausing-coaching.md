@@ -53,14 +53,14 @@ Only the **knife-winning side** (`player.TeamNum == knifeWinner`) can decide:
 
 > **Naming trap:** the dedicated `TechPause()` in [`Pausing.cs`](../Pausing.cs) is **WIP dead code** (`return;` at the
 > top). So `.tech` does **not** run it — `.tech` → `OnTechCommand` → **`PauseMatch`** (the normal pause). The
-> `matchzy_enable_tech_pause` / `matchzy_tech_pause_flag` cvars are repurposed inside `PauseMatch` to gate **all**
+> `querator_enable_tech_pause` / `querator_tech_pause_flag` cvars are repurposed inside `PauseMatch` to gate **all**
 > player pausing (see below). `technicalPauseUsed`/`lastTechPauseDuration`/`techPauseDuration`/`maxTechPausesAllowed`
 > are currently inert.
 
 ### The four ways to pause
 | Command | Function | Notes |
 |---|---|---|
-| `.pause`/`.p` | `OnPauseCommand` → `PauseMatch` (or `OnTacCommand` if `matchzy_use_pause_command_for_tactical_pause`) | Normal team pause. |
+| `.pause`/`.p` | `OnPauseCommand` → `PauseMatch` (or `OnTacCommand` if `querator_use_pause_command_for_tactical_pause`) | Normal team pause. |
 | `.tech` | `OnTechCommand` → `PauseMatch` | Same as normal pause (tech feature WIP). |
 | `.tac` | `OnTacCommand` | **CS2 tactical timeout** via `timeout_ct_start`/`timeout_terrorist_start`; uses the engine's `mp_team_timeout_max`/`_time`. Refused if already paused / no timeouts left. |
 | `.fp`/`.forcepause`/`sm_pause` | `ForcePauseMatch` | Admin pause (`@css/config`); only admin can unpause. |

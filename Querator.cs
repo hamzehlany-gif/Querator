@@ -65,7 +65,7 @@ namespace Querator
         public CounterStrikeSharp.API.Modules.Timers.Timer? pausedStateTimer = null;
 
         // Each message is kept in chat display for ~13 seconds, hence setting default chat timer to 13 seconds.
-        // Configurable using matchzy_chat_messages_timer_delay <seconds>
+        // Configurable using querator_chat_messages_timer_delay <seconds>
         public int chatTimerDelay = 13;
 
         // Game Config

@@ -18,7 +18,7 @@ Everything else is *how it works*; this is *how we make it ours*.
 they cost us (but see the Get5 note in §7 — "Lany-only" doesn't automatically mean "rip Get5 out").
 
 > Where Querator sits: it's the on-VM match engine, deployed/version-managed by **lany-node-agent**, configured via
-> `matchzy_loadmatch[_url]`, posting events to **lanyBot** and demos/backups to upload URLs. See the
+> `querator_loadmatch[_url]`, posting events to **lanyBot** and demos/backups to upload URLs. See the
 > [Lany-wide notes](../../LANY.md). **Any rename or cvar change is coupled to lany-node-agent (config sync + plugin
 > update/rollback) and lanyBot (commands/webhooks) — coordinate, don't surprise them.**
 
@@ -33,7 +33,7 @@ the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
 | What | Where | Notes |
 |---|---|---|
 | `ModuleName`, `ModuleAuthor`, `ModuleDescription` | [`Querator.cs`](../Querator.cs) | `ModuleName "MatchZy"` → `"Querator"`. Changes the load banner + `css_plugins` name. |
-| Chat prefix default | `Querator.cs` `chatPrefix` + `config.cfg` `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` → `[{Green}Querator{Default}]` (or Lany branding). |
+| Chat prefix default | `Querator.cs` `chatPrefix` + `config.cfg` `querator_chat_prefix` | `[{Green}MatchZy{Default}]` → `[{Green}Querator{Default}]` (or Lany branding). |
 | Namespace + class name | every `.cs` (`namespace MatchZy`, `class MatchZy`) | Mechanical rename (`MatchZy` → `Querator`). The class is `partial`, so rename consistently across all files. |
 | Assembly / DLL name | rename `Querator.csproj` → `Querator.csproj` | Produces `Querator.dll`; deploy folder becomes `plugins/Querator/`. **Update lany-node-agent's plugin path/manifest.** |
 | `get5_status` `plugin_version` string, credits message | `G5API.cs`, `Utility.cs` | Optional vanity. |
@@ -41,7 +41,7 @@ the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
 ### Tier B — coupled to external systems (coordinate before changing)
 | What | Where | Coupling / risk |
 |---|---|---|
-| **ConVar prefix** `matchzy_*` | `ConfigConvars.cs`, `ConsoleCommands.cs`, all `config.cfg`/cfgs | **lany-node-agent config sync + lanyBot RCON likely send `matchzy_*`.** Safest: add `querator_*` **aliases** (like the existing `get5_*`) and keep `matchzy_*` working, then migrate callers. Don't hard-rename in one shot. |
+| **ConVar prefix** `querator_*` | `ConfigConvars.cs`, `ConsoleCommands.cs`, all `config.cfg`/cfgs | **lany-node-agent config sync + lanyBot RCON likely send `querator_*`.** Safest: add `querator_*` **aliases** (like the existing `get5_*`) and keep `querator_*` working, then migrate callers. Don't hard-rename in one shot. |
 | **cfg folder** `MatchZy/` | `Utility.cs` path consts (`warmupCfgPath`…), `SleepMode.cs`, `PracticeMode.cs`, deploy layout | Renaming `cfg/MatchZy/` → `cfg/Querator/` breaks deployed configs + lany-node-agent's config templates. Coordinate the move. |
 | **lang keys** `matchzy.*` | all `lang/*.json` + every `Localizer["matchzy…"]` call | Mechanical but large; purely internal (no external consumer) → safe-ish, just big. Can defer. |
 | **DB table names** `matchzy_stats_*` | `DatabaseStats.cs` (both dialects) | ⚠️ **Renaming breaks existing data and any direct SQL readers.** lanyBot stores match data in **MongoDB** (via events), so it likely doesn't read these tables — *verify*. If nothing reads them directly, a rename is low-risk but pointless; recommend **leaving table names** for data continuity. |
@@ -69,7 +69,7 @@ penalty** — readiness is gated purely by `CheckLiveRequired()` and players can
    `querator_ready_timeout_action`:
    - `kick` / `spec` → use `KickPlayer` / `SwitchPlayerTeam(player, Spectator)` (helpers exist in `Utility.cs`).
    - `report` (recommended for Lany) → **emit a new event** (`ready_timeout` / `player_not_ready` with the steamids)
-     to `matchzy_remote_log_url`, and let **lanyBot apply the real penalty** (rating hit, queue cooldown, ban) — it
+     to `querator_remote_log_url`, and let **lanyBot apply the real penalty** (rating hit, queue cooldown, ban) — it
      already owns moderation/penalties. This keeps the *policy* in lanyBot and the *detection* in the plugin (clean
      separation; no duplicate penalty logic).
 4. Localize all new messages (`lang/en.json`, `querator.ready.*`).

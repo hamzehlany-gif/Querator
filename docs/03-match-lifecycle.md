@@ -17,7 +17,7 @@ A server is always in one of these (driven by the flags + which cfg is active):
 | Mode | How entered | Key flags | Notes |
 |---|---|---|---|
 | **Pug** (default) | `autoStartMode=1`, no match config loaded | `readyAvailable`, `isWarmup` | Teams not locked; `.ready` gate uses `minimumReadyRequired`. 1 map, auto-reset on end. |
-| **Match** | `matchzy_loadmatch[_url]` loads a config | `isMatchSetup` (+ `matchModeOnly` to lock roster) | Players locked to teams/sides; BO1/3/5; veto; series tracking. |
+| **Match** | `querator_loadmatch[_url]` loads a config | `isMatchSetup` (+ `matchModeOnly` to lock roster) | Players locked to teams/sides; BO1/3/5; veto; series tracking. |
 | **Practice** | `.prac`/`.tactics` or `autoStartMode=2` | `isPractice` | Cheats, bots, nade tools. See [05-practice-mode.md](05-practice-mode.md). |
 | **Scrim / Playout** | `.playout` toggles `isPlayOutEnabled` | `isPlayOutEnabled` | All rounds played (no clinch, no OT) — applied by `HandlePlayoutConfig()`. |
 | **Sleep** | `autoStartMode=0` or `.sleep`/`css_sleep` | `isSleep` | Idle; execs `sleep.cfg` (or `gamemode_competitive.cfg`). Cannot enter once `matchStarted`. |
@@ -51,7 +51,7 @@ stateDiagram-v2
 ### Step-by-step (with the functions that do it)
 
 1. **`Load()` → `AutoStart()`** ([`Utility.cs:1751`](../Utility.cs)) branches on `autoStartMode`
-   (ConVar `matchzy_autostart_mode`, default 1):
+   (ConVar `querator_autostart_mode`, default 1):
    - `0` → `StartSleepMode()`
    - `1` → `readyAvailable=true; isPractice=false; StartWarmup()`
    - `2` → `StartPracticeMode()`
@@ -81,8 +81,8 @@ stateDiagram-v2
      - `isPreVeto` → **`CreateVeto()`** (veto runs first; see [06-map-veto.md](06-map-veto.md)).
      - else `isKnifeRequired` → **`StartKnifeRound()`**.
      - else → `StartDemoRecording(); StartLive()`.
-   - Optionally prints the "MatchZy Plugin by WD-" credit (`matchzy_show_credits_on_match_start`) and the
-     `matchzy_match_start_message` (split on `$$$`, color-treated).
+   - Optionally prints the "MatchZy Plugin by WD-" credit (`querator_show_credits_on_match_start`) and the
+     `querator_match_start_message` (split on `$$$`, color-treated).
 
 5. **Knife** — `StartKnifeRound()` ([`Utility.cs:239`](../Utility.cs)): `matchStarted=true; isKnifeRound=true;
    readyAvailable=false; isWarmup=false`; execs `MatchZy/knife.cfg` (+ `mp_restartgame 1; mp_warmup_end`), or a

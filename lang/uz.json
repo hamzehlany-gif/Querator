@@ -35,7 +35,7 @@
   "matchzy.backup.restoretacticaltimeout": "Taktik taym-out faol boʻlganda siz ushbu buyruqdan foydalana olmaysiz.",
   "matchzy.backup.restoredoesntexist": "Zaxira fayli {0} mavjud emas, yaroqli zaxira nusxasini tiklaganingizga ishonch hosil qiling.",
 
-  "matchzy.cvars.invalidvalue": "matchzy_chat_messages_timer_delay uchun yaroqsiz qiymat. Iltimos, manfiy boʻlmagan toʻgʻri raqamni kiriting.",
+  "matchzy.cvars.invalidvalue": "querator_chat_messages_timer_delay uchun yaroqsiz qiymat. Iltimos, manfiy boʻlmagan toʻgʻri raqamni kiriting.",
 
   "matchzy.cc.enabled": "{green}Yoqilgan{default}",
   "matchzy.cc.disabled": "{red}Oʻchirilgan{default}",
@@ -67,7 +67,7 @@
   "matchzy.cc.nomorepauses": "Sizda taktik taym-aut qolmadi!",
 
   "matchzy.mm.matchisalreadysetup": "[LoadMatch] Oʻyin allaqachon id {green}{0}{default} bilan sozlangan, yangi oʻyinni yuklab boʻlmaydi!",
-  "matchzy.mm.filedoesntexist": "[LoadMatch] Taqdim etilgan fayl mavjud emas! Foydalanish: matchzy_loadmatch <fayl_nomi>",
+  "matchzy.mm.filedoesntexist": "[LoadMatch] Taqdim etilgan fayl mavjud emas! Foydalanish: querator_loadmatch <fayl_nomi>",
   "matchzy.mm.matchloadfailed": "Oʻyin yuklanmadi! Joriy oʻyin qayta tiklanmoqda",
   "matchzy.mm.get5matchisalreadysetup": "[LoadMatchDataCommand] Oʻyin allaqachon id {green}{0}{default} bilan sozlangan, yangi oʻyinni yuklab boʻlmaydi!",
   "matchzy.mm.invalidurl": "[LoadMatchDataCommand] URL noto‘g‘ri: {green}{0}{default}. Oʻyinni yuklash uchun yaroqli URL manzilini kiriting!",

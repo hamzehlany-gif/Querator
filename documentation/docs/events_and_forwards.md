@@ -4,9 +4,9 @@ MatchZy contains an event-logging system (heavily inspired by Get5) that logs ma
 
 ## HTTP
 
-To receive MatchZy events on a web server, define a [URL for event logging](../configuration#matchzy_remote_log_url). MatchZy
+To receive MatchZy events on a web server, define a [URL for event logging](../configuration#querator_remote_log_url). MatchZy
 will send all events to the URL as JSON over HTTP. You may add
-a [custom HTTP header](../configuration#matchzy_remote_log_header_key) to authenticate your request.
+a [custom HTTP header](../configuration#querator_remote_log_header_key) to authenticate your request.
 
 !!! warning "Simple HTTP"
 

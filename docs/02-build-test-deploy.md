@@ -101,7 +101,7 @@ will desync from a fresh `Load()`. Restart the server instead. Hot-reload is onl
 ## 6. Fork-specific gotchas to remember
 
 - The fork is "Querator" but **every build artifact, ConVar, and identity string still says MatchZy**. If/when you
-  rename, you touch: `ModuleName`/`ModuleVersion`/`ModuleAuthor`, namespace `MatchZy`, ConVar prefix `matchzy_`,
+  rename, you touch: `ModuleName`/`ModuleVersion`/`ModuleAuthor`, namespace `MatchZy`, ConVar prefix `querator_`,
   lang keys `matchzy.*`, chat prefix, the `get5_*` aliases (keep for panel compat), the workflow's grep patterns and
   zip names, and the deploy folder name `plugins/MatchZy`. This is a deliberate, wide-reaching change — plan it.
 - Because there are no tests, **every change must be smoke-tested on a server**. Keep a scratch server handy.

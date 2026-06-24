@@ -71,7 +71,7 @@ Suggested order for a newcomer:
 
 - File references link to the real source (e.g. [`Querator.cs`](../Querator.cs)); line numbers may drift as code
   changes — treat them as hints, search the symbol to confirm.
-- "Chat command" = a `.`/`!` command players type in game chat. "Console command / ConVar" = a `matchzy_*`
+- "Chat command" = a `.`/`!` command players type in game chat. "Console command / ConVar" = a `querator_*`
   server-console command (often with a `get5_*` alias).
 - Where a fact is derived from a config file or external panel contract, that's called out, because those are
   effectively *external APIs* and must stay stable for interop.
