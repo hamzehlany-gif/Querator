@@ -22,7 +22,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | config-root `'matchzy'` + version component-key `matchzy` | `'querator'` | SP-B6 (coupled + Mongo migration) | **code done across node-agent + lanyBot + lany (branches), gates green**; Mongo migration script written, run at cutover |
-| `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | planned |
+| `matchzy_stats_*` tables / `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `querator_stats_*` / `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | **code done (Querator + node-agent seed, branch)**; per-server data migration at cutover |
 | `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env | `QUERATOR_*` | SP-B8 (coupled) | planned |
 | release `MatchZy-*.zip` + upstream release source | `Querator-*.zip` + fork source | Phase C | planned |
 | lany-docs MatchZy references (37 refs/10 files) | Querator | Phase C | planned |
@@ -325,3 +325,25 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ lanyBot 455 · node-agent 267 · lany 62, all + lint. Querator docs-only.
 - **Merge:** `rebrand-b-b6-configroot` → `rebrand-b` in each repo (local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b6-configroot` branches; inverse the Mongo `$rename`/`$set` if migrated.
+
+### SP-B7 — match-data identifiers (tables / db file / on-disk dirs) → querator (Phase B) — 2026-06-24 — ✅ code done (branch, build green); 🔴 data migration at cutover
+- **Branches:** `rebrand-b-b7-data` in **Querator + lany-node-agent** (lanyBot/lany don't read these — they ingest
+  match data into Mongo via events).
+- **Querator:** `DatabaseStats.cs` — `matchzy_stats_{matches,maps,players}` → `querator_stats_*` (CREATE/INSERT/UPDATE/
+  SELECT/FK + constraint, both SQLite & MySQL dialects) and the SQLite file `matchzy.db` → `querator.db`;
+  `BackupManagement.cs` — `MatchZyDataBackup` → `QueratorDataBackup`; `Utility.cs` — `MatchZy_Stats` → `Querator_Stats`
+  (CSV stats dir); `DemoManagement.cs` — demo dir default `"MatchZy/"` → `"Querator/"`. Eng docs + docs site updated.
+  `dotnet publish` → `Querator.dll`, exit 0.
+- **lany-node-agent:** the config-template seed's `querator_demo_path` value `MatchZy/` → `Querator/` (the demo dir the
+  agent syncs). Plus an eslint fix on the SP-B6 mongosh migration script (`/* eslint-disable no-undef */` — mongosh
+  globals). 267 tests + lint green.
+- **🔴 Data migration (PER GAME-SERVER at cutover, after backups, AFTER the SP-B2 `plugins/Querator` move):**
+  `Querator/scripts/migrations/rebrand-b7-data-migration.sh` — `mv matchzy.db→querator.db` + `ALTER/RENAME` the three
+  `*_stats_*` tables (SQLite & MySQL variants), and `mv` the on-disk dirs (`MatchZy_Stats`, `MatchZyDataBackup`, demo
+  `MatchZy/`). Without it the rebrand-b plugin starts an EMPTY `querator.db` and orphans the match history.
+- **Kept:** upstream `shobhit-pathak/MatchZy/…zip` release URLs (SP-C1); `cfg/MatchZy` dir + its `exec
+  MatchZy/live_override.cfg` (cfg-dir step); `matchzy.*` lang keys.
+- **⚠️ Deploy:** NOT deployed / NOT migrated. Code on branches; the per-server data migration runs at cutover.
+- **Verification:** ✅ Querator publish; ✅ node-agent 267 + lint. lanyBot/lany untouched.
+- **Merge:** `rebrand-b-b7-data` → `rebrand-b` (Querator + node-agent; local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b7-data` branches; reverse the migration (mv back + RENAME back) if run.

@@ -131,7 +131,7 @@ Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"` <
 <br>**`Default: ""`**
 
 ####`querator_loadbackup`
-:   Loads a match backup from the given file. Relative to `csgo/MatchZyDataBackup/`.
+:   Loads a match backup from the given file. Relative to `csgo/QueratorDataBackup/`.
 
 ####`querator_loadbackup_url`
 :   Loads a match backup from a remote host by sending an HTTP(S) GET to the given URL. You may optionally provide an HTTP header and value pair using the header name and header value arguments. You should put all arguments inside quotation marks ("").
@@ -175,8 +175,8 @@ steamid3
 ### Database Stats
 
 MatchZy comes with a default database (SQLite), which configures itself automatically. MySQL Database can also be used with MatchZy!
-Currently we are using 2 tables, `matchzy_stats_matches` and `matchzy_stats_players`. As their names suggest, `matchzy_stats_matches` holds the data of every match, like matchid, team names, scores, etc.
-Whereas, `matchzy_stats_players` stores data/stats of every player who played in that match. It stores data like matchid, kills, deaths, assists, and other important stats!
+Currently we are using 2 tables, `querator_stats_matches` and `querator_stats_players`. As their names suggest, `querator_stats_matches` holds the data of every match, like matchid, team names, scores, etc.
+Whereas, `querator_stats_players` stores data/stats of every player who played in that match. It stores data like matchid, kills, deaths, assists, and other important stats!
 
 ### Using MySQL Database with MatchZy
 
@@ -196,7 +196,7 @@ MySQL Database is useful for those who wants to use a common database across mul
 
 ### CSV Stats
 Once a match is over, data is pulled from the database and a CSV file is written in the folder:
-`csgo/MatchZy_Stats`. This folder will contain CSV file for each match (file name pattern: `match_data_map{mapNumber}_{matchId}.csv`) and it will have the same data which is present in `matchzy_stats_players`.
+`csgo/Querator_Stats`. This folder will contain CSV file for each match (file name pattern: `match_data_map{mapNumber}_{matchId}.csv`) and it will have the same data which is present in `querator_stats_players`.
 
 There is a scope of improvement here, like having the match score in the CSV file or atleast in the file name patter. I'll make this change soon!
 

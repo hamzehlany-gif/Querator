@@ -867,7 +867,7 @@ namespace Querator
             int team1SeriesScore = matchzyTeam1.seriesScore;
             int team2SeriesScore = matchzyTeam2.seriesScore;
 
-            string statsPath = Server.GameDirectory + "/csgo/MatchZy_Stats/" + liveMatchId.ToString();
+            string statsPath = Server.GameDirectory + "/csgo/Querator_Stats/" + liveMatchId.ToString();
 
             var mapResultEvent = new MapResultEvent
             {
