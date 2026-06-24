@@ -20,9 +20,9 @@ namespace Querator
 
         public FakeConVar<bool> everyoneIsAdmin = new("querator_everyone_is_admin", "If set to true, all the players will have admin privilege. Default: false", false);
 
-        public FakeConVar<bool> showCreditsOnMatchStart = new("querator_show_credits_on_match_start", "Whether to show 'MatchZy Plugin by WD-' message on match start. Default: true", true);
+        public FakeConVar<bool> showCreditsOnMatchStart = new("querator_show_credits_on_match_start", "Whether to show 'Querator Plugin by Lany' message on match start. Default: true", true);
 
-        public FakeConVar<string> hostnameFormat = new("querator_hostname_format", "The server hostname to use. Set to \"\" to disable/use existing. Default: MatchZy | {TEAM1} vs {TEAM2}", "MatchZy | {TEAM1} vs {TEAM2}");
+        public FakeConVar<string> hostnameFormat = new("querator_hostname_format", "The server hostname to use. Set to \"\" to disable/use existing. Default: Querator | {TEAM1} vs {TEAM2}", "Querator | {TEAM1} vs {TEAM2}");
 
         public FakeConVar<bool> enableDamageReport = new("querator_enable_damage_report", "Whether to show damage report after each round or not. Default: true", true);
 
@@ -31,7 +31,7 @@ namespace Querator
         public FakeConVar<string> matchStartMessage = new("querator_match_start_message", "Message to show when the match starts. Use $$$ to break message into multiple lines. Set to \"\" to disable.", "");
 
         [ConsoleCommand("querator_whitelist_enabled_default", "Whether Whitelist is enabled by default or not. Default value: false")]
-        public void MatchZyWLConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorWLConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -40,7 +40,7 @@ namespace Querator
         }
         
         [ConsoleCommand("querator_knife_enabled_default", "Whether knife round is enabled by default or not. Default value: true")]
-        public void MatchZyKnifeConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorKnifeConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -49,7 +49,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_playout_enabled_default", "Whether knife round is enabled by default or not. Default value: true")]
-        public void MatchZyPlayoutConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorPlayoutConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -58,7 +58,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_save_nades_as_global_enabled", "Whether nades should be saved globally instead of being privated to players by default or not. Default value: false")]
-        public void MatchZySaveNadesAsGlobalConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorSaveNadesAsGlobalConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -67,7 +67,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_kick_when_no_match_loaded", "Whether to kick all clients and prevent anyone from joining the server if no match is loaded. Default value: false")]
-        public void MatchZyMatchModeOnlyConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorMatchModeOnlyConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -76,7 +76,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_reset_cvars_on_series_end", "Whether parameters from the cvars section of a match configuration are restored to their original values when a series ends. Default value: true")]
-        public void MatchZyResetCvarsOnSeriesEndConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorResetCvarsOnSeriesEndConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -85,7 +85,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_minimum_ready_required", "Minimum ready players required to start the match. Default: 1")]
-        public void MatchZyMinimumReadyRequired(CCSPlayerController? player, CommandInfo command)
+        public void QueratorMinimumReadyRequired(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             // Since there is already a console command for this purpose, we will use the same.   
@@ -93,7 +93,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_demo_path", "Path of folder in which demos will be saved. If defined, it must not start with a slash and must end with a slash. Set to empty string to use the csgo root.")]
-        public void MatchZyDemoPath(CCSPlayerController? player, CommandInfo command)
+        public void QueratorDemoPath(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             if (command.ArgCount == 2)
@@ -111,7 +111,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_demo_name_format", "Format of demo filname")]
-        public void MatchZyDemoNameFormat(CCSPlayerController? player, CommandInfo command)
+        public void QueratorDemoNameFormat(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             if (command.ArgCount == 2)
@@ -126,7 +126,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_demo_recording_enabled", "Whether to automatically start demo recording when the match goes live. Default value: true")]
-        public void MatchZyDemoRecordingEnabled(CCSPlayerController? player, CommandInfo command)
+        public void QueratorDemoRecordingEnabled(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -136,21 +136,21 @@ namespace Querator
 
         [ConsoleCommand("get5_demo_upload_url", "If defined, recorded demos will be uploaded to this URL once the map ends.")]
         [ConsoleCommand("querator_demo_upload_url", "If defined, recorded demos will be uploaded to this URL once the map ends.")]
-        public void MatchZyDemoUploadURL(CCSPlayerController? player, CommandInfo command)
+        public void QueratorDemoUploadURL(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string url = command.ArgByIndex(1);
             if (url.Trim() == "") return;
             if (!IsValidUrl(url))
             {
-                Log($"[MatchZyDemoUploadURL] Invalid URL: {url}. Please provide a valid URL for uploading the demo!");
+                Log($"[QueratorDemoUploadURL] Invalid URL: {url}. Please provide a valid URL for uploading the demo!");
                 return;
             }
             demoUploadURL = url;
         }
 
         [ConsoleCommand("querator_stop_command_available", "Whether .stop command is enabled or not (to restore the current round). Default value: false")]
-        public void MatchZyStopCommandEnabled(CCSPlayerController? player, CommandInfo command)
+        public void QueratorStopCommandEnabled(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -159,7 +159,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_use_pause_command_for_tactical_pause", "Whether to use !pause/.pause command for tactical pause or normal pause (unpauses only when both teams use unpause command, for admin force-unpauses the game). Default value: false")]
-        public void MatchZyPauseForTacticalCommand(CCSPlayerController? player, CommandInfo command)
+        public void QueratorPauseForTacticalCommand(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -167,8 +167,8 @@ namespace Querator
             isPauseCommandForTactical = bool.TryParse(args, out bool isPauseCommandForTacticalValue) ? isPauseCommandForTacticalValue : args != "0" && isPauseCommandForTactical;
         }
 
-        [ConsoleCommand("querator_pause_after_restore", "Whether to pause the match after a round is restored using matchzy. Default value: true")]
-        public void MatchZyPauseAfterStopEnabled(CCSPlayerController? player, CommandInfo command)
+        [ConsoleCommand("querator_pause_after_restore", "Whether to pause the match after a round is restored using Querator. Default value: true")]
+        public void QueratorPauseAfterStopEnabled(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -176,8 +176,8 @@ namespace Querator
             pauseAfterRoundRestore = bool.TryParse(args, out bool pauseAfterRoundRestoreValue) ? pauseAfterRoundRestoreValue : args != "0" && pauseAfterRoundRestore;
         }
 
-        [ConsoleCommand("querator_chat_prefix", "Default value of chat prefix for MatchZy messages. Default value: [{Green}MatchZy{Default}]")]
-        public void MatchZyChatPrefix(CCSPlayerController? player, CommandInfo command)
+        [ConsoleCommand("querator_chat_prefix", "Default value of chat prefix for Querator messages. Default value: [{Green}Querator{Default}]")]
+        public void QueratorChatPrefix(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
 
@@ -193,11 +193,11 @@ namespace Querator
 
             chatPrefix = args;
 
-            Log($"[MatchZyChatPrefix] chatPrefix: {chatPrefix}");
+            Log($"[QueratorChatPrefix] chatPrefix: {chatPrefix}");
         }
 
-        [ConsoleCommand("querator_admin_chat_prefix", "Chat prefix to show whenever an admin sends message using .asay <message>. Default value: [{Green}MatchZy{Default}]")]
-        public void MatchZyAdminChatPrefix(CCSPlayerController? player, CommandInfo command)
+        [ConsoleCommand("querator_admin_chat_prefix", "Chat prefix to show whenever an admin sends message using .asay <message>. Default value: [{Green}Querator{Default}]")]
+        public void QueratorAdminChatPrefix(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
 
@@ -213,11 +213,11 @@ namespace Querator
 
             adminChatPrefix = args;
 
-            Log($"[MatchZyAdminChatPrefix] adminChatPrefix: {adminChatPrefix}");
+            Log($"[QueratorAdminChatPrefix] adminChatPrefix: {adminChatPrefix}");
         }
 
-        [ConsoleCommand("querator_chat_messages_timer_delay", "Number of seconds of delay before sending reminder messages from MatchZy (like unready message, paused message, etc). Default: 12")]
-        public void MatchZyChatMessagesTimerDelay(CCSPlayerController? player, CommandInfo command)
+        [ConsoleCommand("querator_chat_messages_timer_delay", "Number of seconds of delay before sending reminder messages from Querator (like unready message, paused message, etc). Default: 12")]
+        public void QueratorChatMessagesTimerDelay(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
 
@@ -242,7 +242,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_autostart_mode", "Whether the plugin will load the match mode, the practice moder or neither by startup. 0 for neither, 1 for match mode, 2 for practice mode. Default: 1")]
-        public void MatchZyAutoStartConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorAutoStartConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -256,7 +256,7 @@ namespace Querator
 
         [ConsoleCommand("querator_allow_force_ready", "Whether force ready using !forceready is enabled or not (Currently works in Match Setup only). Default value: True")]
         [ConsoleCommand("get5_allow_force_ready", "Whether force ready using !forceready is enabled or not (Currently works in Match Setup only). Default value: True")]
-        public void MatchZyAllowForceReadyConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorAllowForceReadyConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -265,7 +265,7 @@ namespace Querator
         }
 
         [ConsoleCommand("querator_max_saved_last_grenades", "Maximum number of grenade history that may be saved per-map, per-client. Set to 0 to disable. Default value: 512")]
-        public void MatchZyMaxSavedLastGrenadesConvar(CCSPlayerController? player, CommandInfo command)
+        public void QueratorMaxSavedLastGrenadesConvar(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string args = command.ArgString;
@@ -284,14 +284,14 @@ namespace Querator
         [ConsoleCommand("get5_remote_backup_url", "A URL to send backup files to over HTTP. Leave empty to disable.")]
         [ConsoleCommand("querator_remote_backup_url", "A URL to send backup files to over HTTP. Leave empty to disable.")]
         [CommandHelper(minArgs: 1, usage: "<remote_backup_upload_url>")]
-        public void MatchZyBackupUploadURL(CCSPlayerController? player, CommandInfo command)
+        public void QueratorBackupUploadURL(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;
             string url = command.ArgByIndex(1);
             if (url.Trim() == "") return;
             if (!IsValidUrl(url))
             {
-                Log($"[MatchZyBackupUploadURL] Invalid URL: {url}. Please provide a valid URL for uploading the backup!");
+                Log($"[QueratorBackupUploadURL] Invalid URL: {url}. Please provide a valid URL for uploading the backup!");
                 return;
             }
             backupUploadURL = url;

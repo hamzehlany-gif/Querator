@@ -580,7 +580,7 @@ namespace Querator
 
         private void Log(string message)
         {
-            Console.WriteLine("[MatchZy] " + message);
+            Console.WriteLine("[Querator] " + message);
         }
 
         public enum DatabaseType

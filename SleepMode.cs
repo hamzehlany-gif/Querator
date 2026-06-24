@@ -36,7 +36,7 @@ namespace Querator
                 ExecUnpracCommands();
                 Server.ExecuteCommand("""exec gamemode_competitive.cfg;""");
             }
-            Log($"[StartSleepMode] MatchZy deactivated!");
+            Log($"[StartSleepMode] Querator deactivated!");
         }
 
         [ConsoleCommand("css_sleep", "Starts sleep mode")]

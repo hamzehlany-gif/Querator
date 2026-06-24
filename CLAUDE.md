@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Querator is a [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) plugin for CS2 (Counter-Strike 2) that runs and manages practice/pugs/scrims/matches. It is a C# class library targeting **.NET 8.0** that compiles to a DLL loaded by the CounterStrikeSharp runtime inside a CS2 dedicated server. There is no standalone executable — the plugin runs in-process with the game server.
 
-> **Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy)** (MIT; see `CREDITS` / `LICENSE`). A rebrand from MatchZy → Querator is **in progress** — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md). The *project* is "Querator". Done (on `rebrand-b` branches, not yet deployed): **C# namespace + class** (`Querator`, SP2), **`ModuleName`** → `"Querator"` (SP-B1), **cosmetics** (version `1.0.0`, author, banner, chat-prefix, credits; SP3), the **DLL + entry source file** → `Querator.dll` / `Querator.cs` (SP-B2), the **`matchzy_*` cvars** → `querator_*` (SP-B3), the **`/api/matchzy/*` routes** → `/api/querator/*` (SP-B4), and the **`x-matchzy-secret`** header → `x-querator-secret` (SP-B5), and the **data identifiers** (`matchzy_stats_*` tables, `matchzy.db`, `MatchZy_Stats`/`MatchZyDataBackup`/demo dirs) → `querator_*` (SP-B7 — code done; data migration at cutover), and the **`MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env names** → `QUERATOR_*` (SP-B8), and the **`cfg/MatchZy/` config dir** → `cfg/Querator/`. **Phase B coupled renames are complete** (code on `rebrand-b`, not deployed). Still MatchZy-named (later): `matchzy.*` lang keys, the upstream `MatchZy` release source + attribution (Phase C), `MatchZy-*` demo-upload headers, and assorted camelCase/file-name stragglers. **The MatchZy-named code references in this document are current and accurate** until those sub-phases land.
+> **Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy)** (MIT; see `CREDITS` / `LICENSE`). The MatchZy → Querator rebrand is **code-complete on the `rebrand-b` / `rebrand-c` branches** (gated, pushed, **not yet deployed**) — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md) and [`docs/CUTOVER-RUNBOOK.md`](docs/CUTOVER-RUNBOOK.md). The code is now **Querator-named throughout**: namespace/class, `ModuleName`, `Querator.dll`/`Querator.cs`, `querator_*` cvars, `/api/querator/*`, `x-querator-secret`, `querator_stats_*` tables + `querator.db`, `QUERATOR_*` env, `cfg/Querator/`, `querator.*` lang keys, the `Querator-*` demo-upload headers, and all internal identifiers. **The only remaining MatchZy references are intentional upstream attribution** (`CREDITS` / `LICENSE` / `README` / `ModuleAuthor` lineage) — keep these forever. The live fleet still runs upstream MatchZy until the manual cutover (deploy + data migrations) is performed.
 
 ## Build & develop
 
@@ -16,7 +16,7 @@ dotnet build                    # compile (Debug)
 dotnet publish                  # produce the loadable plugin in bin/Release/net8.0/publish/
 ```
 
-There are **no unit tests** in this repo — verification is done by loading the plugin into a live CS2 server. To test changes: `dotnet publish`, then copy the contents of `bin/Release/net8.0/publish/` into `csgo/addons/counterstrikesharp/plugins/MatchZy/` on the server (skip `CounterStrikeSharp.API.dll`/`.pdb`). CounterStrikeSharp supports hot-reload, but **never hot-reload while a match is live** — the match state flags get out of sync. Restart the server instead.
+There are **no unit tests** in this repo — verification is done by loading the plugin into a live CS2 server. To test changes: `dotnet publish`, then copy the contents of `bin/Release/net8.0/publish/` into `csgo/addons/counterstrikesharp/plugins/Querator/` on the server (skip `CounterStrikeSharp.API.dll`/`.pdb`). CounterStrikeSharp supports hot-reload, but **never hot-reload while a match is live** — the match state flags get out of sync. Restart the server instead.
 
 The `lang/` and `spawns/` folders are copied to the plugin output dir (see `.csproj`), and the GitHub release workflow also bundles `cfg/` into `csgo/cfg/`.
 
@@ -52,11 +52,11 @@ There is no formal state machine — match phase is tracked by a set of public b
 
 ### Persistence
 
-`DatabaseStats.cs` contains the `Database` class (the one non-partial-MatchZy class of note). It supports **SQLite (default) and MySQL**, selected via `cfg/Querator/database.json` (`DatabaseType` field). Queries use Dapper; table DDL is duplicated as `CreateRequiredTablesSQLite()` / `CreateRequiredTablesSQL()` (SQLite vs MySQL dialect) — **add schema changes to both**. Tables: `querator_stats_matches`, `querator_stats_players`, `querator_stats_maps`. Per-match detailed stats are also written to CSV (CsvHelper). Demos/backups can be uploaded over HTTP (see `DemoManagement.cs`, `BackupManagement.cs`, `RemoteLogConfig.cs`).
+`DatabaseStats.cs` contains the `Database` class (the one non-partial-Querator class of note). It supports **SQLite (default) and MySQL**, selected via `cfg/Querator/database.json` (`DatabaseType` field). Queries use Dapper; table DDL is duplicated as `CreateRequiredTablesSQLite()` / `CreateRequiredTablesSQL()` (SQLite vs MySQL dialect) — **add schema changes to both**. Tables: `querator_stats_matches`, `querator_stats_players`, `querator_stats_maps`. Per-match detailed stats are also written to CSV (CsvHelper). Demos/backups can be uploaded over HTTP (see `DemoManagement.cs`, `BackupManagement.cs`, `RemoteLogConfig.cs`).
 
 ### Localization
 
-All player-facing strings go through `Localizer["matchzy.<key>", args...]` backed by `lang/*.json` (12 locales). When adding a user-facing message, add the key to `lang/en.json` rather than hardcoding the string.
+All player-facing strings go through `Localizer["querator.<key>", args...]` backed by `lang/*.json` (12 locales). When adding a user-facing message, add the key to `lang/en.json` rather than hardcoding the string.
 
 ### Runtime config files (`cfg/Querator/`)
 

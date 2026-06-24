@@ -593,7 +593,7 @@ namespace Querator
             Server.PrintToChatAll($"{adminChatPrefix} {message}");
         }
 
-        [ConsoleCommand("reload_admins", "Reload admins of MatchZy")]
+        [ConsoleCommand("reload_admins", "Reload admins of Querator")]
         public void OnReloadAdmins(CCSPlayerController? player, CommandInfo? command)
         {
             if (IsPlayerAdmin(player, "reload_admins", "@css/config"))

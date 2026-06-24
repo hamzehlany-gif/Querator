@@ -1247,7 +1247,7 @@ namespace Querator
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}Admin{ChatColors.Default} has paused the match.");
             if (player == null)
             {
-                Server.PrintToConsole($"[MatchZy] {Localizer["querator.pause.adminpausedthematch"]}");
+                Server.PrintToConsole($"[Querator] {Localizer["querator.pause.adminpausedthematch"]}");
             }
             SetMatchPausedFlags();
         }
@@ -1266,7 +1266,7 @@ namespace Querator
 
                 if (player == null)
                 {
-                    Server.PrintToConsole("[MatchZy] Admin has unpaused the match, resuming the match!");
+                    Server.PrintToConsole("[Querator] Admin has unpaused the match, resuming the match!");
                 }
             }
         }
@@ -1405,7 +1405,7 @@ namespace Querator
         public void LoadClientNames()
         {
             string namesFileName = "Match_" + liveMatchId.ToString() + ".ini";
-            string namesFilePath = Server.GameDirectory + "/csgo/MatchZyPlayerNames/" + namesFileName;
+            string namesFilePath = Server.GameDirectory + "/csgo/QueratorPlayerNames/" + namesFileName;
             string? directoryPath = Path.GetDirectoryName(namesFilePath);
             if (directoryPath != null)
             {
@@ -1425,7 +1425,7 @@ namespace Querator
 
             sb.AppendLine("}");
             File.WriteAllText(namesFilePath, sb.ToString());
-            Server.ExecuteCommand($"sv_load_forced_client_names_file MatchZyPlayerNames/" + namesFileName);
+            Server.ExecuteCommand($"sv_load_forced_client_names_file QueratorPlayerNames/" + namesFileName);
         }
 
         public void WriteClientNamesInFile(StringBuilder sb, JToken? players)
@@ -1745,7 +1745,7 @@ namespace Querator
 
         private void Log(string message)
         {
-            Console.WriteLine("[MatchZy] " + message);
+            Console.WriteLine("[Querator] " + message);
         }
 
         private void AutoStart()
