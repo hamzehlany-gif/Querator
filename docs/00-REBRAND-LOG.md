@@ -23,7 +23,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | config-root `'matchzy'` + version component-key `matchzy` | `'querator'` | SP-B6 (coupled + Mongo migration) | **code done across node-agent + lanyBot + lany (branches), gates green**; Mongo migration script written, run at cutover |
 | `matchzy_stats_*` tables / `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `querator_stats_*` / `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | **code done (Querator + node-agent seed, branch)**; per-server data migration at cutover |
-| `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env | `QUERATOR_*` | SP-B8 (coupled) | planned |
+| `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env | `QUERATOR_*` | SP-B8 (coupled) | **code done (node-agent + lanyBot + lany, branches)**; server `.env` rename at cutover |
 | release `MatchZy-*.zip` + upstream release source | `Querator-*.zip` + fork source | Phase C | planned |
 | lany-docs MatchZy references (37 refs/10 files) | Querator | Phase C | planned |
 | `get5_*` surface | (decision: keep; optional removal later) | post-rebrand | deferred (D7) |
@@ -347,3 +347,20 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ Querator publish; ✅ node-agent 267 + lint. lanyBot/lany untouched.
 - **Merge:** `rebrand-b-b7-data` → `rebrand-b` (Querator + node-agent; local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b7-data` branches; reverse the migration (mv back + RENAME back) if run.
+
+### SP-B8 — env var names `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` → `QUERATOR_*` (Phase B) — 2026-06-24 — ✅ code done (branches, gates green); ⏳ server `.env` rename at cutover
+- **Branches:** `rebrand-b-b8-env` in **lany-node-agent + lanyBot + lany + Querator** (Querator = ledger only; the
+  plugin reads no env vars — `build.yml`'s `MATCHZY_VERSION` is the release pipeline, SP-C1, left untouched).
+- **lany-node-agent:** `config/index.js` `env('MATCHZY_*' …)` → `env('QUERATOR_*' …)` (CONFIG_PATH, BACKEND_URL,
+  WEBHOOK_SECRET/HEADER, PLUGIN_PATH, REPO_CONFIG_DIR) + `.env.example` + tests + docs; cleaned the now-stale "kept
+  until SP-B8" comments. 267 tests + lint green.
+- **lanyBot:** `config/index.ts` `MATCHZY_WEBHOOK_SECRET/HEADER` + `ORCHESTRATOR_MATCHZY_{TARGET_PATH,SOURCE_SUBDIR,RELEASE_URL}`
+  → `QUERATOR_*` / `ORCHESTRATOR_QUERATOR_*` (+ the `NOTABLE_MATCHZY_EVENTS` const). The upstream release URL VALUE
+  (`shobhit-pathak/MatchZy`) stays (SP-C1). Build + lint + 455 tests green.
+- **lany:** the `MATCHZY_TEMPLATE_URL` / `MATCHZY_TEMPLATE_PATH` const names → `QUERATOR_*` (upstream URL value stays,
+  SP-C1). Build + lint + 62 tests green.
+- **⚠️ Deploy:** NOT deployed. The env var NAMES changed; each server's `.env` / deployment config must rename
+  `MATCHZY_*`→`QUERATOR_*` at cutover (the code now reads `QUERATOR_*`, else falls back to defaults).
+- **Verification:** ✅ node-agent 267+lint · lanyBot 455 · lany 62.
+- **Merge:** `rebrand-b-b8-env` → `rebrand-b` in each repo (local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b8-env` branches.
