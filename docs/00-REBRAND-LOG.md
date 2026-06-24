@@ -402,14 +402,32 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
   switch takes effect when lanyBot deploys. Full manual steps: **`docs/CUTOVER-RUNBOOK.md`** (added this sub-phase).
 - **State:** committed on `rebrand-c` (off `rebrand-b`) in Querator/lanyBot/lany; pushed; not merged to `dev`/`main`.
 
-### SP-C3 (partial) — cosmetic sweeps toward `grep -ri matchzy` = 0 (Phase C) — 2026-06-24 — ✅ lang keys + headers done (branch); ⏳ camelCase/file-names/UI-labels/lany-docs remain
-- **Branch:** `rebrand-c` (Querator + lanyBot).
-- **Done:** Querator `matchzy.*` lang keys → `querator.*` (~1686 across `lang/*.json` keys + `Localizer[...]` calls;
-  verified 0 leftover, `dotnet publish` green); the coupled demo-upload headers
-  `MatchZy-{FileName,MatchId,MapNumber,RoundNumber}` → `Querator-*` (Querator `Utility.cs` sends ↔ lanyBot
-  `matchzy.controller.ts` reads — renamed together; lanyBot 455 green).
-- **Remaining (non-coupled cosmetic, post-cutover-optional — runbook §8):** camelCase var/fn names (node-agent
-  `matchzyConfigPath`/`parseMatchzyVersion`/…; lanyBot `matchzyService`/`MatchzyService`), `matchzy.*.ts` file names
-  (lanyBot), lany `MatchZy` UI display labels, and **SP-C2** the `lany-docs` prose sweep. Then `grep -ri matchzy` = 0
-  except the kept upstream attribution.
-- **⚠️ Deploy:** NOT deployed (rides with the cutover).
+### SP-C3 — cosmetic sweeps toward `grep -ri matchzy` = 0 (Phase C) — 2026-06-24 — ✅ all code/config/lang/identifiers done across all repos; ⏳ only Querator doc-prose remains
+- **Branch:** `rebrand-c` (Querator + lanyBot + node-agent + lany) and lany-docs `rebrand-c` (SP-C2).
+- **Done — Querator:** `matchzy.*` lang KEYS → `querator.*` (~1686, keys + `Localizer[...]` calls); lang message
+  VALUES ("MatchZy is already…") → Querator; ConVar handler method names `MatchZy*Convar` → `Querator*Convar` (~21)
+  + `MatchZyPlayerNames`; `matchzyTeam*`/`CreateMatchZyRoundDataBackup`/`matchZyBackupFileName`/`matchZyCoachTeam`;
+  ConVar descriptions + log prefixes + comments; **`cfg/Querator/config.cfg` active brand values**
+  (`querator_chat_prefix`, `querator_hostname_format` were still `[Green]MatchZy` / `MatchZy | …` and override the
+  code defaults at runtime) → Querator; `.gitignore` `MatchZy.sln` → `Querator.sln`; `CLAUDE.md` status note +
+  stale paths. `dotnet publish` green.
+- **Done — lanyBot:** `queratorService`/`QueratorService`; file renames `matchzy.{service,controller,routes}.ts`
+  + 3 tests → `querator.*` (imports updated); env `ORCHESTRATOR_POLICY_MATCHZY` → `_QUERATOR`; `.env.example`;
+  all prose/fixtures/comments. **Data field `matchzyMatchId` → `queratorMatchId`** (`matchsessions` UNIQUE +
+  `matchevents` indexes) with Mongo migration `scripts/migrations/rebrand-c3-matchid-field-rename.js` (run at
+  cutover). The coupled `MatchZy-*` demo-upload headers → `Querator-*` (Querator sends ↔ lanyBot reads). 455 green.
+- **Done — node-agent:** camelCase `matchzy{ConfigPath,BackendUrl,WebhookSecret,WebhookHeader,PluginPath}` → `querator*`;
+  `detectMatchzyVersion`/`parseMatchzyVersion` → `detect/parseQueratorVersion`; describing comments. KEPT the 2
+  deliberate lineage lines ("a MatchZy fork" + "upstream MatchZy (MatchZy.dll)" lockstep note). 267 green.
+- **Done — lany:** `MatchZy` UI display labels → Querator. 62 green.
+- **Done — lany-docs (SP-C2):** prose `MatchZy` → `Querator` on lany-docs `rebrand-c` (main kept accurate for the
+  live MatchZy system + its ops warnings until cutover; merge at cutover).
+- **Result:** `grep -ri matchzy` = **0 in all CODE / CONFIG / CONTRACTS / LANG / IDENTIFIERS** across all 6 repos,
+  except intentional upstream attribution (Querator `CREDITS`/`LICENSE`/`README`/`ModuleAuthor`; the 2 node-agent
+  lineage comments) and the deploy/migration scripts' intentional old-name refs (they migrate FROM the old names).
+- **⏳ Remaining (non-functional, doc PROSE only):** ~403 `matchzy` refs in **Querator `docs/*.md` (engineering
+  reference)** + **`documentation/docs/*` (public MkDocs manual)**. NOT blanket-swept on purpose: these docs mix
+  fork-refs (rename) with genuine **upstream** references that must stay (e.g. "DatHost's 1-click MatchZy installer",
+  "MatchZy limitations / fork strategy", "upstream ships `MatchZy-<ver>-with-cssharp`"). Needs per-occurrence editing,
+  not sed — a focused follow-up. No functional impact.
+- **⚠️ Deploy:** NOT deployed (rides with the cutover). `rebrand-c` pushed in all repos; lany-docs `rebrand-c` pushed.

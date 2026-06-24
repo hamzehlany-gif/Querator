@@ -43,6 +43,9 @@ Phase B/C lives on `rebrand-c` (which contains `rebrand-b`). For each repo, merg
 - [ ] **Per game-server:** `CSGO=/home/cs2/server/game/csgo bash Querator/scripts/migrations/rebrand-b7-data-migration.sh`
       — renames `matchzy.db`→`querator.db` + the 3 `*_stats_*` tables, and moves `MatchZy_Stats`/`MatchZyDataBackup`/
       demo `MatchZy` dirs → `Querator*`.
+- [ ] **Mongo (once, lanyBot field):** `mongosh "<MONGO_URI>" lanyBot/scripts/migrations/rebrand-c3-matchid-field-rename.js`
+      — renames the persisted field `matchzyMatchId`→`queratorMatchId` on `matchsessions` (UNIQUE idx) + `matchevents`
+      (idx); drops the old indexes, `$rename`s, recreates the indexes. Lockstep with the renamed lanyBot deploy.
 
 ## 5. Install the Querator fork on the fleet (via node-agent)
 - [ ] Trigger the plugin install/update from the fork release. **`targetPath` MUST be the csgo root**
@@ -65,8 +68,12 @@ Phase B/C lives on `rebrand-c` (which contains `rebrand-b`). For each repo, merg
   + `mv` dirs back + RENAME tables back + `querator.db`→`matchzy.db`).
 - Re-seed the old `matchzy_*` config templates. The maintenance window + canary bound the blast radius.
 
-## 8. After cutover (non-blocking cosmetic sweeps, for `grep -ri matchzy` = 0)
-Not coupled — do any time post-cutover: Querator `matchzy.*` lang keys (~1512), `MatchZy-*` demo-upload headers
-(Querator `Utility.cs` + lanyBot `matchzy.controller.ts` — coupled pair), camelCase var/fn names, `matchzy.*.ts` file
-names, lany `MatchZy` UI display labels, `lany-docs` prose. **Keep forever:** upstream MatchZy attribution
-(CREDITS / LICENSE / README / ModuleAuthor).
+## 8. Cosmetic sweeps — DONE on the branches (ride with the cutover)
+The SP-C3 cosmetic sweeps are **complete on `rebrand-c`** (see ledger SP-C3): `matchzy.*` lang keys + values, the
+`MatchZy-*`/`Querator-*` demo-upload headers, all camelCase var/fn names, the `matchzy.*.ts` file renames, the lanyBot
+`queratorMatchId` field (migration above), `cfg/Querator/config.cfg` active brand values, lany UI labels, and lany-docs
+prose (on its own `rebrand-c`). `grep -ri matchzy` = 0 in all code/config/contracts/lang across the 6 repos.
+- **Still TODO (non-functional, do any time):** ~403 prose refs in Querator `docs/*.md` + `documentation/docs/*` —
+  must be edited per-occurrence (they mix fork-refs to rename with genuine **upstream** references to keep).
+- **Keep forever:** upstream MatchZy attribution (CREDITS / LICENSE / README / ModuleAuthor + the node-agent lineage
+  comments + the migration scripts' old-name refs).
