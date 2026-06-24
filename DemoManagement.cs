@@ -11,7 +11,7 @@ namespace Querator
 {
     public partial class Querator
     {
-        public string demoPath = "MatchZy/";
+        public string demoPath = "Querator/";
         public string demoNameFormat = "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}";
         public string demoUploadURL = "";
         public string demoUploadHeaderKey = "";

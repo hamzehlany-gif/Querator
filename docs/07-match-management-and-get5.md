@@ -182,7 +182,7 @@ Wrappers: `StatsPlayer` (`steamid`, `name`, `stats`), `QueratorTeamWrapper` (`id
 `QueratorStatsTeam` (+ `series_score`, `score`, `score_ct`, `score_t`, `players`), `Winner` (`side`, `team`).
 
 > ⚠️ Note these `PlayerStats` JSON fields are a **different, richer set** than the DB's
-> `matchzy_stats_players` columns (which use names like `enemy5ks`, `utility_successes`, `v1_count`, and notably
+> `querator_stats_players` columns (which use names like `enemy5ks`, `utility_successes`, `v1_count`, and notably
 > have **no `kast`/`mvp` columns**). The event/panel shape and the DB shape are not 1:1 — see
 > [09-persistence-database.md](09-persistence-database.md).
 

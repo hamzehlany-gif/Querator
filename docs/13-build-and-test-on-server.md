@@ -72,8 +72,8 @@ Minimal sanity pass (one client is enough for several):
 - `.exitprac` → back to warmup.
 - Pug flow (needs 2 clients or `querator_minimum_ready_required 1`): both `.ready` → knife → `.stay`/`.switch` → LIVE.
 - Match flow: write a small match JSON (see [07](07-match-management-and-get5.md#3-match-json-contract-input)),
-  `querator_loadmatch <file>` from console, ready up, play, confirm a row appears in `matchzy.db` (SQLite) and a CSV in
-  `csgo/MatchZy_Stats/`.
+  `querator_loadmatch <file>` from console, ready up, play, confirm a row appears in `querator.db` (SQLite) and a CSV in
+  `csgo/Querator_Stats/`.
 - Demo check: with `tv_enable 1`, confirm a `.dem` appears under `csgo/MatchZy/` after a map ends.
 
 ---

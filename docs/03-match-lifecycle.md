@@ -111,7 +111,7 @@ stateDiagram-v2
    - Extends `mp_match_restart_delay` so the **GOTV broadcast can flush** before restart (delay = `tv_delay + 15`,
      +10 more if `tv_delay>0`).
    - `StopDemoRecording(...)`; computes winner + scores; fires `MapResultEvent`; writes DB map-end data and the
-     **player-stats CSV** (`csgo/MatchZy_Stats/<matchid>/...`).
+     **player-stats CSV** (`csgo/Querator_Stats/<matchid>/...`).
    - **Pug** (`!isMatchSetup`) → `EndSeries(...)` (treated as a 1-map series; BO3/BO5 pugs are a TODO).
    - **Match/series**: compute `remainingMaps`; end the series on tie-with-no-maps-left, on clinch
      (`SeriesCanClinch` and a team reached `NumMaps/2+1`), or when `remainingMaps<=0`; otherwise advance
