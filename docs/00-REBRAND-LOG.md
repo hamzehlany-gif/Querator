@@ -20,7 +20,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | **done across all 4 repos (branches)**; deploy/re-seed at cutover |
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
-| `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | planned |
+| `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | config-root `'matchzy'` | `'querator'` | SP-B6 (coupled + Mongo migration) | planned |
 | `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | planned |
 | `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env | `QUERATOR_*` | SP-B8 (coupled) | planned |
@@ -282,3 +282,17 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ lanyBot build+lint+455; ✅ node-agent 267+lint; Querator docs-only.
 - **Merge:** `rebrand-b-b4-api` → `rebrand-b` in each repo (local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b4-api` branches across the 3 repos.
+
+### SP-B5 — `x-matchzy-secret` → `x-querator-secret` (Phase B) — 2026-06-24 — ✅ done (branches, gates green); ⏳ deploy at cutover
+- **Branches:** `rebrand-b-b5-secret` in **lanyBot + lany-node-agent + Querator** (lany none). Only the webhook header
+  VALUE changes; the env var NAME `MATCHZY_WEBHOOK_HEADER` stays (→ SP-B8).
+- **lanyBot:** `src/config/index.ts` (`headerName` default), `src/utils/trace.ts` (secret-redaction regex — keeps the
+  header redacted from logs), `.env.example`. Build + lint + 455 tests green.
+- **lany-node-agent:** `src/config/index.js` (`matchzyWebhookHeader` default + comment), `.env.example`. 267 + lint green.
+- **Querator:** no code (the plugin sends whatever header name `querator_remote_log_header_key` holds); notes only.
+- **⚠️ Deploy:** NOT deployed. lanyBot validates `x-querator-secret`; node-agent's `matchzyWebhookHeader` (→ `{{HEADER}}`
+  in the config template) sets what the plugin sends — both flip at cutover (with the B3 template re-seed + any
+  `MATCHZY_WEBHOOK_HEADER` override on servers). The generic `secret` redaction pattern covers both names meanwhile.
+- **Verification:** ✅ lanyBot 455; ✅ node-agent 267+lint. Querator docs-only.
+- **Merge:** `rebrand-b-b5-secret` → `rebrand-b` in each repo (local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b5-secret` branches.
