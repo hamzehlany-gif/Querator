@@ -18,7 +18,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `ModuleAuthor "WD-…"` | `Lany (https://lany.gg)` | SP3 | done |
 | `MatchZy.dll`/`MatchZy.cs`/`MatchZy.csproj` / `plugins/MatchZy` | `Querator.dll`/`.cs`/`.csproj` / `plugins/Querator` | SP-B2 (coupled) | **Querator + node-agent + lany done (branches)**; deploy + release pipeline (SP-C1) pending |
 | `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
-| `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | planned |
+| `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | **done across all 4 repos (branches)**; deploy/re-seed at cutover |
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | planned |
 | `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | planned |
 | config-root `'matchzy'` | `'querator'` | SP-B6 (coupled + Mongo migration) | planned |
@@ -235,3 +235,32 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **What's left for SP-B2 to be *deployable*:** SP-C1 (flat `Querator-*.zip` + fleet source switch) + the cutover window
   (deploy all repos together + the `plugins/MatchZy`→`plugins/Querator` migration). The **code** for SP-B2 is now
   complete across all four repos.
+
+### SP-B3 — `matchzy_*` cvars → `querator_*` (Phase B) — 2026-06-24 — ✅ done across all 4 repos (branches, gates green); ⏳ deploy + re-seed at cutover
+- **Branches:** `rebrand-b-b3-cvars` in **Querator + lanyBot + lany-node-agent + lany** (off each repo's `rebrand-b`).
+- **What:** every one of the ~94 `matchzy_*` server ConVars → `querator_*`, renamed in lockstep across the plugin
+  (which defines them), lanyBot + node-agent (which set them via RCON / config templates), and lany (frontend RCON
+  list). Done with a protected mechanical rename (`matchzy_`→`querator_`, shielding `matchzy_stats_`), verified per repo.
+- **Querator:** ConVar registrations (`ConfigConvars.cs` `FakeConVar`/`ConsoleCommand`, `ConsoleCommands.cs`) + refs in
+  `Querator.cs`/`MatchManagement.cs`/`Teams.cs`/`Utility.cs`/`RemoteLogConfig.cs`/`DemoManagement.cs`/`BackupManagement.cs`;
+  bundled `cfg/MatchZy/config.cfg` cvar lines; `lang/*.json` (cvar names quoted in messages); engineering docs
+  (`docs/*`) + the user-docs site (`documentation/docs/*`). `dotnet publish` → `Querator.dll`, exit 0.
+- **lanyBot:** RCON commands + config-gen cvars — `matchzy_pause`/`_unpause` (`cs2.service.ts`),
+  `matchzy_remote_log_url`/`_demo_upload_url`/`_remote_log_header_key`/`_header_value`/`_loadmatch_url`
+  (`matchzy.service.ts`), comments (`config/index.ts`, `*.controller.ts`, `matchzy.routes.ts`) + the `trace.test.ts`
+  fixture (reflowed by prettier). Build + lint (0 errors) + 455 tests green.
+- **lany-node-agent:** the `config.cfg` config-template content in `docs/config-template-seed.json` (the cvar lines the
+  agent syncs to `cfg/MatchZy/config.cfg`) + `docs/orchestrator-api-spec.md` examples. 267 tests + lint green.
+- **lany (frontend):** `OperationsTab.tsx` RCON command quick-list (`matchzy_loadmatch_url`→`querator_loadmatch_url`).
+  Build + lint + 62 tests green.
+- **Kept (NOT renamed):** `matchzy_stats_*` DB tables (B7); `get5_*` cvar aliases (Get5 compat, D7); `cfg/MatchZy` dir
+  path (B6); `/api/matchzy` URL paths (B4); `config.matchzy` config-root (B6); `matchzy.*` lang keys; the lanyBot/lany
+  `matchzy` component key + `matchzy.*` file names; the `MatchZy/` demo-dir value (B7).
+- **⚠️ Deploy / data note:** **NOT deployed.** The plugin now expects `querator_*` cvars, but the **live
+  `cfg/MatchZy/config.cfg` on each server (synced from the node-agent Mongo config-template) still sets `matchzy_*`**.
+  At cutover the Mongo config-templates must be **re-seeded from the updated `config-template-seed.json`** so servers
+  get `querator_*` lines — in lockstep with deploying the `Querator.dll` build + lanyBot + node-agent + lany. Otherwise
+  the renamed cvars never get set on the server.
+- **Verification:** ✅ all 4 per-repo gates green (above). No deploy / VM e2e (cutover only).
+- **Merge:** `rebrand-b-b3-cvars` → `rebrand-b` in each repo (local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b3-cvars` branches across the 4 repos as a unit.

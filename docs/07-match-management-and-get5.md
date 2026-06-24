@@ -13,8 +13,8 @@ Sources: [`MatchManagement.cs`](../MatchManagement.cs), [`MatchConfig.cs`](../Ma
 
 | Command | Source | Behavior |
 |---|---|---|
-| `matchzy_loadmatch <file>` | `LoadMatch` ([`MatchManagement.cs:46`](../MatchManagement.cs)) | Reads a JSON file relative to `csgo/`. Console-only. |
-| `matchzy_loadmatch_url <url> [hdrName] [hdrVal]` / `get5_loadmatch_url` | `LoadMatchFromURL` ([`MatchManagement.cs:85`](../MatchManagement.cs)) | HTTP GET (optional custom header), then load. Console-only. |
+| `querator_loadmatch <file>` | `LoadMatch` ([`MatchManagement.cs:46`](../MatchManagement.cs)) | Reads a JSON file relative to `csgo/`. Console-only. |
+| `querator_loadmatch_url <url> [hdrName] [hdrVal]` / `get5_loadmatch_url` | `LoadMatchFromURL` ([`MatchManagement.cs:85`](../MatchManagement.cs)) | HTTP GET (optional custom header), then load. Console-only. |
 
 Both refuse if `isMatchSetup` already, and on parse/validation failure call `ResetMatch()`. Both funnel into
 **`LoadMatchFromJSON(jsonData)`** which:
@@ -101,8 +101,8 @@ Fields: `id`, `teamName` (required), `teamFlag`, `teamTag`, `teamPlayers` (`JTok
 ### Live roster commands
 | Command | Behavior |
 |---|---|
-| `matchzy_addplayer <steam64> <team1\|team2\|spec> "<name>"` / `get5_addplayer` | Adds to the team's `teamPlayers` JToken (or `spectators`). Refused if no match setup, during halftime, or if already rostered. |
-| `matchzy_removeplayer <steam64>` / `get5_removeplayer` | Removes from all teams; if the player is connected, **kicks** them. Refused during halftime. |
+| `querator_addplayer <steam64> <team1\|team2\|spec> "<name>"` / `get5_addplayer` | Adds to the team's `teamPlayers` JToken (or `spectators`). Refused if no match setup, during halftime, or if already rostered. |
+| `querator_removeplayer <steam64>` / `get5_removeplayer` | Removes from all teams; if the player is connected, **kicks** them. Refused during halftime. |
 
 `AddPlayerToTeam`/`RemovePlayerFromTeam` mutate the `JToken` rosters directly (JObject `steamid→name`, or JArray for
 some shapes) and call `LoadClientNames()`. Player→team mapping at connect uses `GetPlayerTeam` (steamid lookup in the

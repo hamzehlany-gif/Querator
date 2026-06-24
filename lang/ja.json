@@ -35,7 +35,7 @@
   "matchzy.backup.restoretacticaltimeout": "テクニカルポーズがアクティブな場合、このコマンドは使用できません。",
   "matchzy.backup.restoredoesntexist": "バックアップ ファイル {0} が存在しません。有効なバックアップを復元していることを確認してください。",
 
-  "matchzy.cvars.invalidvalue": "matchzy_chat_messages_timer_delay の値が無効です。有効な負でない数値を指定してください。",
+  "matchzy.cvars.invalidvalue": "querator_chat_messages_timer_delay の値が無効です。有効な負でない数値を指定してください。",
 
   "matchzy.cc.enabled": "{green}有効{default}",
   "matchzy.cc.disabled": "{red}無効{default}",
@@ -67,7 +67,7 @@
   "matchzy.cc.nomorepauses": "タイムアウトは残っていません!",
 
   "matchzy.mm.matchisalreadysetup": "[LoadMatch] マッチはすでにIDで設定されています: {green}{0}{default}, 新しいマッチをロードできません!",
-  "matchzy.mm.filedoesntexist": "[LoadMatch] 指定されたファイルは存在しません! 使用法: matchzy_loadmatch <filename>",
+  "matchzy.mm.filedoesntexist": "[LoadMatch] 指定されたファイルは存在しません! 使用法: querator_loadmatch <filename>",
   "matchzy.mm.matchloadfailed": "マッチのロードに失敗しました。現在のマッチをリセットしています",
   "matchzy.mm.get5matchisalreadysetup": "[LoadMatchDataCommand] マッチはすでにIDで設定されています: {0}, 新しいマッチをロードできません!",
   "matchzy.mm.invalidurl": "[LoadMatchDataCommand] 無効なURL: {green}{0}{default}. 試合を読み込むには有効な URL を入力してください。",

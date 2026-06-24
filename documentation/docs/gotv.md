@@ -14,9 +14,9 @@ ensure that it won't be shorter than what is required for the GOTV broadcast to 
 
 MatchZy records the demos automatically. It recording starts once all teams have readied up and ends following a map result.
 
-Path of demos can be configured using `matchzy_demo_path <directory>/`. If defined, it must not start with a slash and must end with a slash. Set to empty string to use the csgo root.
+Path of demos can be configured using `querator_demo_path <directory>/`. If defined, it must not start with a slash and must end with a slash. Set to empty string to use the csgo root.
 
-Demo files will be named according to `matchzy_demo_name_format`. The default format is: `"{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"`
+Demo files will be named according to `querator_demo_name_format`. The default format is: `"{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"`
 
 !!! info "Broadcast delay on GOTV recording"
 
@@ -27,10 +27,10 @@ Demo files will be named according to `matchzy_demo_name_format`. The default fo
 ## Automatic Upload
 
 In addition to recording demos, MatchZy can also upload them to a URL when the recording stops. You can define the upload URL with
-`matchzy_demo_upload_url <upload_url>`. The HTTP body will be the zipped demo file, and you can
+`querator_demo_upload_url <upload_url>`. The HTTP body will be the zipped demo file, and you can
 read the [headers](#headers) for file metadata.
 
-Example: `matchzy_demo_upload_url "https://your-website.com/upload-endpoint"`
+Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"`
 
 ### Headers
 

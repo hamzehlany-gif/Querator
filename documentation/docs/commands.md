@@ -4,7 +4,7 @@ Most of the commands can also be used using ! prefix instead of . (like !ready)
 - `.ready` Marks the player ready (Alias: `.r`)
 - `.unready` Marks the player unready (Alias: `.ur`, `.notready`)
 - `.forceready` Force-readies the player's team (Only works when using Match setup using JSON/Get5)
-- `.pause` Pauses the match in freezetime (Tactical or normal pause, depends on `matchzy_use_pause_command_for_tactical_pause`).
+- `.pause` Pauses the match in freezetime (Tactical or normal pause, depends on `querator_use_pause_command_for_tactical_pause`).
 - `.tech` Pauses the match in freezetime.
 - `.unpause` Request for unpausing the match. Both teams need to type .unpause to unpause the match
 - `.stay` Stays on the same side (For knife winner, after the knife round)

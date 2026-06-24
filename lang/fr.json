@@ -35,7 +35,7 @@
     "matchzy.backup.restoretacticaltimeout": "You cannot use this command when tactical timeout is active.",
     "matchzy.backup.restoredoesntexist": "Backup file {0} does not exist, please make sure you are restoring a valid backup.",
   
-    "matchzy.cvars.invalidvalue": "Invalid value for matchzy_chat_messages_timer_delay. Please specify a valid non-negative number.",
+    "matchzy.cvars.invalidvalue": "Invalid value for querator_chat_messages_timer_delay. Please specify a valid non-negative number.",
   
     "matchzy.cc.enabled": "{green}Enabled{default}",
     "matchzy.cc.disabled": "{red}Disabled{default}",
@@ -67,7 +67,7 @@
     "matchzy.cc.nomorepauses": "You do not have any tactical timeouts left!",
   
     "matchzy.mm.matchisalreadysetup": "[LoadMatch] A match is already setup with id: {green}{0}{default}, cannot load a new match!",
-    "matchzy.mm.filedoesntexist": "[LoadMatch] Provided file does not exist! Usage: matchzy_loadmatch <filename>",
+    "matchzy.mm.filedoesntexist": "[LoadMatch] Provided file does not exist! Usage: querator_loadmatch <filename>",
     "matchzy.mm.matchloadfailed": "Match load failed! Resetting current match",
     "matchzy.mm.get5matchisalreadysetup": "[LoadMatchDataCommand] A match is already setup with id: {0}, cannot load a new match!",
     "matchzy.mm.invalidurl": "[LoadMatchDataCommand] Invalid URL: {green}{0}{default}. Please provide a valid URL to load the match!",

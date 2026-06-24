@@ -43,7 +43,7 @@ namespace Querator
             HandleTeamNameChangeCommand(player, command.ArgString, 2);
         }
 
-        [ConsoleCommand("matchzy_loadmatch", "Loads a match from the given JSON file path (relative to the csgo/ directory)")]
+        [ConsoleCommand("querator_loadmatch", "Loads a match from the given JSON file path (relative to the csgo/ directory)")]
         public void LoadMatch(CCSPlayerController? player, CommandInfo command)
         {
             try
@@ -60,9 +60,9 @@ namespace Querator
                 string filePath = Path.Join(Server.GameDirectory + "/csgo", fileName);
                 if (!File.Exists(filePath)) 
                 {
-                    // command.ReplyToCommand($"[LoadMatch] Provided file does not exist! Usage: matchzy_loadmatch <filename>");
+                    // command.ReplyToCommand($"[LoadMatch] Provided file does not exist! Usage: querator_loadmatch <filename>");
                     ReplyToUserCommand(player, Localizer["matchzy.mm.filedoesntexist"]);
-                    Log($"[LoadMatch] Provided file does not exist! Usage: matchzy_loadmatch <filename>");
+                    Log($"[LoadMatch] Provided file does not exist! Usage: querator_loadmatch <filename>");
                     return;
                 }
                 string jsonData = File.ReadAllText(filePath);
@@ -83,7 +83,7 @@ namespace Querator
         }
 
         [ConsoleCommand("get5_loadmatch_url", "Loads a match from the given URL")]
-        [ConsoleCommand("matchzy_loadmatch_url", "Loads a match from the given URL")]
+        [ConsoleCommand("querator_loadmatch_url", "Loads a match from the given URL")]
         public void LoadMatchFromURL(CCSPlayerController? player, CommandInfo command)
         {
             if (player != null) return;

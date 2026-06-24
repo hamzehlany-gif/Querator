@@ -69,7 +69,7 @@ namespace Querator
             ReplyToUserCommand(player, "You are now not coaching any team!");
         }
 
-        [ConsoleCommand("matchzy_addplayer", "Adds player to the provided team")]
+        [ConsoleCommand("querator_addplayer", "Adds player to the provided team")]
         [ConsoleCommand("get5_addplayer", "Adds player to the provided team")]
         public void OnAddPlayerCommand(CCSPlayerController? player, CommandInfo? command)
         {
@@ -85,7 +85,7 @@ namespace Querator
             }
             if (command.ArgCount < 3)
             {
-                command.ReplyToCommand("Usage: matchzy_addplayer <steam64> <team> \"<name>\"");
+                command.ReplyToCommand("Usage: querator_addplayer <steam64> <team> \"<name>\"");
                 return; 
             }
 
@@ -115,7 +115,7 @@ namespace Querator
             command.ReplyToCommand($"Player {playerName} added to {playerTeam} successfully!");
         }
 
-        [ConsoleCommand("matchzy_removeplayer", "Removes the player from all the teams")]
+        [ConsoleCommand("querator_removeplayer", "Removes the player from all the teams")]
         [ConsoleCommand("get5_removeplayer", "Removes the player from all the teams")]
         [CommandHelper(minArgs: 1, usage: "<steam64>")]
         public void OnRemovePlayerCommand(CCSPlayerController? player, CommandInfo? command)

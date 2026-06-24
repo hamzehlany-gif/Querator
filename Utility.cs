@@ -123,7 +123,7 @@ namespace Querator
 
         private bool IsPlayerAdmin(CCSPlayerController? player, string command = "", params string[] permissions)
         {
-            if (everyoneIsAdmin.Value) return true; // Everyone is treated as admin if matchzy_everyone_is_admin is true.
+            if (everyoneIsAdmin.Value) return true; // Everyone is treated as admin if querator_everyone_is_admin is true.
             string[] updatedPermissions = permissions.Concat(new[] { "@css/root" }).ToArray();
             RequiresPermissionsOr attr = new(updatedPermissions)
             {
@@ -318,8 +318,8 @@ namespace Querator
             StartDemoRecording();
 
             // Storing 0-0 score backup file as lastBackupFileName, so that .stop functions properly in first round.
-            lastBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.txt";
-            lastQueratorBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.json";
+            lastBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.txt";
+            lastQueratorBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.json";
 
             // This is to reload the map once it is over so that all flags are reset accordingly
             Server.ExecuteCommand("mp_match_end_restart true");
@@ -1078,8 +1078,8 @@ namespace Querator
                     });
 
                     string round = GetRoundNumer().ToString("D2");
-                    lastBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt";
-                    lastQueratorBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
+                    lastBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt";
+                    lastQueratorBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
                     Log($"[HandlePostRoundEndEvent] Setting lastBackupFileName to {lastBackupFileName} and lastQueratorBackupFileName to {lastQueratorBackupFileName}");
 
                     // One of the team did not use .stop command hence display the proper message after the round has ended.

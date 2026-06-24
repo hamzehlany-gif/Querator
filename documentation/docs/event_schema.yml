@@ -6,7 +6,7 @@ info:
   description: |
     This is the documentation of all JSON events and native plugin forwards for MatchZy. All HTTP events get
     sent as POST requests to the root of the URL you provided for
-    [`matchzy_remote_log_url`](configuration#matchzy_remote_log_url) in your MatchZy configuration. You should inspect the value
+    [`querator_remote_log_url`](configuration#querator_remote_log_url) in your MatchZy configuration. You should inspect the value
     of the `event` property to determine the type of event. You cannot select which events to receive, but you can
     instead discard the ones you don't need.
 
@@ -597,7 +597,7 @@ components:
               example: "1324_map_0_de_nuke.dem"
               description: |
                 The name of the file containing the CSTV recording of the map. The format is determined by the
-                `matchzy_demo_name_format` parameter.
+                `querator_demo_name_format` parameter.
 tags:
   - name: All Events
     description: Forward fired for all events.

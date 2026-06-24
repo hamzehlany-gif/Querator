@@ -35,7 +35,7 @@
   "matchzy.backup.restoretacticaltimeout": "Você não pode usar este comando quando o tempo técnico está ativo.",
   "matchzy.backup.restoredoesntexist": "O arquivo de backup {0} não existe, por favor, certifique-se de estar restaurando um backup válido.",
 
-  "matchzy.cvars.invalidvalue": "Valor inválido para {darkred}matchzy_chat_messages_timer_delay{default}. Por favor, especifique um número válido não negativo.",
+  "matchzy.cvars.invalidvalue": "Valor inválido para {darkred}querator_chat_messages_timer_delay{default}. Por favor, especifique um número válido não negativo.",
 
   "matchzy.cc.enabled": "{green}Habilitado{default}",
   "matchzy.cc.disabled": "{darkred}Desabilitado{default}",
@@ -67,7 +67,7 @@
   "matchzy.cc.nomorepauses": "Você não tem mais tempos técnicos disponíveis!",
 
   "matchzy.mm.matchisalreadysetup": "[LoadMatch] Já há uma partida configurada com o ID: {green}{0}{default}, não é possível carregar uma nova partida!",
-  "matchzy.mm.filedoesntexist": "[LoadMatch] O arquivo fornecido não existe! Use: matchzy_loadmatch <nome do arquivo>",
+  "matchzy.mm.filedoesntexist": "[LoadMatch] O arquivo fornecido não existe! Use: querator_loadmatch <nome do arquivo>",
   "matchzy.mm.matchloadfailed": "Falha ao carregar a partida! Restaurando a partida atual",
   "matchzy.mm.get5matchisalreadysetup": "[LoadMatchDataCommand] Já há uma partida configurada com o ID: {0}, não é possível carregar uma nova partida!",
   "matchzy.mm.invalidurl": "[LoadMatchDataCommand] URL inválida: {green}{0}{default}. Por favor, forneça uma URL válida para carregar a partida!",
