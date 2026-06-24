@@ -23,10 +23,10 @@ namespace Querator
 
         public string loadedConfigFile = "";
 
-        public Team matchzyTeam1 = new() {
+        public Team queratorTeam1 = new() {
             teamName = "COUNTER-TERRORISTS"
         };
-        public Team matchzyTeam2 = new() {
+        public Team queratorTeam2 = new() {
             teamName = "TERRORISTS"
         };
 
@@ -272,13 +272,13 @@ namespace Querator
             JToken team2 = jsonDataObject["team2"]!;
             JToken maplist = jsonDataObject["maplist"]!;
 
-            if (team1["id"] != null) matchzyTeam1.id = team1["id"]!.ToString();
-            if (team2["id"] != null) matchzyTeam2.id = team2["id"]!.ToString();
+            if (team1["id"] != null) queratorTeam1.id = team1["id"]!.ToString();
+            if (team2["id"] != null) queratorTeam2.id = team2["id"]!.ToString();
 
-            matchzyTeam1.teamName = RemoveSpecialCharacters(team1["name"]!.ToString());
-            matchzyTeam2.teamName = RemoveSpecialCharacters(team2["name"]!.ToString());
-            matchzyTeam1.teamPlayers = team1["players"];
-            matchzyTeam2.teamPlayers = team2["players"];
+            queratorTeam1.teamName = RemoveSpecialCharacters(team1["name"]!.ToString());
+            queratorTeam2.teamName = RemoveSpecialCharacters(team2["name"]!.ToString());
+            queratorTeam1.teamPlayers = team1["players"];
+            queratorTeam2.teamPlayers = team2["players"];
 
             matchConfig = new()
             {
@@ -372,8 +372,8 @@ namespace Querator
             {
                 MatchId = liveMatchId,
                 NumberOfMaps = matchConfig.NumMaps,
-                Team1 = new(matchzyTeam1.id, matchzyTeam1.teamName),
-                Team2 = new(matchzyTeam2.id, matchzyTeam2.teamName),
+                Team1 = new(queratorTeam1.id, queratorTeam1.teamName),
+                Team2 = new(queratorTeam2.id, queratorTeam2.teamName),
             };
 
             Task.Run(async () => {
@@ -388,18 +388,18 @@ namespace Querator
             int mapNumber = matchConfig.CurrentMapNumber;
             if (matchConfig.MapSides[mapNumber] == "team1_ct" || matchConfig.MapSides[mapNumber] == "team2_t")
             {
-                teamSides[matchzyTeam1] = "CT";
-                teamSides[matchzyTeam2] = "TERRORIST";
-                reverseTeamSides["CT"] = matchzyTeam1;
-                reverseTeamSides["TERRORIST"] = matchzyTeam2;
+                teamSides[queratorTeam1] = "CT";
+                teamSides[queratorTeam2] = "TERRORIST";
+                reverseTeamSides["CT"] = queratorTeam1;
+                reverseTeamSides["TERRORIST"] = queratorTeam2;
                 isKnifeRequired = false;
             }
             else if (matchConfig.MapSides[mapNumber] == "team2_ct" || matchConfig.MapSides[mapNumber] == "team1_t")
             {
-                teamSides[matchzyTeam2] = "CT";
-                teamSides[matchzyTeam1] = "TERRORIST";
-                reverseTeamSides["CT"] = matchzyTeam2;
-                reverseTeamSides["TERRORIST"] = matchzyTeam1;
+                teamSides[queratorTeam2] = "CT";
+                teamSides[queratorTeam1] = "TERRORIST";
+                reverseTeamSides["CT"] = queratorTeam2;
+                reverseTeamSides["TERRORIST"] = queratorTeam1;
                 isKnifeRequired = false;
             }
             else if (matchConfig.MapSides[mapNumber] == "knife")
@@ -505,20 +505,20 @@ namespace Querator
             }
 
             if (teamNum == 1) {
-                matchzyTeam1.teamName = teamName;
-                teamSides[matchzyTeam1] = "CT";
-                reverseTeamSides["CT"] = matchzyTeam1;
-                foreach (var coach in matchzyTeam1.coach)
+                queratorTeam1.teamName = teamName;
+                teamSides[queratorTeam1] = "CT";
+                reverseTeamSides["CT"] = queratorTeam1;
+                foreach (var coach in queratorTeam1.coach)
                 {
-                    coach.Clan = $"[{matchzyTeam1.teamName} COACH]";
+                    coach.Clan = $"[{queratorTeam1.teamName} COACH]";
                 }
             } else if (teamNum == 2) {
-                matchzyTeam2.teamName = teamName;
-                teamSides[matchzyTeam2] = "TERRORIST";
-                reverseTeamSides["TERRORIST"] = matchzyTeam2;
-                foreach (var coach in matchzyTeam2.coach)
+                queratorTeam2.teamName = teamName;
+                teamSides[queratorTeam2] = "TERRORIST";
+                reverseTeamSides["TERRORIST"] = queratorTeam2;
+                foreach (var coach in queratorTeam2.coach)
                 {
-                    coach.Clan = $"[{matchzyTeam2.teamName} COACH]";
+                    coach.Clan = $"[{queratorTeam2.teamName} COACH]";
                 }
             }
             Server.ExecuteCommand($"mp_teamname_{teamNum} {teamName};");
@@ -526,11 +526,11 @@ namespace Querator
 
         public void SwapSidesInTeamData(bool swapTeams) {
             // if (swapTeams) {
-            //     // Here, we sync matchzyTeam1 and matchzyTeam2 with the actual team1 and team2
-            //     (matchzyTeam2, matchzyTeam1) = (matchzyTeam1, matchzyTeam2);
+            //     // Here, we sync queratorTeam1 and queratorTeam2 with the actual team1 and team2
+            //     (queratorTeam2, queratorTeam1) = (queratorTeam1, queratorTeam2);
             // }
 
-            (teamSides[matchzyTeam1], teamSides[matchzyTeam2]) = (teamSides[matchzyTeam2], teamSides[matchzyTeam1]);
+            (teamSides[queratorTeam1], teamSides[queratorTeam2]) = (teamSides[queratorTeam2], teamSides[queratorTeam1]);
             (reverseTeamSides["CT"], reverseTeamSides["TERRORIST"]) = (reverseTeamSides["TERRORIST"], reverseTeamSides["CT"]);
         }
 
@@ -540,25 +540,25 @@ namespace Querator
             var steamId = player.SteamID;
             try
             {
-                if (matchzyTeam1.teamPlayers != null && matchzyTeam1.teamPlayers[steamId.ToString()] != null)
+                if (queratorTeam1.teamPlayers != null && queratorTeam1.teamPlayers[steamId.ToString()] != null)
                 {
-                    if (teamSides[matchzyTeam1] == "CT")
+                    if (teamSides[queratorTeam1] == "CT")
                     {
                         playerTeam = CsTeam.CounterTerrorist;
                     }
-                    else if (teamSides[matchzyTeam1] == "TERRORIST")
+                    else if (teamSides[queratorTeam1] == "TERRORIST")
                     {
                         playerTeam = CsTeam.Terrorist;
                     }
 
                 }
-                else if (matchzyTeam2.teamPlayers != null && matchzyTeam2.teamPlayers[steamId.ToString()] != null)
+                else if (queratorTeam2.teamPlayers != null && queratorTeam2.teamPlayers[steamId.ToString()] != null)
                 {
-                    if (teamSides[matchzyTeam2] == "CT")
+                    if (teamSides[queratorTeam2] == "CT")
                     {
                         playerTeam = CsTeam.CounterTerrorist;
                     }
-                    else if (teamSides[matchzyTeam2] == "TERRORIST")
+                    else if (teamSides[queratorTeam2] == "TERRORIST")
                     {
                         playerTeam = CsTeam.Terrorist;
                     }
@@ -578,22 +578,22 @@ namespace Querator
         public void EndSeries(string? winnerName, int restartDelay, int t1score, int t2score)
         {
             long matchId = liveMatchId;
-            (int team1Score, int team2Score) = (matchzyTeam1.seriesScore, matchzyTeam2.seriesScore);
+            (int team1Score, int team2Score) = (queratorTeam1.seriesScore, queratorTeam2.seriesScore);
             if (winnerName == null)
             {
-                PrintToAllChat($"{ChatColors.Green}{matchzyTeam1.teamName}{ChatColors.Default} and {ChatColors.Green}{matchzyTeam2.teamName}{ChatColors.Default} have tied the match");
+                PrintToAllChat($"{ChatColors.Green}{queratorTeam1.teamName}{ChatColors.Default} and {ChatColors.Green}{queratorTeam2.teamName}{ChatColors.Default} have tied the match");
             }
             else
             {
                 Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{winnerName}{ChatColors.Default} has won the match");
             }
 
-            string winnerTeam = (winnerName == null) ? "none" : matchzyTeam1.seriesScore > matchzyTeam2.seriesScore ? "team1" : "team2";
+            string winnerTeam = (winnerName == null) ? "none" : queratorTeam1.seriesScore > queratorTeam2.seriesScore ? "team1" : "team2";
 
             var seriesResultEvent = new QueratorSeriesResultEvent()
             {
                 MatchId = matchId,
-                Winner = new Winner(t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2", winnerTeam),
+                Winner = new Winner(t1score > t2score && reverseTeamSides["CT"] == queratorTeam1 ? "3" : "2", winnerTeam),
                 Team1SeriesScore = team1Score,
                 Team2SeriesScore = team2Score,
                 TimeUntilRestore = 10,

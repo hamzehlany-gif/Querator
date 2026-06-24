@@ -137,22 +137,22 @@ namespace Querator
 
                 get5Status.Team1 = new Get5StatusTeam
                 {
-                    Name = matchzyTeam1.teamName,
-                    SeriesScore = matchzyTeam1.seriesScore,
+                    Name = queratorTeam1.teamName,
+                    SeriesScore = queratorTeam1.seriesScore,
                     CurrentMapScore = team1,
                     ConnectedClients = -1,
                     Ready = ready,
-                    Side = teamSides[matchzyTeam1].ToLower()
+                    Side = teamSides[queratorTeam1].ToLower()
                 };
 
                 get5Status.Team2 = new Get5StatusTeam
                 {
-                    Name = matchzyTeam2.teamName,
-                    SeriesScore = matchzyTeam2.seriesScore,
+                    Name = queratorTeam2.teamName,
+                    SeriesScore = queratorTeam2.seriesScore,
                     CurrentMapScore = team2,
                     ConnectedClients = -1,
                     Ready = ready,
-                    Side = teamSides[matchzyTeam2].ToLower()
+                    Side = teamSides[queratorTeam2].ToLower()
                 };
             }
 

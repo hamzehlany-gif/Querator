@@ -1083,7 +1083,7 @@ namespace Querator
                 Utilities.SetStateChanged(pawn, "CBaseEntity", "m_MoveType");
             }
 
-            if (matchStarted && (matchzyTeam1.coach.Contains(player!) || matchzyTeam2.coach.Contains(player!)))
+            if (matchStarted && (queratorTeam1.coach.Contains(player!) || queratorTeam2.coach.Contains(player!)))
             {
                 player!.InGameMoneyServices!.Account = 0;
 

@@ -90,15 +90,15 @@ public partial class Querator
             }
             playerData.Remove(userId);
 
-            if (matchzyTeam1.coach.Contains(player))
+            if (queratorTeam1.coach.Contains(player))
             {
-                matchzyTeam1.coach.Remove(player);
+                queratorTeam1.coach.Remove(player);
                 SetPlayerVisible(player);
                 player.Clan = "";
             }
-            else if (matchzyTeam2.coach.Contains(player))
+            else if (queratorTeam2.coach.Contains(player))
             {
-                matchzyTeam2.coach.Remove(player);
+                queratorTeam2.coach.Remove(player);
                 SetPlayerVisible(player);
                 player.Clan = "";
             }
@@ -284,7 +284,7 @@ public partial class Querator
 
             if (@event.Attacker == @event.Userid)
             {
-                if (matchzyTeam1.coach.Contains(@event.Attacker!) || matchzyTeam2.coach.Contains(@event.Attacker!))
+                if (queratorTeam1.coach.Contains(@event.Attacker!) || queratorTeam2.coach.Contains(@event.Attacker!))
                 {
                     info.DontBroadcast = true;
                 }

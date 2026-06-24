@@ -282,29 +282,29 @@ namespace Querator
                 }
                 if (backupData.TryGetValue("team1", out var team1config))
                 {
-                    matchzyTeam1 = Newtonsoft.Json.JsonConvert.DeserializeObject<Team>(team1config)!;
+                    queratorTeam1 = Newtonsoft.Json.JsonConvert.DeserializeObject<Team>(team1config)!;
                 }
                 if (backupData.TryGetValue("team2", out var team2config))
                 {
-                    matchzyTeam2 = Newtonsoft.Json.JsonConvert.DeserializeObject<Team>(team2config)!;
+                    queratorTeam2 = Newtonsoft.Json.JsonConvert.DeserializeObject<Team>(team2config)!;
                 }
                 if (backupData.TryGetValue("team1_side", out var team1Side))
                 {
 
                     if (team1Side == "CT")
                     {
-                        teamSides[matchzyTeam1] = "CT";
-                        reverseTeamSides["CT"] = matchzyTeam1;
-                        teamSides[matchzyTeam2] = "TERRORIST";
-                        reverseTeamSides["TERRORIST"] = matchzyTeam2;
+                        teamSides[queratorTeam1] = "CT";
+                        reverseTeamSides["CT"] = queratorTeam1;
+                        teamSides[queratorTeam2] = "TERRORIST";
+                        reverseTeamSides["TERRORIST"] = queratorTeam2;
                         // SwapSidesInTeamData(false);
                     }
                     else if (team1Side == "TERRORIST")
                     {
-                        teamSides[matchzyTeam1] = "TERRORIST";
-                        reverseTeamSides["TERRORIST"] = matchzyTeam1;
-                        teamSides[matchzyTeam2] = "CT";
-                        reverseTeamSides["CT"] = matchzyTeam2;
+                        teamSides[queratorTeam1] = "TERRORIST";
+                        reverseTeamSides["TERRORIST"] = queratorTeam1;
+                        teamSides[queratorTeam2] = "CT";
+                        reverseTeamSides["CT"] = queratorTeam2;
                         // SwapSidesInTeamData(false);
                     }
                 }
@@ -391,17 +391,17 @@ namespace Querator
             }
         }
 
-        public void CreateMatchZyRoundDataBackup()
+        public void CreateQueratorRoundDataBackup()
         {
-            Log($"[CreateMatchZyRoundDataBackup] isRoundRestoring: {isRoundRestoring} isMatchLive: {isMatchLive}");
+            Log($"[CreateQueratorRoundDataBackup] isRoundRestoring: {isRoundRestoring} isMatchLive: {isMatchLive}");
             if (!isMatchLive || isRoundRestoring) return;
             try
             {
                 (int t1score, int t2score) = GetTeamsScore();
                 int roundNumber = t1score + t2score;
                 string round = roundNumber.ToString("D2");
-                string matchZyBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
-                string filePath = Path.Combine(Server.GameDirectory, "csgo", "QueratorDataBackup", matchZyBackupFileName);
+                string queratorBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
+                string filePath = Path.Combine(Server.GameDirectory, "csgo", "QueratorDataBackup", queratorBackupFileName);
 
                 string? directoryPath = Path.GetDirectoryName(filePath);
                 if (directoryPath != null && !Directory.Exists(directoryPath))
@@ -425,18 +425,18 @@ namespace Querator
                         { "round", round },
                         { "team1", GetTeamConfig("team1") },
                         { "team2", GetTeamConfig("team2") },
-                        { "team1_name", matchzyTeam1.teamName },
-                        { "team1_flag", matchzyTeam1.teamFlag },
-                        { "team1_tag", matchzyTeam1.teamTag },
-                        { "team1_side", teamSides[matchzyTeam1] },
-                        { "team2_name", matchzyTeam2.teamName },
-                        { "team2_flag", matchzyTeam2.teamFlag },
-                        { "team2_tag", matchzyTeam2.teamTag },
-                        { "team2_side", teamSides[matchzyTeam2] },
+                        { "team1_name", queratorTeam1.teamName },
+                        { "team1_flag", queratorTeam1.teamFlag },
+                        { "team1_tag", queratorTeam1.teamTag },
+                        { "team1_side", teamSides[queratorTeam1] },
+                        { "team2_name", queratorTeam2.teamName },
+                        { "team2_flag", queratorTeam2.teamFlag },
+                        { "team2_tag", queratorTeam2.teamTag },
+                        { "team2_side", teamSides[queratorTeam2] },
                         { "team1_score", t1score.ToString() },
                         { "team2_score", t2score.ToString() },
-                        { "team1_series_score", matchzyTeam1.seriesScore.ToString() },
-                        { "team2_series_score", matchzyTeam2.seriesScore.ToString() },
+                        { "team1_series_score", queratorTeam1.seriesScore.ToString() },
+                        { "team2_series_score", queratorTeam2.seriesScore.ToString() },
                         { "TerroristTimeOuts", gameRules.TerroristTimeOuts.ToString() },
                         { "CTTimeOuts", gameRules.CTTimeOuts.ToString() },
                         { "match_loaded", isMatchSetup.ToString() },
@@ -458,7 +458,7 @@ namespace Querator
             }
             catch (Exception e)
             {
-                Log($"[CreateMatchZyRoundDataBackup FATAL] Error creating the JSON file: {e.Message}");
+                Log($"[CreateQueratorRoundDataBackup FATAL] Error creating the JSON file: {e.Message}");
             }
         }
 
@@ -538,7 +538,7 @@ namespace Querator
 
         public string GetTeamConfig(string team)
         {
-            Team teamConfig = team == "team1" ? matchzyTeam1 : matchzyTeam2;
+            Team teamConfig = team == "team1" ? queratorTeam1 : queratorTeam2;
             return Newtonsoft.Json.JsonConvert.SerializeObject(teamConfig);
         }
 

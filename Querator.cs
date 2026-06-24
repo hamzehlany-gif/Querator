@@ -93,10 +93,10 @@ namespace Querator
             // This sets default config ConVars
             Server.ExecuteCommand("execifexists Querator/config.cfg");
 
-            teamSides[matchzyTeam1] = "CT";
-            teamSides[matchzyTeam2] = "TERRORIST";
-            reverseTeamSides["CT"] = matchzyTeam1;
-            reverseTeamSides["TERRORIST"] = matchzyTeam2;
+            teamSides[queratorTeam1] = "CT";
+            teamSides[queratorTeam2] = "TERRORIST";
+            reverseTeamSides["CT"] = queratorTeam1;
+            reverseTeamSides["TERRORIST"] = queratorTeam2;
 
             if (!hotReload) {
                 AutoStart();
@@ -223,7 +223,7 @@ namespace Querator
                 CCSPlayerController? player = @event.Userid;
                 if (!IsPlayerValid(player)) return HookResult.Continue;
 
-                if (matchzyTeam1.coach.Contains(player!) || matchzyTeam2.coach.Contains(player!)) {
+                if (queratorTeam1.coach.Contains(player!) || queratorTeam2.coach.Contains(player!)) {
                     @event.Silent = true;
                     return HookResult.Changed;
                 }
