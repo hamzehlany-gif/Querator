@@ -24,7 +24,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | config-root `'matchzy'` + version component-key `matchzy` | `'querator'` | SP-B6 (coupled + Mongo migration) | **code done across node-agent + lanyBot + lany (branches), gates green**; Mongo migration script written, run at cutover |
 | `matchzy_stats_*` tables / `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `querator_stats_*` / `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | **code done (Querator + node-agent seed, branch)**; per-server data migration at cutover |
 | `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env | `QUERATOR_*` | SP-B8 (coupled) | **code done (node-agent + lanyBot + lany, branches)**; server `.env` rename at cutover |
-| release `MatchZy-*.zip` + upstream release source | `Querator-*.zip` + fork source | Phase C | planned |
+| release `MatchZy-*.zip` + upstream release source | `Querator-*.zip` + fork source | SP-C1 (Phase C) | **code done (build.yml + fleet source, branches)**; release + switch at cutover |
 | lany-docs MatchZy references (37 refs/10 files) | Querator | Phase C | planned |
 | `get5_*` surface | (decision: keep; optional removal later) | post-rebrand | deferred (D7) |
 | `lastMatchZyBackupFileName` (variable) | `lastQueratorBackupFileName` | SP2 | done |
@@ -382,3 +382,22 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ Querator publish; ✅ node-agent 267 + lint.
 - **Merge:** `rebrand-b-b9-cfgdir` → `rebrand-b` (Querator + node-agent; local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b9-cfgdir` branches; `git mv` back.
+
+## Phase C — fleet cutover + release pipeline + sweeps
+
+### SP-C1 — release pipeline + fleet source MatchZy → Querator (Phase C) — 2026-06-24 — ✅ code done (branches, gates green); ⏳ release + switch happen at cutover
+- **Branch:** `rebrand-c` (off `rebrand-b`) in Querator + lanyBot + lany.
+- **Querator `build.yml`:** asset `MatchZy-*.zip` → `Querator-*.zip` (3 zips), publish path `plugins/MatchZy` →
+  `plugins/Querator`, version var `MATCHZY_VERSION` → `QUERATOR_VERSION`, release name/body + Discord message →
+  Querator, CHANGELOG link → `hamzehlany-gif/Querator`. Runs on push to `main` only — inert until cutover.
+- **lanyBot:** fleet release source `config/index.ts` default URL → `hamzehlany-gif/Querator/releases/latest`;
+  `updateResolver.service.ts` asset regex `/^MatchZy-.*\.zip$/i` → `/^Querator-.*\.zip$/i`; test fixture + mock matcher
+  updated. Build + lint + 455 tests green.
+- **lany:** `QUERATOR_TEMPLATE_URL` value → the fork `Querator-1.0.0.zip`. Build + lint + 62 tests green.
+- **§8a:** resolved as a `targetPath` concern, not a flat-zip rework — the csgo-rooted zip installs correctly at the
+  **csgo root** (which the frontend template + auto-update already use); the fix is re-provisioning nested servers at cutover.
+- **Kept (NOT SP-C1):** the `MatchZy-*` demo-upload HTTP headers (coupled Querator↔lanyBot header sweep); upstream
+  MatchZy attribution.
+- **⚠️ Deploy:** NOT released/deployed. Pushing Querator `main` cuts the public release + Discord; the fleet-source
+  switch takes effect when lanyBot deploys. Full manual steps: **`docs/CUTOVER-RUNBOOK.md`** (added this sub-phase).
+- **State:** committed on `rebrand-c` (off `rebrand-b`) in Querator/lanyBot/lany; pushed; not merged to `dev`/`main`.
