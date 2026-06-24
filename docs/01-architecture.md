@@ -21,8 +21,9 @@ other doc can assume this context.
 > **Naming note:** the fork is *Querator*. Done (on `rebrand-b` branches, not yet deployed): **C# namespace + class**
 > (`Querator`, SP2), **module name** → `"Querator"` (SP-B1), **cosmetics** (version/author/banner/chat-prefix, SP3),
 > the **DLL + entry file** → `Querator.dll` / `Querator.cs` (SP-B2); the **ConVar prefix** `matchzy_` → `querator_`
-> (SP-B3). The rest still uses the MatchZy name (lang keys `matchzy.*`, the on-fleet `plugins/MatchZy`/`cfg/MatchZy`
-> paths, `matchzy_stats_*` tables, `/api/matchzy`, `x-matchzy-secret`, string-literal paths) — renamed in later,
+> (SP-B3); the **`/api/matchzy`** routes → `/api/querator` (SP-B4). The rest still uses the MatchZy name (lang keys
+> `matchzy.*`, the on-fleet `plugins/MatchZy`/`cfg/MatchZy` paths, `matchzy_stats_*` tables, `x-matchzy-secret`,
+> string-literal paths) — renamed in later,
 > mostly cross-repo coupled sub-phases. See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 
 ---

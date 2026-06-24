@@ -19,7 +19,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `MatchZy.dll`/`MatchZy.cs`/`MatchZy.csproj` / `plugins/MatchZy` | `Querator.dll`/`.cs`/`.csproj` / `plugins/Querator` | SP-B2 (coupled) | **Querator + node-agent + lany done (branches)**; deploy + release pipeline (SP-C1) pending |
 | `cfg/MatchZy/` | `cfg/Querator/` | SP-B2/B3 (coupled, node-agent env) | planned |
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | **done across all 4 repos (branches)**; deploy/re-seed at cutover |
-| `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | planned |
+| `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | planned |
 | config-root `'matchzy'` | `'querator'` | SP-B6 (coupled + Mongo migration) | planned |
 | `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | planned |
@@ -264,3 +264,21 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ all 4 per-repo gates green (above). No deploy / VM e2e (cutover only).
 - **Merge:** `rebrand-b-b3-cvars` → `rebrand-b` in each repo (local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b3-cvars` branches across the 4 repos as a unit.
+
+### SP-B4 — `/api/matchzy/*` → `/api/querator/*` (Phase B) — 2026-06-24 — ✅ done (branches, gates green); ⏳ deploy at cutover
+- **Branches:** `rebrand-b-b4-api` in **lanyBot + lany-node-agent + Querator** (lany has no `/api/matchzy` refs).
+- **lanyBot:** the webhook/config route paths + callers — `core/WebServer.ts` (rate-limit skip),
+  `routes/matchzy.routes.ts` (route mounts), `controllers/matchzy.controller.ts` (doc comments),
+  `controllers/commands/admin.controller.ts` (config URL), `services/matchzy.service.ts` (the
+  `querator_remote_log_url`/`_demo_upload_url`/loadmatch URL values), `__tests__/utils/trace.test.ts` fixtures.
+  Build + lint + 455 tests green.
+- **lany-node-agent:** `docs/config-template-seed.json` (the `config.cfg` template URL values) +
+  `docs/orchestrator-api-spec.md` (`/webhook/matchzy` example → `/webhook/querator`). 267 tests + lint green.
+- **Querator:** no code (the plugin POSTs to whatever URL the cvar holds); only the two "still-MatchZy" naming notes.
+- **Kept:** the `matchzy.controller.ts`/`matchzy.routes.ts`/`matchzy.service.ts` file names + the `matchzy` component
+  key (later file-name/key sweep); the upstream `github.com/.../MatchZy/releases` source URL (SP-C1).
+- **⚠️ Deploy:** NOT deployed. The plugin's `querator_remote_log_url` (set by lanyBot/template) now points at
+  `/api/querator/*`, matching the renamed lanyBot route — they flip together at cutover (with the B3 template re-seed).
+- **Verification:** ✅ lanyBot build+lint+455; ✅ node-agent 267+lint; Querator docs-only.
+- **Merge:** `rebrand-b-b4-api` → `rebrand-b` in each repo (local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b4-api` branches across the 3 repos.
