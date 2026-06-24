@@ -77,10 +77,10 @@ between in-game stats and both the DB and the remote-log/panel shapes** (see
 
 ---
 
-## 3. Runtime config files — `cfg/MatchZy/`
+## 3. Runtime config files — `cfg/Querator/`
 
 These are **not** compiled into the DLL. The release workflow copies `cfg/` into `csgo/cfg/`; for a manual deploy you
-copy them yourself (see [02](02-build-test-deploy.md)). The plugin reads them from `csgo/cfg/MatchZy/` at runtime.
+copy them yourself (see [02](02-build-test-deploy.md)). The plugin reads them from `csgo/cfg/Querator/` at runtime.
 
 ### Phase configs (executed via `exec` on each transition)
 | File | When | Notes |
@@ -137,7 +137,7 @@ querator_match_start_message            ""
 (Header comment says "Do not add commands other than matchzy config console variables." Full per-ConVar reference:
 [04](04-commands-and-convars.md#6-convars).)
 
-### JSON / data files (in `cfg/MatchZy/`)
+### JSON / data files (in `cfg/Querator/`)
 | File | Shape | Purpose |
 |---|---|---|
 | `admins.json` | `{ "<steam64>": "<role>" }` | MatchZy's own admin list (empty role = full admin). Auto-created with a `{"steamid":""}` placeholder if missing. Loaded by `LoadAdmins`; reload with `.reload_admins`. |

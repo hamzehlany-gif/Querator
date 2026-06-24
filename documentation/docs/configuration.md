@@ -1,6 +1,6 @@
 # Configuration
 
-All the configuration files related to MatchZy can be found in `csgo/cfg/MatchZy` (If you have extracted the contents properly, `MatchZy` folder should be there inside the cfg folder).
+All the configuration files related to MatchZy can be found in `csgo/cfg/Querator` (If you have extracted the contents properly, `MatchZy` folder should be there inside the cfg folder).
 
 ### Creating Admins
 There are two ways to create an admin for MatchZy; you can choose the most convenient one according to your preference.
@@ -38,7 +38,7 @@ There are two ways to create an admin for MatchZy; you can choose the most conve
 
 2. **Using MatchZy's Admin system:**
 
-    Inside `csgo/cfg/MatchZy`, a file named `admins.json` should be present. If it is not there, it will be automatically created when the plugin is loaded. You can add Steam64 id of admins in that JSON file like mentioned in the below example:
+    Inside `csgo/cfg/Querator`, a file named `admins.json` should be present. If it is not there, it will be automatically created when the plugin is loaded. You can add Steam64 id of admins in that JSON file like mentioned in the below example:
 
     ```json
     {
@@ -48,7 +48,7 @@ There are two ways to create an admin for MatchZy; you can choose the most conve
     ```
 
 ### Configuring MatchZy Settings (ConVars)
-Again, inside `csgo/cfg/MatchZy`, a file named `config.cfg` should be present. This file is executed whenever the plugin is loaded. If you make any changes in this file and want to reload the config, simply execute `exec MatchZy/config.cfg` command on the server.
+Again, inside `csgo/cfg/Querator`, a file named `config.cfg` should be present. This file is executed whenever the plugin is loaded. If you make any changes in this file and want to reload the config, simply execute `exec MatchZy/config.cfg` command on the server.
 
 ####`querator_knife_enabled_default`
 :   Whether knife round is enabled by default or not. This is the default value, but knife can be toggled by [admins](#creating-admins) using .roundknife command.<br>**`Default: true`**
@@ -155,14 +155,14 @@ Example: `querator_demo_upload_url "https://your-website.com/upload-endpoint"` <
 :   Removes a Steam64 from all teams
 
 ### Configuring Warmup/Knife/Live/Prac CFGs
-Again, inside `csgo/cfg/MatchZy`, files named `warmup.cfg`, `knife.cfg`, `live.cfg` and `prac.cfg` should be present. These configs are executed when Warmup, Knife, Live and Practice Mode is started respectively.
+Again, inside `csgo/cfg/Querator`, files named `warmup.cfg`, `knife.cfg`, `live.cfg` and `prac.cfg` should be present. These configs are executed when Warmup, Knife, Live and Practice Mode is started respectively.
 
 You can modify these files according to your requirements, or add live_override.cfg / live_wingman_override.cfg to make "overriding" config.
 
 If these configs are not found in the expected location, MatchZy executes the default configs which are present in the code.
 
 ### Whitelisting players
-Again, inside `csgo/cfg/MatchZy`, there will be a file called `whitelist.cfg`. You can add Steam64 id of whitelisted players like mentioned in the below example:
+Again, inside `csgo/cfg/Querator`, there will be a file called `whitelist.cfg`. You can add Steam64 id of whitelisted players like mentioned in the below example:
 
 ```
 76561198154367261
@@ -180,7 +180,7 @@ Whereas, `querator_stats_players` stores data/stats of every player who played i
 
 ### Using MySQL Database with MatchZy
 
-To use MySQL Database with MatchZy, open `csgo/cfg/MatchZy/database.json` file. It's content will be like this:
+To use MySQL Database with MatchZy, open `csgo/cfg/Querator/database.json` file. It's content will be like this:
 ```json
 {
     "DatabaseType": "SQLite",

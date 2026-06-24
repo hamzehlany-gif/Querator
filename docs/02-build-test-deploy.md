@@ -74,7 +74,7 @@ The server's game dir is `.../game/csgo/`. After `dotnet publish`:
    `csgo/addons/counterstrikesharp/plugins/MatchZy/`
    (so you get `.../plugins/MatchZy/Querator.dll`, the dep DLLs, `lang/`, `spawns/`).
    - Skip `CounterStrikeSharp.API.dll` / `.pdb` if present (the server provides its own).
-2. Copy the repo's **`cfg/`** into `csgo/cfg/` (so `cfg/MatchZy/*.cfg` + `*.json` land at `csgo/cfg/MatchZy/`).
+2. Copy the repo's **`cfg/`** into `csgo/cfg/` (so `cfg/Querator/*.cfg` + `*.json` land at `csgo/cfg/Querator/`).
    The plugin executes `MatchZy/config.cfg`, the phase configs, and reads `admins.json`/`database.json`/
    `savednades.json` from there.
 3. (First time) make sure Metamod + CSSharp are installed and loading — verify with `meta list` and

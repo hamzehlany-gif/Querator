@@ -22,7 +22,7 @@ other doc can assume this context.
 > (`Querator`, SP2), **module name** → `"Querator"` (SP-B1), **cosmetics** (version/author/banner/chat-prefix, SP3),
 > the **DLL + entry file** → `Querator.dll` / `Querator.cs` (SP-B2); the **ConVar prefix** `matchzy_` → `querator_`
 > (SP-B3); the **`/api/matchzy`** routes → `/api/querator` (SP-B4). The rest still uses the MatchZy name (lang keys
-> `matchzy.*`, the `cfg/MatchZy` config dir, the upstream `MatchZy` release/attribution, string-literal stragglers)
+> `matchzy.*`, the upstream `MatchZy` release/attribution, `MatchZy-*` headers, camelCase/file-name stragglers)
 > — renamed in later,
 > mostly cross-repo coupled sub-phases. See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 
@@ -110,11 +110,11 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 
 [`Querator.cs`](../Querator.cs) `Load(bool hotReload)` runs once when CSSharp loads the plugin. In order:
 
-1. **`LoadAdmins()`** — read `cfg/MatchZy/admins.json` into `loadedAdmins` (steamid → permission string).
+1. **`LoadAdmins()`** — read `cfg/Querator/admins.json` into `loadedAdmins` (steamid → permission string).
 2. **`database.InitializeDatabase(ModuleDirectory)`** — read `database.json`, pick SQLite/MySQL, create tables if
    missing.
 3. **`Server.ExecuteCommand("execifexists MatchZy/config.cfg")`** — apply default ConVars from
-   `cfg/MatchZy/config.cfg`.
+   `cfg/Querator/config.cfg`.
 4. **Seed team-side maps**: `teamSides[team1]="CT"`, `teamSides[team2]="TERRORIST"`, and the reverse map.
 5. **`AutoStart()`** (always; on hot-reload it first calls `UpdatePlayersMap()`). AutoStart picks the initial phase
    based on `autoStartMode`.

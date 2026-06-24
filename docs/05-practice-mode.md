@@ -116,7 +116,7 @@ molotov handler leaks its `lastGrenadeThrownTime` key — minor).
 
 ## 6. Saved nades (lineups)
 
-- **`savednades.json`** (`csgo/cfg/MatchZy/savednades.json`):
+- **`savednades.json`** (`csgo/cfg/Querator/savednades.json`):
   `Dictionary<steamid|"default", Dictionary<lineupName, Dictionary<string,string>>>`. Per-lineup fields: `LineupPos`
   (`"X Y Z"`, Z lifted +4), `LineupAng` (`"pitch yaw roll"`), `Desc`, `Map`, `Type` (`Flash/Smoke/HE/Decoy/Molly`;
   both molotov & incendiary → `Molly`).

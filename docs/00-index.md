@@ -24,7 +24,7 @@
 | Code shape | **One** `partial class Querator : BasePlugin` split across 29 `.cs` files at repo root |
 | Entry point | `Load(bool hotReload)` in [`Querator.cs`](../Querator.cs) |
 | State model | No formal FSM — a set of `bool`/`int` flags (see [01-architecture](01-architecture.md#state-flags)) |
-| DB | SQLite (default) or MySQL, via Dapper; chosen in `cfg/MatchZy/database.json` |
+| DB | SQLite (default) or MySQL, via Dapper; chosen in `cfg/Querator/database.json` |
 | Tests | **None.** Verified only by loading into a live CS2 server |
 | Working branch | `dev` (releases cut from `main`) |
 | Build toolchain on this dev machine | ⚠️ **.NET SDK NOT installed** — must be installed before building locally |
