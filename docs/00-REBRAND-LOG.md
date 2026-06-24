@@ -21,7 +21,7 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 | `matchzy_*` cvars | `querator_*` | SP-B3 (coupled) | **done across all 4 repos (branches)**; deploy/re-seed at cutover |
 | `/api/matchzy/*` | `/api/querator/*` | SP-B4 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
 | `x-matchzy-secret` | `x-querator-secret` | SP-B5 (coupled) | **done (lanyBot + node-agent + Querator notes, branches)**; deploy at cutover |
-| config-root `'matchzy'` | `'querator'` | SP-B6 (coupled + Mongo migration) | planned |
+| config-root `'matchzy'` + version component-key `matchzy` | `'querator'` | SP-B6 (coupled + Mongo migration) | **code done across node-agent + lanyBot + lany (branches), gates green**; Mongo migration script written, run at cutover |
 | `MatchZy_Stats` / `MatchZyDataBackup` / `matchzy.db` / demo `MatchZy/` | `Querator_Stats` / `QueratorDataBackup` / `querator.db` / `Querator/` | SP-B7 (data migration) | planned |
 | `MATCHZY_*` / `ORCHESTRATOR_MATCHZY_*` env | `QUERATOR_*` | SP-B8 (coupled) | planned |
 | release `MatchZy-*.zip` + upstream release source | `Querator-*.zip` + fork source | Phase C | planned |
@@ -296,3 +296,32 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Verification:** ✅ lanyBot 455; ✅ node-agent 267+lint. Querator docs-only.
 - **Merge:** `rebrand-b-b5-secret` → `rebrand-b` in each repo (local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b5-secret` branches.
+
+### SP-B6 — config-root `'matchzy'` + version component-key → `'querator'` (Phase B) — 2026-06-24 — ✅ code done (branches, all gates green); 🔴 Mongo migration + deploy at cutover
+- **Branches:** `rebrand-b-b6-configroot` in **lany-node-agent + lanyBot + lany + Querator** (Querator = ledger only;
+  the config-root/component-key are node-agent/lany constructs, not in the plugin).
+- **Scope (the version component-key was folded in, per the user's call):** the bare `matchzy` identifier used as
+  (a) the **config-root** (live-file-editor / config-template root) and (b) the **version component-key** → `querator`.
+  A word-boundary rename (`\bmatchzy\b`) shielded the camelCase vars (`matchzyConfigPath`, `matchzyPluginPath`, …), the
+  `matchzy.*.ts` file names, the `MatchZy` UI display labels, the upstream `shobhit-pathak/MatchZy` URL, and `MATCHZY_*`
+  env names (all later/other phases).
+- **lany-node-agent:** `configRoots.js`, `models/ConfigTemplate.js`, `models/VmState.js` (`versions.matchzy` +
+  `lastJobIds.matchzy` schema fields), `services/{snapshot,stateService}.js`, `api/routes/versions.js`,
+  `services/updates/plugin.js`, `services/versions/{detector,rconDetector}.js` (the `matchzy:` return key) + tests.
+  267 tests + lint green.
+- **lanyBot:** `LoadedPluginStack.matchzy` (`cs2.service.ts`) + consumers (`orchestrator.service.ts`), the
+  `config.matchzy` config section (`config/index.ts` + accessors), config-root API calls, + test fixtures → `querator`.
+  `matchzy.*.ts` file names + the github MatchZy URL kept. Build + lint + 455 tests green.
+- **lany:** `orchestratorApi.ts` (`ConfigRoot`/`CONFIG_ROOTS`, `UpdateComponent`, `versions.querator`, plugin-stack
+  field), workspace tabs + `ServerCard`/`UpdateBadge`. `MatchZy` UI display labels + `MATCHZY_TEMPLATE_URL` kept
+  (cosmetic / SP-C1). Build + lint + 62 tests green.
+- **🔴 MongoDB migration (run at cutover, after a DB backup):**
+  `lany-node-agent/scripts/migrations/rebrand-b6-config-root-component-key.js` — `$rename` `versions.matchzy`→
+  `versions.querator` + `lastJobIds.matchzy`→`lastJobIds.querator` on `VmState`; `$set root:'querator'` on
+  `ConfigTemplate{root:'matchzy'}`. lanyBot's cached orchestrator state self-heals on the next snapshot fetch. Verify
+  collection names (`db.getCollectionNames()`) first.
+- **⚠️ Deploy:** NOT deployed; NOT migrated. Code on branches; the Mongo migration runs at cutover in lockstep with all
+  four repos. Prod keeps the matchzy-keyed contract until then.
+- **Verification:** ✅ lanyBot 455 · node-agent 267 · lany 62, all + lint. Querator docs-only.
+- **Merge:** `rebrand-b-b6-configroot` → `rebrand-b` in each repo (local + pushed).
+- **Rollback:** revert/delete the `rebrand-b-b6-configroot` branches; inverse the Mongo `$rename`/`$set` if migrated.
