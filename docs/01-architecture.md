@@ -7,22 +7,24 @@ other doc can assume this context.
 
 ## 1. What Querator is, physically
 
-- A **C# class library** targeting **.NET 8.0** that compiles to **`MatchZy.dll`**.
+- A **C# class library** targeting **.NET 8.0** that compiles to **`Querator.dll`**.
 - That DLL is loaded **in-process** by **CounterStrikeSharp (CSSharp)**, which is itself a Metamod plugin running
   inside a **CS2 dedicated server**. There is **no standalone executable** — Querator only "runs" as a guest inside a
   live game server.
 - It declares `[MinimumApiVersion(227)]` — CSSharp must expose API ≥ 227 or the plugin won't load.
-- Identity lives in [`MatchZy.cs`](../MatchZy.cs):
-  - `ModuleName => "MatchZy"`, `ModuleVersion => "0.8.15"`, `ModuleAuthor`, `ModuleDescription`.
+- Identity lives in [`Querator.cs`](../Querator.cs):
+  - `ModuleName => "Querator"`, `ModuleVersion => "0.8.15"`, `ModuleAuthor`, `ModuleDescription`.
   - ⚠️ The version string lives in **exactly one place** (`ModuleVersion`); the release pipeline greps it from there.
 - The class is annotated `[MinimumApiVersion(227)]` and extends `BasePlugin` (the CSSharp base type that provides
   `Load()`, event registration, timers, `Localizer`, `ModuleDirectory`, etc.).
 
-> **Naming note:** the fork is *Querator*. The **C# namespace + class are already `Querator`** (renamed in SP2);
-> the rest still uses the MatchZy name (module name `"MatchZy"`, chat prefix, ConVar prefix `matchzy_`, lang keys
-> `matchzy.*`, `MatchZy.dll`/`plugins/MatchZy`/`cfg/MatchZy`, `matchzy_stats_*` tables, string-literal paths).
-> Renaming is **in progress** (a multi-sub-phase program) — see [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
-> For now, treat "MatchZy" in code as the identity of Querator.
+> **Naming note:** the fork is *Querator*. Done (on `rebrand-b` branches, not yet deployed): **C# namespace + class**
+> (`Querator`, SP2), **module name** → `"Querator"` (SP-B1), **cosmetics** (version/author/banner/chat-prefix, SP3),
+> the **DLL + entry file** → `Querator.dll` / `Querator.cs` (SP-B2); the **ConVar prefix** `matchzy_` → `querator_`
+> (SP-B3); the **`/api/matchzy`** routes → `/api/querator` (SP-B4); the lang keys `matchzy.*` → `querator.*`, the
+> `MatchZy-*` demo-upload headers → `Querator-*`, and the camelCase/file-name stragglers. The only remaining MatchZy
+> name is intentional **upstream attribution** (the `shobhit-pathak/MatchZy` release/credits/`ModuleAuthor` lineage).
+> See [00-REBRAND-LOG.md](00-REBRAND-LOG.md) and [12-customization-for-lany.md](12-customization-for-lany.md).
 
 ---
 
@@ -30,7 +32,7 @@ other doc can assume this context.
 
 **The entire plugin is one class: `public partial class Querator : BasePlugin`.** It is split across ~29 `.cs` files
 at the repo root *by feature area*, but they all compile into the same class and **share every field and method**.
-There is **no per-file encapsulation, no sub-modules, no DI**. A field declared in `MatchZy.cs` is directly readable
+There is **no per-file encapsulation, no sub-modules, no DI**. A field declared in `Querator.cs` is directly readable
 and writable from `PracticeMode.cs`, `MapVeto.cs`, etc.
 
 Implications you must internalize:
@@ -50,8 +52,8 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 ### Core / lifecycle
 | File | ~Size | Responsibility |
 |---|---:|---|
-| [`MatchZy.cs`](../MatchZy.cs) | 24K | Plugin identity, **all core state fields**, `Load()` entry point, the `commandActions` dictionary, the giant `EventPlayerChat` dispatcher, and inline event/listener registrations. |
-| [`Utility.cs`](../Utility.cs) | 93K | **Grab-bag of shared helpers** — match start/end orchestration, warmup/live transitions, player maps, chat/print helpers, cfg-path constants, team-side bookkeeping, hostname/cvar handling. The other half of the "core" with MatchZy.cs. |
+| [`Querator.cs`](../Querator.cs) | 24K | Plugin identity, **all core state fields**, `Load()` entry point, the `commandActions` dictionary, the giant `EventPlayerChat` dispatcher, and inline event/listener registrations. |
+| [`Utility.cs`](../Utility.cs) | 93K | **Grab-bag of shared helpers** — match start/end orchestration, warmup/live transitions, player maps, chat/print helpers, cfg-path constants, team-side bookkeeping, hostname/cvar handling. The other half of the "core" with Querator.cs. |
 | [`Constants.cs`](../Constants.cs) | <1K | Static projectile-name ↔ nade-type maps. |
 | [`SynchronizationContextManagement.cs`](../SynchronizationContextManagement.cs) | <1K | Helpers for marshalling async work back onto the game thread. |
 
@@ -78,7 +80,7 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 ### Commands / config
 | File | ~Size | Responsibility |
 |---|---:|---|
-| [`ConsoleCommands.cs`](../ConsoleCommands.cs) | 33K | `[ConsoleCommand("matchzy_*")]` server commands + `get5_*` aliases (admin/match management). |
+| [`ConsoleCommands.cs`](../ConsoleCommands.cs) | 33K | `[ConsoleCommand("querator_*")]` server commands + `get5_*` aliases (admin/match management). |
 | [`ConfigConvars.cs`](../ConfigConvars.cs) | 17K | `FakeConVar<T>` server cvars + config ConsoleCommands; default values. |
 
 ### Persistence / IO
@@ -106,20 +108,20 @@ Grouped by concern. Sizes are approximate (bytes) to signal where the weight is.
 
 ## 4. The `Load()` lifecycle (single entry point)
 
-[`MatchZy.cs`](../MatchZy.cs) `Load(bool hotReload)` runs once when CSSharp loads the plugin. In order:
+[`Querator.cs`](../Querator.cs) `Load(bool hotReload)` runs once when CSSharp loads the plugin. In order:
 
-1. **`LoadAdmins()`** — read `cfg/MatchZy/admins.json` into `loadedAdmins` (steamid → permission string).
+1. **`LoadAdmins()`** — read `cfg/Querator/admins.json` into `loadedAdmins` (steamid → permission string).
 2. **`database.InitializeDatabase(ModuleDirectory)`** — read `database.json`, pick SQLite/MySQL, create tables if
    missing.
-3. **`Server.ExecuteCommand("execifexists MatchZy/config.cfg")`** — apply default ConVars from
-   `cfg/MatchZy/config.cfg`.
+3. **`Server.ExecuteCommand("execifexists Querator/config.cfg")`** — apply default ConVars from
+   `cfg/Querator/config.cfg`.
 4. **Seed team-side maps**: `teamSides[team1]="CT"`, `teamSides[team2]="TERRORIST"`, and the reverse map.
 5. **`AutoStart()`** (always; on hot-reload it first calls `UpdatePlayersMap()`). AutoStart picks the initial phase
    based on `autoStartMode`.
 6. **Build `commandActions`** — the big `Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>` mapping exact
    chat strings (`.ready`, `.pause`, `.spawn`, …) to handler methods. This is dispatch system #1 (see §5).
 7. **Register event handlers & listeners** — both named methods and inline lambdas (see §6).
-8. Log `"[MatchZy 0.8.15 LOADED] …"`.
+8. Log `"[Querator 0.8.15 LOADED] …"`.
 
 **Hot-reload behavior:** CSSharp supports hot-reload, and `Load()` handles `hotReload == true` by refreshing player
 maps. **But never hot-reload during a live match** — the state flags set mid-match get out of sync with a fresh
@@ -136,24 +138,24 @@ Complete catalog (file = where declared):
 
 | Flag | Type | Default | File | Meaning |
 |---|---|---|---|---|
-| `isPractice` | bool | false | MatchZy.cs | Practice mode is active. |
-| `isWarmup` | bool | false | MatchZy.cs | Warmup phase active. |
-| `isKnifeRound` | bool | false | MatchZy.cs | Knife round in progress. |
-| `isSideSelectionPhase` | bool | false | MatchZy.cs | Post-knife: waiting for `.stay`/`.switch`. |
-| `isMatchLive` | bool | false | MatchZy.cs | The live match is in progress (post going-live). |
-| `matchStarted` | bool | false | MatchZy.cs | Match has advanced past the ready/warmup gate (used widely as "a real game is underway", e.g. damage tracking). |
-| `readyAvailable` | bool | false | MatchZy.cs | Ready-up system is active; players may `.ready`. |
-| `isSleep` | bool | false | MatchZy.cs | Idle "sleep" state (no match active). |
-| `isPaused` | bool | false | MatchZy.cs | Match currently paused. |
-| `isPauseCommandForTactical` | bool | false | MatchZy.cs | `.pause` is treated as a tactical timeout (per ConVar). |
-| `isKnifeRequired` | bool | true | MatchZy.cs | Whether a knife round happens before live. |
-| `isWhitelistRequired` | bool | false | MatchZy.cs | Enforce player whitelist. |
-| `isSaveNadesAsGlobalEnabled` | bool | false | MatchZy.cs | Save nades to the global pool vs per-player. |
-| `isPlayOutEnabled` | bool | false | MatchZy.cs | Play out all rounds (scrim). |
-| `playerHasTakenDamage` | bool | false | MatchZy.cs | A cross-team damage occurred (gates `.stop`). |
-| `mapReloadRequired` | bool | false | MatchZy.cs | A map reload is queued. |
-| `liveMatchId` | long | -1 | MatchZy.cs | DB id of the current live match (-1 = none). |
-| `autoStartMode` | int | 1 | MatchZy.cs | 0=none, 1=match, 2=practice (from `matchzy_autostart_mode`). |
+| `isPractice` | bool | false | Querator.cs | Practice mode is active. |
+| `isWarmup` | bool | false | Querator.cs | Warmup phase active. |
+| `isKnifeRound` | bool | false | Querator.cs | Knife round in progress. |
+| `isSideSelectionPhase` | bool | false | Querator.cs | Post-knife: waiting for `.stay`/`.switch`. |
+| `isMatchLive` | bool | false | Querator.cs | The live match is in progress (post going-live). |
+| `matchStarted` | bool | false | Querator.cs | Match has advanced past the ready/warmup gate (used widely as "a real game is underway", e.g. damage tracking). |
+| `readyAvailable` | bool | false | Querator.cs | Ready-up system is active; players may `.ready`. |
+| `isSleep` | bool | false | Querator.cs | Idle "sleep" state (no match active). |
+| `isPaused` | bool | false | Querator.cs | Match currently paused. |
+| `isPauseCommandForTactical` | bool | false | Querator.cs | `.pause` is treated as a tactical timeout (per ConVar). |
+| `isKnifeRequired` | bool | true | Querator.cs | Whether a knife round happens before live. |
+| `isWhitelistRequired` | bool | false | Querator.cs | Enforce player whitelist. |
+| `isSaveNadesAsGlobalEnabled` | bool | false | Querator.cs | Save nades to the global pool vs per-player. |
+| `isPlayOutEnabled` | bool | false | Querator.cs | Play out all rounds (scrim). |
+| `playerHasTakenDamage` | bool | false | Querator.cs | A cross-team damage occurred (gates `.stop`). |
+| `mapReloadRequired` | bool | false | Querator.cs | A map reload is queued. |
+| `liveMatchId` | long | -1 | Querator.cs | DB id of the current live match (-1 = none). |
+| `autoStartMode` | int | 1 | Querator.cs | 0=none, 1=match, 2=practice (from `querator_autostart_mode`). |
 | `isMatchSetup` | bool | false | MatchManagement.cs | A match config has been loaded (match mode). |
 | `matchModeOnly` | bool | false | MatchManagement.cs | Server restricted to match mode (kick non-roster players). |
 | `resetCvarsOnSeriesEnd` | bool | true | MatchManagement.cs | Reset cvars when a series ends. |
@@ -181,7 +183,7 @@ are constants in `Utility.cs` (`warmupCfgPath`, `knifeCfgPath`, `liveCfgPath`, `
 ## 6. Command dispatch — **two distinct systems**
 
 ### System #1 — Chat commands (`.`/`!`)
-Handled inside the `EventPlayerChat` handler registered in [`MatchZy.cs`](../MatchZy.cs) (~line 368). Players type
+Handled inside the `EventPlayerChat` handler registered in [`Querator.cs`](../Querator.cs) (~line 368). Players type
 `.ready` etc. in chat (CS2 maps a leading `!` to the same string the plugin lowercases and trims).
 
 Two sub-mechanisms:
@@ -196,18 +198,18 @@ Two sub-mechanisms:
 The chat handler resolves the `CCSPlayerController` from `playerData` (rebuilding the map via `UpdatePlayersMap()` if
 the player isn't found), then runs the matching dispatch.
 
-### System #2 — Console commands / ConVars (`matchzy_*`)
-Methods decorated with `[ConsoleCommand("matchzy_...")]`, mostly in [`ConfigConvars.cs`](../ConfigConvars.cs) and
+### System #2 — Console commands / ConVars (`querator_*`)
+Methods decorated with `[ConsoleCommand("querator_...")]`, mostly in [`ConfigConvars.cs`](../ConfigConvars.cs) and
 [`ConsoleCommands.cs`](../ConsoleCommands.cs). Many also register a **`get5_*` alias** for Get5 config compatibility.
 
 - **Server-side ConVar values** use **`FakeConVar<T>`** (CSSharp). There are exactly **11** of them, all in
-  `ConfigConvars.cs` (e.g. `matchzy_smoke_color_enabled`, `matchzy_enable_tech_pause`, `matchzy_tech_pause_duration`,
-  `matchzy_max_tech_pauses_allowed`, `matchzy_everyone_is_admin`, `matchzy_show_credits_on_match_start`,
-  `matchzy_hostname_format`, `matchzy_enable_damage_report`, `matchzy_stop_command_no_damage`,
-  `matchzy_match_start_message`, `matchzy_tech_pause_flag`). Their `.Value` is read directly in code.
+  `ConfigConvars.cs` (e.g. `querator_smoke_color_enabled`, `querator_enable_tech_pause`, `querator_tech_pause_duration`,
+  `querator_max_tech_pauses_allowed`, `querator_everyone_is_admin`, `querator_show_credits_on_match_start`,
+  `querator_hostname_format`, `querator_enable_damage_report`, `querator_stop_command_no_damage`,
+  `querator_match_start_message`, `querator_tech_pause_flag`). Their `.Value` is read directly in code.
 - **Everything else** is a `[ConsoleCommand]` method that parses `command.ArgString` and sets a plain field. The
   conventional guard at the top is `if (player != null) return;` — i.e. **reject if a player (not the server console)
-  invoked it**. This makes `matchzy_*` commands server/RCON-only.
+  invoked it**. This makes `querator_*` commands server/RCON-only.
 
 > The full ConVar + console-command catalog (with defaults, `get5_*` aliases, and which field each writes) is in
 > [04-commands-and-convars.md](04-commands-and-convars.md).
@@ -236,7 +238,7 @@ CSSharp game events are hooked via `RegisterEventHandler<T>` (optionally `HookMo
 | `EventMolotovDetonate` | default | `EventMolotovDetonateHandler` | Practice: report molotov flight time. |
 | `EventDecoyStarted` | default | `EventDecoyDetonateHandler` | Practice: report decoy flight time. |
 
-### Inline lambdas (in `MatchZy.cs` `Load()`)
+### Inline lambdas (in `Querator.cs` `Load()`)
 | Event/listener | Hook | Purpose |
 |---|---|---|
 | `EventPlayerTeam` | Pre | If player is a coach, mark the team event silent. |
@@ -257,7 +259,7 @@ Commented-out (intentionally disabled): `EventMapShutdown` reset, `Listeners.OnM
 
 ---
 
-## 8. NuGet dependencies (from [`MatchZy.csproj`](../MatchZy.csproj))
+## 8. NuGet dependencies (from [`Querator.csproj`](../Querator.csproj))
 
 | Package | Version | Why |
 |---|---|---|
@@ -288,7 +290,7 @@ is NOT copied by the csproj** — it is bundled into the release zip separately 
   `IsBot` / `IsHLTV` before acting on a player.
 - **Chat output:** use `PrintToAllChat` / `PrintToPlayerChat` / `ReplyToUserCommand` (they prepend `chatPrefix`).
   Don't call `Server.PrintToChatAll` directly for normal messages.
-- **Localization:** user-facing strings go through `Localizer["matchzy.<key>", args...]` backed by `lang/*.json`
+- **Localization:** user-facing strings go through `Localizer["querator.<key>", args...]` backed by `lang/*.json`
   (12 locales, 126 keys). Add new keys to `lang/en.json`. (See
   [11-utility-localization-configs.md](11-utility-localization-configs.md).)
 - **Async/threading:** game API calls must happen on the game thread. Background work (HTTP, DB) is marshalled back

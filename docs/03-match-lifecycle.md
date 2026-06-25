@@ -2,7 +2,7 @@
 
 How a server moves through phases, who flips which flags, and which `.cfg` runs when. Primary sources:
 [`Utility.cs`](../Utility.cs), [`MatchManagement.cs`](../MatchManagement.cs), [`ReadySystem.cs`](../ReadySystem.cs),
-[`SleepMode.cs`](../SleepMode.cs), and the knife/round-end hooks in [`MatchZy.cs`](../MatchZy.cs).
+[`SleepMode.cs`](../SleepMode.cs), and the knife/round-end hooks in [`Querator.cs`](../Querator.cs).
 
 > Recall: there is **no formal FSM**. "Phase" = the current combination of the flags catalogued in
 > [01-architecture.md](01-architecture.md#state-flags). The functions below are the *only* legitimate way those flags
@@ -17,7 +17,7 @@ A server is always in one of these (driven by the flags + which cfg is active):
 | Mode | How entered | Key flags | Notes |
 |---|---|---|---|
 | **Pug** (default) | `autoStartMode=1`, no match config loaded | `readyAvailable`, `isWarmup` | Teams not locked; `.ready` gate uses `minimumReadyRequired`. 1 map, auto-reset on end. |
-| **Match** | `matchzy_loadmatch[_url]` loads a config | `isMatchSetup` (+ `matchModeOnly` to lock roster) | Players locked to teams/sides; BO1/3/5; veto; series tracking. |
+| **Match** | `querator_loadmatch[_url]` loads a config | `isMatchSetup` (+ `matchModeOnly` to lock roster) | Players locked to teams/sides; BO1/3/5; veto; series tracking. |
 | **Practice** | `.prac`/`.tactics` or `autoStartMode=2` | `isPractice` | Cheats, bots, nade tools. See [05-practice-mode.md](05-practice-mode.md). |
 | **Scrim / Playout** | `.playout` toggles `isPlayOutEnabled` | `isPlayOutEnabled` | All rounds played (no clinch, no OT) — applied by `HandlePlayoutConfig()`. |
 | **Sleep** | `autoStartMode=0` or `.sleep`/`css_sleep` | `isSleep` | Idle; execs `sleep.cfg` (or `gamemode_competitive.cfg`). Cannot enter once `matchStarted`. |
@@ -51,13 +51,13 @@ stateDiagram-v2
 ### Step-by-step (with the functions that do it)
 
 1. **`Load()` → `AutoStart()`** ([`Utility.cs:1751`](../Utility.cs)) branches on `autoStartMode`
-   (ConVar `matchzy_autostart_mode`, default 1):
+   (ConVar `querator_autostart_mode`, default 1):
    - `0` → `StartSleepMode()`
    - `1` → `readyAvailable=true; isPractice=false; StartWarmup()`
    - `2` → `StartPracticeMode()`
 
 2. **Warmup** — `StartWarmup()` ([`Utility.cs:230`](../Utility.cs)): sets `isWarmup=true`, runs `ExecWarmupCfg()`
-   (execs `MatchZy/warmup.cfg`, or a hardcoded fallback string if the file is missing), and starts a **repeating
+   (execs `Querator/warmup.cfg`, or a hardcoded fallback string if the file is missing), and starts a **repeating
    "unready players" chat timer** (`unreadyPlayerMessageTimer`, every `chatTimerDelay`≈13s) via
    `SendUnreadyPlayersMessage()`.
 
@@ -81,14 +81,14 @@ stateDiagram-v2
      - `isPreVeto` → **`CreateVeto()`** (veto runs first; see [06-map-veto.md](06-map-veto.md)).
      - else `isKnifeRequired` → **`StartKnifeRound()`**.
      - else → `StartDemoRecording(); StartLive()`.
-   - Optionally prints the "MatchZy Plugin by WD-" credit (`matchzy_show_credits_on_match_start`) and the
-     `matchzy_match_start_message` (split on `$$$`, color-treated).
+   - Optionally prints the "Querator Plugin by Lany" credit (`querator_show_credits_on_match_start`) and the
+     `querator_match_start_message` (split on `$$$`, color-treated).
 
 5. **Knife** — `StartKnifeRound()` ([`Utility.cs:239`](../Utility.cs)): `matchStarted=true; isKnifeRound=true;
-   readyAvailable=false; isWarmup=false`; execs `MatchZy/knife.cfg` (+ `mp_restartgame 1; mp_warmup_end`), or a
+   readyAvailable=false; isWarmup=false`; execs `Querator/knife.cfg` (+ `mp_restartgame 1; mp_warmup_end`), or a
    hardcoded knife fallback; prints "KNIFE!".
 
-6. **Knife end** — handled in the **`EventRoundEnd` (Pre)** lambda in [`MatchZy.cs`](../MatchZy.cs) (~line 268):
+6. **Knife end** — handled in the **`EventRoundEnd` (Pre)** lambda in [`Querator.cs`](../Querator.cs) (~line 268):
    `DetermineKnifeWinner()` sets `knifeWinner` (3=CT, 2=T); the handler rewrites `@event.Winner`/`Reason`, sets
    `isSideSelectionPhase=true; isKnifeRound=false`, and calls **`StartAfterKnifeWarmup()`**
    ([`Utility.cs:280`](../Utility.cs)) which re-enters warmup, computes `knifeWinnerName`, shows the damage report,
@@ -111,7 +111,7 @@ stateDiagram-v2
    - Extends `mp_match_restart_delay` so the **GOTV broadcast can flush** before restart (delay = `tv_delay + 15`,
      +10 more if `tv_delay>0`).
    - `StopDemoRecording(...)`; computes winner + scores; fires `MapResultEvent`; writes DB map-end data and the
-     **player-stats CSV** (`csgo/MatchZy_Stats/<matchid>/...`).
+     **player-stats CSV** (`csgo/Querator_Stats/<matchid>/...`).
    - **Pug** (`!isMatchSetup`) → `EndSeries(...)` (treated as a 1-map series; BO3/BO5 pugs are a TODO).
    - **Match/series**: compute `remainingMaps`; end the series on tie-with-no-maps-left, on clinch
      (`SeriesCanClinch` and a team reached `NumMaps/2+1`), or when `remainingMaps<=0`; otherwise advance
@@ -130,16 +130,16 @@ stateDiagram-v2
 
 ## 3. CFG execution model (important)
 
-Each phase **executes a `.cfg` file** via `Server.ExecuteCommand("exec MatchZy/<phase>.cfg")`. The canonical paths
+Each phase **executes a `.cfg` file** via `Server.ExecuteCommand("exec Querator/<phase>.cfg")`. The canonical paths
 are constants in [`Utility.cs`](../Utility.cs):
 
 | Constant | Path | Used by |
 |---|---|---|
-| `warmupCfgPath` | `MatchZy/warmup.cfg` | `ExecWarmupCfg()` |
-| `knifeCfgPath` | `MatchZy/knife.cfg` | `StartKnifeRound()` |
-| `liveCfgPath` | `MatchZy/live.cfg` | `ExecLiveCFG()` (5v5) |
-| `liveWingmanCfgPath` | `MatchZy/live_wingman.cfg` | `ExecLiveCFG()` (wingman) |
-| `sleepCfgPath` | `MatchZy/sleep.cfg` | `StartSleepMode()` |
+| `warmupCfgPath` | `Querator/warmup.cfg` | `ExecWarmupCfg()` |
+| `knifeCfgPath` | `Querator/knife.cfg` | `StartKnifeRound()` |
+| `liveCfgPath` | `Querator/live.cfg` | `ExecLiveCFG()` (5v5) |
+| `liveWingmanCfgPath` | `Querator/live_wingman.cfg` | `ExecLiveCFG()` (wingman) |
+| `sleepCfgPath` | `Querator/sleep.cfg` | `StartSleepMode()` |
 
 **Robustness pattern:** every `Exec*Cfg` checks `File.Exists(...)`; if the cfg is missing it falls back to a giant
 **hardcoded ConVar string** baked into the C#. So the plugin still runs competitive settings even without the cfg
@@ -168,7 +168,7 @@ defaults" for 5v5 and wingman.
 ## 5. Sleep mode
 
 `StartSleepMode()` ([`SleepMode.cs`](../SleepMode.cs)): refuses if `matchStarted`; sets `isSleep=true` and clears all
-other phase flags; execs `MatchZy/sleep.cfg` if present, else `ExecUnpracCommands()` + `gamemode_competitive.cfg`.
+other phase flags; execs `Querator/sleep.cfg` if present, else `ExecUnpracCommands()` + `gamemode_competitive.cfg`.
 Entered automatically when `autoStartMode==0`, or manually via `css_sleep` (admin: `@css/map` or `@custom/prac`).
 This is the "server is idle / nobody's playing" resting state.
 

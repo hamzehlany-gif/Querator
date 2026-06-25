@@ -12,7 +12,7 @@ namespace Querator
     public partial class Querator : BasePlugin
     {
 
-        public override string ModuleName => "MatchZy";
+        public override string ModuleName => "Querator";
 
         public override string ModuleVersion => "1.0.0";
 
@@ -65,7 +65,7 @@ namespace Querator
         public CounterStrikeSharp.API.Modules.Timers.Timer? pausedStateTimer = null;
 
         // Each message is kept in chat display for ~13 seconds, hence setting default chat timer to 13 seconds.
-        // Configurable using matchzy_chat_messages_timer_delay <seconds>
+        // Configurable using querator_chat_messages_timer_delay <seconds>
         public int chatTimerDelay = 13;
 
         // Game Config
@@ -91,12 +91,12 @@ namespace Querator
             database.InitializeDatabase(ModuleDirectory);
 
             // This sets default config ConVars
-            Server.ExecuteCommand("execifexists MatchZy/config.cfg");
+            Server.ExecuteCommand("execifexists Querator/config.cfg");
 
-            teamSides[matchzyTeam1] = "CT";
-            teamSides[matchzyTeam2] = "TERRORIST";
-            reverseTeamSides["CT"] = matchzyTeam1;
-            reverseTeamSides["TERRORIST"] = matchzyTeam2;
+            teamSides[queratorTeam1] = "CT";
+            teamSides[queratorTeam2] = "TERRORIST";
+            reverseTeamSides["CT"] = queratorTeam1;
+            reverseTeamSides["TERRORIST"] = queratorTeam2;
 
             if (!hotReload) {
                 AutoStart();
@@ -223,7 +223,7 @@ namespace Querator
                 CCSPlayerController? player = @event.Userid;
                 if (!IsPlayerValid(player)) return HookResult.Continue;
 
-                if (matchzyTeam1.coach.Contains(player!) || matchzyTeam2.coach.Contains(player!)) {
+                if (queratorTeam1.coach.Contains(player!) || queratorTeam2.coach.Contains(player!)) {
                     @event.Silent = true;
                     return HookResult.Changed;
                 }
@@ -349,7 +349,7 @@ namespace Querator
                 {
                     int damage = @event.DmgHealth;
                     int postDamageHealth = @event.Health;
-                    PrintToPlayerChat(attacker!, Localizer["matchzy.pracc.damage", damage, victim.PlayerName, postDamageHealth]);
+                    PrintToPlayerChat(attacker!, Localizer["querator.pracc.damage", damage, victim.PlayerName, postDamageHealth]);
                     return HookResult.Continue;
                 }
 
@@ -418,7 +418,7 @@ namespace Querator
                         else
                         {
                             // ReplyToUserCommand(player, "Usage: .asay <message>");
-                            ReplyToUserCommand(player, Localizer["matchzy.cc.usage", ".asay <message>"]);
+                            ReplyToUserCommand(player, Localizer["querator.cc.usage", ".asay <message>"]);
                         }
                     }
                     else
@@ -525,7 +525,7 @@ namespace Querator
                 if (attacker!.IsValid)
                 {
                     double roundedBlindDuration = Math.Round(@event.BlindDuration, 2);
-                    PrintToPlayerChat(attacker, Localizer["matchzy.pracc.blind", player!.PlayerName, roundedBlindDuration]);
+                    PrintToPlayerChat(attacker, Localizer["querator.pracc.blind", player!.PlayerName, roundedBlindDuration]);
                 }
                 var userId = player!.UserId;
                 if (userId != null && noFlashList.Contains((int)userId))

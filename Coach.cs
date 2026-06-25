@@ -13,8 +13,8 @@ public partial class Querator
 
     public HashSet<CCSPlayerController> GetAllCoaches()
     {
-        HashSet<CCSPlayerController> coaches = new(matchzyTeam1.coach);
-        coaches.UnionWith(matchzyTeam2.coach);
+        HashSet<CCSPlayerController> coaches = new(queratorTeam1.coach);
+        coaches.UnionWith(queratorTeam2.coach);
 
         return coaches;
     }
@@ -41,37 +41,37 @@ public partial class Querator
             return;
         }
 
-        if (matchzyTeam1.coach.Contains(player!) || matchzyTeam2.coach.Contains(player!))
+        if (queratorTeam1.coach.Contains(player!) || queratorTeam2.coach.Contains(player!))
         {
             ReplyToUserCommand(player, "You are already coaching a team!");
             return;
         }
 
-        Team matchZyCoachTeam;
+        Team queratorCoachTeam;
 
         if (side == "t")
         {
-            matchZyCoachTeam = reverseTeamSides["TERRORIST"];
+            queratorCoachTeam = reverseTeamSides["TERRORIST"];
         }
         else if (side == "ct")
         {
-            matchZyCoachTeam = reverseTeamSides["CT"];
+            queratorCoachTeam = reverseTeamSides["CT"];
         }
         else
         {
             return;
         }
 
-        // if (matchZyCoachTeam.coach != null) {
+        // if (queratorCoachTeam.coach != null) {
         //     ReplyToUserCommand(player, "Coach slot for this team has been already taken!");
         //     return;
         // }
 
-        matchZyCoachTeam.coach.Add(player!);
-        player!.Clan = $"[{matchZyCoachTeam.teamName} COACH]";
+        queratorCoachTeam.coach.Add(player!);
+        player!.Clan = $"[{queratorCoachTeam.teamName} COACH]";
         if (player.InGameMoneyServices != null) player.InGameMoneyServices.Account = 0;
-        ReplyToUserCommand(player, $"You are now coaching {matchZyCoachTeam.teamName}! Use .uncoach to stop coaching");
-        PrintToAllChat($"{ChatColors.Green}{player.PlayerName}{ChatColors.Default} is now coaching {ChatColors.Green}{matchZyCoachTeam.teamName}{ChatColors.Default}!");
+        ReplyToUserCommand(player, $"You are now coaching {queratorCoachTeam.teamName}! Use .uncoach to stop coaching");
+        PrintToAllChat($"{ChatColors.Green}{player.PlayerName}{ChatColors.Default} is now coaching {ChatColors.Green}{queratorCoachTeam.teamName}{ChatColors.Default}!");
     }
 
     public void HandleCoaches()
@@ -97,7 +97,7 @@ public partial class Querator
         foreach (CCSPlayerController coach in coaches)
         {
             if (!IsPlayerValid(coach)) continue;
-            Team coachTeam = matchzyTeam1.coach.Contains(coach) ? matchzyTeam1 : matchzyTeam2;
+            Team coachTeam = queratorTeam1.coach.Contains(coach) ? queratorTeam1 : queratorTeam2;
             int coachTeamNum = teamSides[coachTeam] == "CT" ? 3 : 2;
             coach.InGameMoneyServices!.Account = 0;
 
@@ -212,24 +212,24 @@ public partial class Querator
 
     public CsTeam GetCoachTeam(CCSPlayerController coach)
     {
-        if (matchzyTeam1.coach.Contains(coach))
+        if (queratorTeam1.coach.Contains(coach))
         {
-            if (teamSides[matchzyTeam1] == "CT")
+            if (teamSides[queratorTeam1] == "CT")
             {
                 return CsTeam.CounterTerrorist;
             }
-            else if (teamSides[matchzyTeam1] == "TERRORIST")
+            else if (teamSides[queratorTeam1] == "TERRORIST")
             {
                 return CsTeam.Terrorist;
             }
         }
-        if (matchzyTeam2.coach.Contains(coach))
+        if (queratorTeam2.coach.Contains(coach))
         {
-            if (teamSides[matchzyTeam2] == "CT")
+            if (teamSides[queratorTeam2] == "CT")
             {
                 return CsTeam.CounterTerrorist;
             }
-            else if (teamSides[matchzyTeam2] == "TERRORIST")
+            else if (teamSides[queratorTeam2] == "TERRORIST")
             {
                 return CsTeam.Terrorist;
             }

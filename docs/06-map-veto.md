@@ -106,7 +106,7 @@ Both call **`RemoveMapFromMapPool(mapName)`** then announce and fire an event:
 ## 5. Default veto script — `GenerateDefaultVetoSetup()`
 
 If the config didn't supply `veto_mode` (`MapBanOrder` empty) and veto isn't skipped, this builds `MapBanOrder` based
-on `NumMaps` and pool size. The *starting* team is `matchzyTeam1` unless `lastVetoTeam` indicates otherwise.
+on `NumMaps` and pool size. The *starting* team is `queratorTeam1` unless `lastVetoTeam` indicates otherwise.
 
 | Series | Logic |
 |---|---|

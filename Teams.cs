@@ -49,14 +49,14 @@ namespace Querator
                 return;
             }
 
-            if (matchzyTeam1.coach.Contains(player)) {
+            if (queratorTeam1.coach.Contains(player)) {
                 player.Clan = "";
-                matchzyTeam1.coach.Remove(player);
+                queratorTeam1.coach.Remove(player);
                 SetPlayerVisible(player);
             }
-            else if (matchzyTeam2.coach.Contains(player)) {
+            else if (queratorTeam2.coach.Contains(player)) {
                 player.Clan = "";
-                matchzyTeam2.coach.Remove(player);
+                queratorTeam2.coach.Remove(player);
                 SetPlayerVisible(player);
             }
             else {
@@ -69,7 +69,7 @@ namespace Querator
             ReplyToUserCommand(player, "You are now not coaching any team!");
         }
 
-        [ConsoleCommand("matchzy_addplayer", "Adds player to the provided team")]
+        [ConsoleCommand("querator_addplayer", "Adds player to the provided team")]
         [ConsoleCommand("get5_addplayer", "Adds player to the provided team")]
         public void OnAddPlayerCommand(CCSPlayerController? player, CommandInfo? command)
         {
@@ -85,7 +85,7 @@ namespace Querator
             }
             if (command.ArgCount < 3)
             {
-                command.ReplyToCommand("Usage: matchzy_addplayer <steam64> <team> \"<name>\"");
+                command.ReplyToCommand("Usage: querator_addplayer <steam64> <team> \"<name>\"");
                 return; 
             }
 
@@ -95,10 +95,10 @@ namespace Querator
             bool success;
             if (playerTeam == "team1")
             {
-                success = AddPlayerToTeam(playerSteamId, playerName, matchzyTeam1.teamPlayers);
+                success = AddPlayerToTeam(playerSteamId, playerName, queratorTeam1.teamPlayers);
             } else if (playerTeam == "team2")
             {
-                success = AddPlayerToTeam(playerSteamId, playerName, matchzyTeam2.teamPlayers);
+                success = AddPlayerToTeam(playerSteamId, playerName, queratorTeam2.teamPlayers);
             } else if (playerTeam == "spec")
             {
                 success = AddPlayerToTeam(playerSteamId, playerName, matchConfig.Spectators);
@@ -115,7 +115,7 @@ namespace Querator
             command.ReplyToCommand($"Player {playerName} added to {playerTeam} successfully!");
         }
 
-        [ConsoleCommand("matchzy_removeplayer", "Removes the player from all the teams")]
+        [ConsoleCommand("querator_removeplayer", "Removes the player from all the teams")]
         [ConsoleCommand("get5_removeplayer", "Removes the player from all the teams")]
         [CommandHelper(minArgs: 1, usage: "<steam64>")]
         public void OnRemovePlayerCommand(CCSPlayerController? player, CommandInfo? command)
@@ -158,8 +158,8 @@ namespace Querator
 
         public bool AddPlayerToTeam(string steamId, string name, JToken? team)
         {
-            if (matchzyTeam1.teamPlayers != null && matchzyTeam1.teamPlayers[steamId] != null) return false;
-            if (matchzyTeam2.teamPlayers != null && matchzyTeam2.teamPlayers[steamId] != null) return false;
+            if (queratorTeam1.teamPlayers != null && queratorTeam1.teamPlayers[steamId] != null) return false;
+            if (queratorTeam2.teamPlayers != null && queratorTeam2.teamPlayers[steamId] != null) return false;
             if (matchConfig.Spectators != null && matchConfig.Spectators[steamId] != null) return false;
 
             if (team is JObject jObjectTeam)
@@ -179,7 +179,7 @@ namespace Querator
 
         public bool RemovePlayerFromTeam(string steamId)
         {
-            List<JToken?> teams = [matchzyTeam1.teamPlayers, matchzyTeam2.teamPlayers, matchConfig.Spectators];
+            List<JToken?> teams = [queratorTeam1.teamPlayers, queratorTeam2.teamPlayers, matchConfig.Spectators];
 
             foreach (var team in teams)
             {

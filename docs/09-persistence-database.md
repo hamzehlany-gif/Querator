@@ -1,6 +1,6 @@
 # 09 — Persistence: the `Database` class & CSV stats
 
-All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substantial non-`partial MatchZy` class. Uses
+All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substantial non-`partial Querator` class. Uses
 **Dapper** for every query. Backs SQLite (default) or MySQL.
 
 ---
@@ -10,13 +10,13 @@ All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substa
 - **`InitializeDatabase(directory)`** → `ConnectDatabase` → `connection.Open()` → create tables. Wrapped in
   try/catch that logs `[InitializeDatabase - FATAL]` and continues (no throw — game-frame safety).
 - **`SetDatabaseConfig`** reads `database.json` from a **hardcoded** path:
-  `Server.GameDirectory + "/csgo/cfg/MatchZy/database.json"` (the `directory` arg is ignored here; it's only used for
+  `Server.GameDirectory + "/csgo/cfg/Querator/database.json"` (the `directory` arg is ignored here; it's only used for
   the SQLite file location). Missing → writes a default. The `DatabaseConfig` DTO: `DatabaseType`, `MySqlHost`,
   `MySqlDatabase`, `MySqlUsername`, `MySqlPassword`, `MySqlPort`.
 - **Selection:** MySQL is chosen **only** if `DatabaseType` (trimmed, lowercased) == `"mysql"`. Anything else — typo,
   null, malformed JSON — **silently falls back to SQLite**.
 - **Connection strings:**
-  - SQLite: `Data Source=<directory>/matchzy.db` (`Microsoft.Data.Sqlite.SqliteConnection`).
+  - SQLite: `Data Source=<directory>/querator.db` (`Microsoft.Data.Sqlite.SqliteConnection`).
   - MySQL: `Server=…;Port=…;Database=…;User Id=…;Password=…;` (`MySqlConnector.MySqlConnection`).
 - `connection` is a single shared `IDbConnection` field; runtime type is checked everywhere via
   `connection is SqliteConnection` / `is MySqlConnection`.
@@ -27,19 +27,19 @@ All in [`DatabaseStats.cs`](../DatabaseStats.cs) (~600 lines) — the one substa
 
 `CreateRequiredTablesSQLite()` and `CreateRequiredTablesSQL()` (MySQL) each create three tables with
 `CREATE TABLE IF NOT EXISTS`. **There is no migration path** (`ALTER TABLE` nowhere) — schema changes do **not** apply
-to an existing `matchzy.db`/MySQL DB.
+to an existing `querator.db`/MySQL DB.
 
-### `matchzy_stats_matches`
+### `querator_stats_matches`
 `matchid` (PK, `INTEGER AUTOINCREMENT` SQLite / `INT AUTO_INCREMENT` MySQL), `start_time DATETIME NOT NULL`,
 `end_time DATETIME DEFAULT NULL`, `winner`, `series_type`, `team1_name`, `team1_score`, `team2_name`, `team2_score`,
 `server_ip` (strings `TEXT` in SQLite / `VARCHAR(255)` in MySQL; scores `INTEGER`/`INT`).
 
-### `matchzy_stats_maps`
+### `querator_stats_maps`
 `matchid`, `mapnumber` (`INTEGER` SQLite / `TINYINT(3) UNSIGNED` MySQL), `start_time`, `end_time`, `winner`
 (`VARCHAR(16)`), `mapname` (`VARCHAR(64)`), `team1_score`, `team2_score`. PK `(matchid, mapnumber)`; FK → matches.
 MySQL adds `INDEX mapnumber_index` and a named FK.
 
-### `matchzy_stats_players` — the per-player, per-map stats (PK `(matchid, mapnumber, steamid64)`)
+### `querator_stats_players` — the per-player, per-map stats (PK `(matchid, mapnumber, steamid64)`)
 Every column (DB order):
 `matchid, mapnumber, steamid64, team, name, kills, deaths, damage, assists, enemy5ks, enemy4ks, enemy3ks, enemy2ks,
 utility_count, utility_damage, utility_successes, utility_enemies, flash_count, flash_successes,
@@ -61,7 +61,7 @@ cash_earned, enemies_flashed`.
 
 | Method | Sync/Async | What it does |
 |---|---|---|
-| `InitMatch(t1,t2,ip,isMatchSetup,liveMatchId,mapNumber,seriesType,matchConfig)` → `long` | **sync** | On `mapNumber==0` inserts the `matchzy_stats_matches` row (with explicit matchid if match-setup, else auto-id via `last_insert_rowid()`/`LAST_INSERT_ID()`); inserts the `matchzy_stats_maps` row; returns the matchid. |
+| `InitMatch(t1,t2,ip,isMatchSetup,liveMatchId,mapNumber,seriesType,matchConfig)` → `long` | **sync** | On `mapNumber==0` inserts the `querator_stats_matches` row (with explicit matchid if match-setup, else auto-id via `last_insert_rowid()`/`LAST_INSERT_ID()`); inserts the `querator_stats_maps` row; returns the matchid. |
 | `UpdateTeamData(matchId,t1,t2)` | sync | Updates team names on the matches row. |
 | `SetMapEndData(matchId,mapNumber,winner,t1,t2,t1Series,t2Series)` | async | Updates the map row's winner/end_time/scores **and** writes the series score into the matches row. |
 | `SetMatchEndData(matchId,winner,t1,t2)` | async | Final winner/end_time/scores on the matches row. |
@@ -80,10 +80,10 @@ cash_earned, enemies_flashed`.
 
 ## 4. CSV export
 
-`WritePlayerStatsToCsv` runs `SELECT * FROM matchzy_stats_players WHERE matchid=@ AND mapnumber=@ ORDER BY team,
+`WritePlayerStatsToCsv` runs `SELECT * FROM querator_stats_players WHERE matchid=@ AND mapnumber=@ ORDER BY team,
 kills DESC` and writes **dynamically** via CsvHelper (`InvariantCulture`):
 - Output: `<filePath>/match_data_map<mapNumber>_<matchId>.csv` (caller passes `filePath`; from `HandleMatchEnd` it's
-  `csgo/MatchZy_Stats/<matchId>`).
+  `csgo/Querator_Stats/<matchId>`).
 - Header = the table's columns in DB order (all 36 above); one row per player.
 - Zero rows → empty file, no header (header emission is inside the `firstRow != null` guard).
 

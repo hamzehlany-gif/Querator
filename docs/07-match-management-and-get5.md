@@ -13,8 +13,8 @@ Sources: [`MatchManagement.cs`](../MatchManagement.cs), [`MatchConfig.cs`](../Ma
 
 | Command | Source | Behavior |
 |---|---|---|
-| `matchzy_loadmatch <file>` | `LoadMatch` ([`MatchManagement.cs:46`](../MatchManagement.cs)) | Reads a JSON file relative to `csgo/`. Console-only. |
-| `matchzy_loadmatch_url <url> [hdrName] [hdrVal]` / `get5_loadmatch_url` | `LoadMatchFromURL` ([`MatchManagement.cs:85`](../MatchManagement.cs)) | HTTP GET (optional custom header), then load. Console-only. |
+| `querator_loadmatch <file>` | `LoadMatch` ([`MatchManagement.cs:46`](../MatchManagement.cs)) | Reads a JSON file relative to `csgo/`. Console-only. |
+| `querator_loadmatch_url <url> [hdrName] [hdrVal]` / `get5_loadmatch_url` | `LoadMatchFromURL` ([`MatchManagement.cs:85`](../MatchManagement.cs)) | HTTP GET (optional custom header), then load. Console-only. |
 
 Both refuse if `isMatchSetup` already, and on parse/validation failure call `ResetMatch()`. Both funnel into
 **`LoadMatchFromJSON(jsonData)`** which:
@@ -95,14 +95,14 @@ Players are a **steamid64 → name** map. Only Steam64 is supported (no Steam2/S
 
 ### The `Team` class
 Fields: `id`, `teamName` (required), `teamFlag`, `teamTag`, `teamPlayers` (`JToken` — the steamid→name map),
-`coach` (`HashSet<CCSPlayerController>`, JSON-ignored), `seriesScore` (int). Two instances: `matchzyTeam1`,
-`matchzyTeam2`. `teamSides`/`reverseTeamSides` map a `Team` ↔ `"CT"`/`"TERRORIST"`.
+`coach` (`HashSet<CCSPlayerController>`, JSON-ignored), `seriesScore` (int). Two instances: `queratorTeam1`,
+`queratorTeam2`. `teamSides`/`reverseTeamSides` map a `Team` ↔ `"CT"`/`"TERRORIST"`.
 
 ### Live roster commands
 | Command | Behavior |
 |---|---|
-| `matchzy_addplayer <steam64> <team1\|team2\|spec> "<name>"` / `get5_addplayer` | Adds to the team's `teamPlayers` JToken (or `spectators`). Refused if no match setup, during halftime, or if already rostered. |
-| `matchzy_removeplayer <steam64>` / `get5_removeplayer` | Removes from all teams; if the player is connected, **kicks** them. Refused during halftime. |
+| `querator_addplayer <steam64> <team1\|team2\|spec> "<name>"` / `get5_addplayer` | Adds to the team's `teamPlayers` JToken (or `spectators`). Refused if no match setup, during halftime, or if already rostered. |
+| `querator_removeplayer <steam64>` / `get5_removeplayer` | Removes from all teams; if the player is connected, **kicks** them. Refused during halftime. |
 
 `AddPlayerToTeam`/`RemovePlayerFromTeam` mutate the `JToken` rosters directly (JObject `steamid→name`, or JArray for
 some shapes) and call `LoadClientNames()`. Player→team mapping at connect uses `GetPlayerTeam` (steamid lookup in the
@@ -182,7 +182,7 @@ Wrappers: `StatsPlayer` (`steamid`, `name`, `stats`), `QueratorTeamWrapper` (`id
 `QueratorStatsTeam` (+ `series_score`, `score`, `score_ct`, `score_t`, `players`), `Winner` (`side`, `team`).
 
 > ⚠️ Note these `PlayerStats` JSON fields are a **different, richer set** than the DB's
-> `matchzy_stats_players` columns (which use names like `enemy5ks`, `utility_successes`, `v1_count`, and notably
+> `querator_stats_players` columns (which use names like `enemy5ks`, `utility_successes`, `v1_count`, and notably
 > have **no `kast`/`mvp` columns**). The event/panel shape and the DB shape are not 1:1 — see
 > [09-persistence-database.md](09-persistence-database.md).
 

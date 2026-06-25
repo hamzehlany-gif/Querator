@@ -22,10 +22,10 @@ command catalog is in [04](04-commands-and-convars.md); this doc is the **mechan
 | `noFlashList` | `List<int>` | Userids with flash suppression. |
 | `playerTimers` | `Dictionary<int, PlayerPracticeTimer>` | `.timer` instances. |
 | `savedPlayerLocationData` | `Dictionary<int, PlayerLocationData>` | `.savepos`/`.loadpos` (single slot/player). |
-| `maxLastGrenadesSavedLimit` | int (512) | History cap (`matchzy_max_saved_last_grenades`; 0 disables). |
+| `maxLastGrenadesSavedLimit` | int (512) | History cap (`querator_max_saved_last_grenades`; 0 disables). |
 | `isDryRun` | bool | Dryrun sub-state (see §7). |
 | `collisionGroupTimer` | Timer? | **Single shared** bot-collision restore timer. |
-| `practiceCfgPath` / `dryrunCfgPath` | const | `MatchZy/prac.cfg` / `MatchZy/dryrun.cfg`. |
+| `practiceCfgPath` / `dryrunCfgPath` | const | `Querator/prac.cfg` / `Querator/dryrun.cfg`. |
 
 ---
 
@@ -116,11 +116,11 @@ molotov handler leaks its `lastGrenadeThrownTime` key — minor).
 
 ## 6. Saved nades (lineups)
 
-- **`savednades.json`** (`csgo/cfg/MatchZy/savednades.json`):
+- **`savednades.json`** (`csgo/cfg/Querator/savednades.json`):
   `Dictionary<steamid|"default", Dictionary<lineupName, Dictionary<string,string>>>`. Per-lineup fields: `LineupPos`
   (`"X Y Z"`, Z lifted +4), `LineupAng` (`"pitch yaw roll"`), `Desc`, `Map`, `Type` (`Flash/Smoke/HE/Decoy/Molly`;
   both molotov & incendiary → `Molly`).
-- **Keying / global flag** (`matchzy_save_nades_as_global_enabled` / `.globalnades`):
+- **Keying / global flag** (`querator_save_nades_as_global_enabled` / `.globalnades`):
   - save & delete: key = player steamid, or `"default"` when global is on.
   - ⚠️ **import & load ignore the global flag** — import always keys by steamid; load searches the player's steamid
     **and** `"default"`.
@@ -161,7 +161,7 @@ bots/noflash, runs `ExecUnpracCommands()` (strip cheats), then `ExecDryRunCFG()`
 competitive-ish ruleset ending in `mp_restartgame; mp_warmup_end`), and sets `isDryRun=true` while **`isPractice`
 stays true**. Net effect: a live-*like* round to test nades against, with no knife/veto and **no DB recording**
 (`matchStarted` stays false). To go truly live you still `.exitprac`/`.match`. The `EventRoundEnd` (Post) handler in
-[`MatchZy.cs`](../MatchZy.cs) detects `isDryRun` and re-enters practice after the dry round.
+[`Querator.cs`](../Querator.cs) detects `isDryRun` and re-enters practice after the dry round.
 
 ---
 

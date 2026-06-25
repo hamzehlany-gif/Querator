@@ -35,7 +35,7 @@ Compares the two sides via `GetAlivePlayers(team)` (alive count + total HP, excl
 2. Tie → more **total HP** wins.
 3. Still tie → **random** (`knifeWinner = random 2|3`).
 
-`knifeWinner`: **3 = CT, 2 = T**. Called from the `EventRoundEnd` (Pre) lambda in [`MatchZy.cs`](../MatchZy.cs), which
+`knifeWinner`: **3 = CT, 2 = T**. Called from the `EventRoundEnd` (Pre) lambda in [`Querator.cs`](../Querator.cs), which
 also rewrites `@event.Winner/Reason` (so the win panel shows the right team), sets `isSideSelectionPhase=true`,
 `isKnifeRound=false`, and runs `StartAfterKnifeWarmup()` (re-warmup + repeating "type `.stay`/`.switch`" prompt).
 (`HandleKnifeWinner` is an older path kept around but the live flow uses the `EventRoundEnd` lambda — `EventCsWinPanelRound`
@@ -53,14 +53,14 @@ Only the **knife-winning side** (`player.TeamNum == knifeWinner`) can decide:
 
 > **Naming trap:** the dedicated `TechPause()` in [`Pausing.cs`](../Pausing.cs) is **WIP dead code** (`return;` at the
 > top). So `.tech` does **not** run it — `.tech` → `OnTechCommand` → **`PauseMatch`** (the normal pause). The
-> `matchzy_enable_tech_pause` / `matchzy_tech_pause_flag` cvars are repurposed inside `PauseMatch` to gate **all**
+> `querator_enable_tech_pause` / `querator_tech_pause_flag` cvars are repurposed inside `PauseMatch` to gate **all**
 > player pausing (see below). `technicalPauseUsed`/`lastTechPauseDuration`/`techPauseDuration`/`maxTechPausesAllowed`
 > are currently inert.
 
 ### The four ways to pause
 | Command | Function | Notes |
 |---|---|---|
-| `.pause`/`.p` | `OnPauseCommand` → `PauseMatch` (or `OnTacCommand` if `matchzy_use_pause_command_for_tactical_pause`) | Normal team pause. |
+| `.pause`/`.p` | `OnPauseCommand` → `PauseMatch` (or `OnTacCommand` if `querator_use_pause_command_for_tactical_pause`) | Normal team pause. |
 | `.tech` | `OnTechCommand` → `PauseMatch` | Same as normal pause (tech feature WIP). |
 | `.tac` | `OnTacCommand` | **CS2 tactical timeout** via `timeout_ct_start`/`timeout_terrorist_start`; uses the engine's `mp_team_timeout_max`/`_time`. Refused if already paused / no timeouts left. |
 | `.fp`/`.forcepause`/`sm_pause` | `ForcePauseMatch` | Admin pause (`@css/config`); only admin can unpause. |
@@ -102,7 +102,7 @@ removed from play.
   forces still-alive coaches back to spectating their team.
 - **`TransferCoachBomb`**: if a coach is given the C4 (`EventPlayerGivenC4`), it's moved to the first alive non-coach T.
 - Coaches are made silent on team-change events and their suicide isn't broadcast (Pre handlers in
-  [`MatchZy.cs`](../MatchZy.cs)).
+  [`Querator.cs`](../Querator.cs)).
 
 ### Coach spawns
 `GetCoachSpawns()` loads `<ModuleDir>/spawns/coach/<map>.json` (the bundled files for the 8 active-duty maps): a

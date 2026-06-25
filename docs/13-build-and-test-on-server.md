@@ -25,7 +25,7 @@ From the repo root (`G:\nodeprojects-lany\Querator`):
 dotnet restore
 dotnet publish
 ```
-Output lands in **`bin/Release/net8.0/publish/`**: `MatchZy.dll` + dependency DLLs (Dapper, CsvHelper,
+Output lands in **`bin/Release/net8.0/publish/`**: `Querator.dll` + dependency DLLs (Dapper, CsvHelper,
 Microsoft.Data.Sqlite, MySqlConnector, Newtonsoft.Json, SQLitePCLRaw + native `e_sqlite3`) + the `lang/` and
 `spawns/` folders. (`CounterStrikeSharp.API.dll` is intentionally **not** emitted for runtime.)
 
@@ -48,20 +48,20 @@ The server must have:
 
 > **Shortcut for a fresh server:** the upstream release ships `MatchZy-<ver>-with-cssharp-linux.zip` /
 > `-windows.zip` that bundle a matching CSSharp runtime — install Metamod, extract that zip into `csgo/`, then
-> overlay your freshly built `MatchZy.dll`. This avoids version-matching CSSharp by hand.
+> overlay your freshly built `Querator.dll`. This avoids version-matching CSSharp by hand.
 
 ## Step 4 — Deploy the build
 
 Into the server's game dir (`.../game/csgo/`):
-1. Copy the **contents of** `bin/Release/net8.0/publish/` → `csgo/addons/counterstrikesharp/plugins/MatchZy/`
+1. Copy the **contents of** `bin/Release/net8.0/publish/` → `csgo/addons/counterstrikesharp/plugins/Querator/`
    (skip `CounterStrikeSharp.API.dll`/`.pdb` if present).
-2. Copy the repo's **`cfg/`** → `csgo/cfg/` (so `cfg/MatchZy/*` lands at `csgo/cfg/MatchZy/`). Don't overwrite a
+2. Copy the repo's **`cfg/`** → `csgo/cfg/` (so `cfg/Querator/*` lands at `csgo/cfg/Querator/`). Don't overwrite a
    server operator's customized `admins.json`/`database.json`/`*_override.cfg`.
 
 ## Step 5 — Load & confirm
 
-- Fresh load: **restart the server**, or `css_plugins load MatchZy` in console.
-- Confirm in the console log: `[MatchZy 0.8.15 LOADED] …`.
+- Fresh load: **restart the server**, or `css_plugins load Querator` in console.
+- Confirm in the console log: `[Querator 0.8.15 LOADED] …`.
 - ⚠️ **Never hot-reload during a live match** — restart instead (see [02](02-build-test-deploy.md#hot-reload-caveat-important)).
 
 ## Step 6 — Smoke test in-game
@@ -70,11 +70,11 @@ Minimal sanity pass (one client is enough for several):
 - `.help` → command list prints (confirms chat dispatch + localization).
 - `.prac` → practice mode loads; `.bot`, `.spawn 1`, `.rethrow` → confirms practice/bot/grenade systems.
 - `.exitprac` → back to warmup.
-- Pug flow (needs 2 clients or `matchzy_minimum_ready_required 1`): both `.ready` → knife → `.stay`/`.switch` → LIVE.
+- Pug flow (needs 2 clients or `querator_minimum_ready_required 1`): both `.ready` → knife → `.stay`/`.switch` → LIVE.
 - Match flow: write a small match JSON (see [07](07-match-management-and-get5.md#3-match-json-contract-input)),
-  `matchzy_loadmatch <file>` from console, ready up, play, confirm a row appears in `matchzy.db` (SQLite) and a CSV in
-  `csgo/MatchZy_Stats/`.
-- Demo check: with `tv_enable 1`, confirm a `.dem` appears under `csgo/MatchZy/` after a map ends.
+  `querator_loadmatch <file>` from console, ready up, play, confirm a row appears in `querator.db` (SQLite) and a CSV in
+  `csgo/Querator_Stats/`.
+- Demo check: with `tv_enable 1`, confirm a `.dem` appears under `csgo/Querator/` after a map ends.
 
 ---
 
