@@ -2,11 +2,11 @@ using System.Text;
 using System.Text.Json;
 
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
-        public async Task SendEventAsync(MatchZyEvent @event)
+        public async Task SendEventAsync(QueratorEvent @event)
         {
             try
             {

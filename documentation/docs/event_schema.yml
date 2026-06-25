@@ -1,25 +1,25 @@
 ---
 openapi: "3.1.0"
 info:
-  title: "MatchZy Event Documentation"
+  title: "Querator Event Documentation"
   version: ""
   description: |
-    This is the documentation of all JSON events and native plugin forwards for MatchZy. All HTTP events get
+    This is the documentation of all JSON events and native plugin forwards for Querator. All HTTP events get
     sent as POST requests to the root of the URL you provided for
-    [`matchzy_remote_log_url`](configuration#matchzy_remote_log_url) in your MatchZy configuration. You should inspect the value
+    [`querator_remote_log_url`](configuration#querator_remote_log_url) in your Querator configuration. You should inspect the value
     of the `event` property to determine the type of event. You cannot select which events to receive, but you can
     instead discard the ones you don't need.
 
-    You are expected to return a 200-range HTTP code to all request, or MatchZy will consider them failed. The HTTP timeout
+    You are expected to return a 200-range HTTP code to all request, or Querator will consider them failed. The HTTP timeout
     is 15 seconds and there are no automatic retries.
     Note: This documentation is heavily inspired by Get5. Currently only those events are supported which are required for proper functioning of G5V/G5API. Though these events should be enough for now to get
     most of the match and player related data.
 webhooks:
-  "MatchZyOnSeriesInit":
+  "QueratorOnSeriesInit":
     post:
       tags:
         - Series Flow
-      summary: MatchZyOnSeriesInit
+      summary: QueratorOnSeriesInit
       description: |
         Fired when a series is started after loading a match config.
       requestBody:
@@ -27,9 +27,9 @@ webhooks:
         content:
           application/json:
             schema:
-              title: MatchZySeriesStartedEvent
+              title: QueratorSeriesStartedEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMatchEvent"
+                - "$ref": "#/components/schemas/QueratorMatchEvent"
                 - type: object
                   properties:
                     event:
@@ -40,14 +40,14 @@ webhooks:
                       minimum: 1
                       description: The number of maps in the series, i.e. 3 for a Bo3.
                     team1:
-                      "$ref": "#/components/schemas/MatchZyTeamWrapper"
+                      "$ref": "#/components/schemas/QueratorTeamWrapper"
                     team2:
-                      "$ref": "#/components/schemas/MatchZyTeamWrapper"
-  "MatchZyOnMapResult":
+                      "$ref": "#/components/schemas/QueratorTeamWrapper"
+  "QueratorOnMapResult":
     post:
       tags:
         - Series Flow
-      summary: MatchZyOnMapResult
+      summary: QueratorOnMapResult
       description: |
         Fired when the map ends.
       requestBody:
@@ -57,23 +57,23 @@ webhooks:
             schema:
               title: MapResultEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - "$ref": "#/components/schemas/QueratorMapEvent"
                 - type: object
                   properties:
                     event:
                       enum:
                         - map_result
                     team1:
-                      $ref: "#/components/schemas/MatchZyStatsTeam"
+                      $ref: "#/components/schemas/QueratorStatsTeam"
                     team2:
-                      $ref: "#/components/schemas/MatchZyStatsTeam"
+                      $ref: "#/components/schemas/QueratorStatsTeam"
                     winner:
                       $ref: "#/components/schemas/Winner"
-  "MatchZyOnSeriesResult":
+  "QueratorOnSeriesResult":
     post:
       tags:
         - Series Flow
-      summary: MatchZyOnSeriesResult
+      summary: QueratorOnSeriesResult
       description: |
         Fired when a series ends.
       requestBody:
@@ -81,9 +81,9 @@ webhooks:
         content:
           application/json:
             schema:
-              title: MatchZySeriesResultEvent
+              title: QueratorSeriesResultEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMatchEvent"
+                - "$ref": "#/components/schemas/QueratorMatchEvent"
                 - type: object
                   properties:
                     event:
@@ -105,13 +105,13 @@ webhooks:
                       minimum: 0
                       example: 45
                       description: |
-                        The number of seconds until MatchZy restores any changed ConVars and resets its game state to
+                        The number of seconds until Querator restores any changed ConVars and resets its game state to
                         `none` after the series has ended.
-  "MatchZyOnSidePicked":
+  "QueratorOnSidePicked":
     post:
       tags:
         - Series Flow
-      summary: MatchZyOnSidePicked
+      summary: QueratorOnSidePicked
       description: |
         Fired when a side is picked by a team.
       requestBody:
@@ -119,9 +119,9 @@ webhooks:
         content:
           application/json:
             schema:
-              title: MatchZySidePickedEvent
+              title: QueratorSidePickedEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMapSelectionEvent"
+                - "$ref": "#/components/schemas/QueratorMapSelectionEvent"
                 - type: object
                   properties:
                     event:
@@ -133,11 +133,11 @@ webhooks:
                       type: integer
                       minimum: 0
                       description: The map number the team chose a side for.
-  "MatchZyOnMapPicked":
+  "QueratorOnMapPicked":
     post:
       tags:
         - Series Flow
-      summary: MatchZyOnMapPicked
+      summary: QueratorOnMapPicked
       description: |
         Fired when a team picks a map.
       requestBody:
@@ -145,9 +145,9 @@ webhooks:
         content:
           application/json:
             schema:
-              title: MatchZyMapPickedEvent
+              title: QueratorMapPickedEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMapSelectionEvent"
+                - "$ref": "#/components/schemas/QueratorMapSelectionEvent"
                 - type: object
                   properties:
                     event:
@@ -157,11 +157,11 @@ webhooks:
                       type: integer
                       minimum: 0
                       description: The map number of the chosen map.
-  "MatchZyOnMapVetoed":
+  "QueratorOnMapVetoed":
     post:
       tags:
         - Series Flow
-      summary: MatchZyOnMapVetoed
+      summary: QueratorOnMapVetoed
       description: |
         Fired when a team vetos a map.
       requestBody:
@@ -169,20 +169,20 @@ webhooks:
         content:
           application/json:
             schema:
-              title: MatchZyMapPickedEvent
+              title: QueratorMapPickedEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMapSelectionEvent"
+                - "$ref": "#/components/schemas/QueratorMapSelectionEvent"
                 - type: object
                   properties:
                     event:
                       enum:
                         - map_vetoed
 
-  "MatchZyOnGoingLive":
+  "QueratorOnGoingLive":
     post:
       tags:
         - Map Flow
-      summary: MatchZyOnGoingLive
+      summary: QueratorOnGoingLive
       description: |
         Fired when a map is going live.
       requestBody:
@@ -192,17 +192,17 @@ webhooks:
             schema:
               title: GoingLiveEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - "$ref": "#/components/schemas/QueratorMapEvent"
                 - type: object
                   properties:
                     event:
                       enum:
                         - going_live
-  "MatchZyOnRoundEnd":
+  "QueratorOnRoundEnd":
     post:
       tags:
         - Live
-      summary: MatchZyOnRoundEnd
+      summary: QueratorOnRoundEnd
       description: |
         Fired when a round ends - when the result is in; not when the round stops. Game activity can occur after this.
       requestBody:
@@ -210,9 +210,9 @@ webhooks:
         content:
           application/json:
             schema:
-              title: MatchZyRoundEndedEvent
+              title: QueratorRoundEndedEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyTimedRoundEvent"
+                - "$ref": "#/components/schemas/QueratorTimedRoundEvent"
                 - type: object
                   properties:
                     event:
@@ -225,25 +225,25 @@ webhooks:
                     winner:
                       $ref: "#/components/schemas/Winner"
                     team1:
-                      title: MatchZyStatsTeam
+                      title: QueratorStatsTeam
                       description: The stats for team 1.
                       allOf:
-                        - $ref: "#/components/schemas/MatchZyStatsTeam"
+                        - $ref: "#/components/schemas/QueratorStatsTeam"
                     team2:
-                      title: MatchZyStatsTeam
+                      title: QueratorStatsTeam
                       description: The stats for team 2.
                       allOf:
-                        - $ref: "#/components/schemas/MatchZyStatsTeam"
-  "MatchZyOnDemoUploadEnded":
+                        - $ref: "#/components/schemas/QueratorStatsTeam"
+  "QueratorOnDemoUploadEnded":
     post:
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              title: MatchZyDemoUploadEndedEvent
+              title: QueratorDemoUploadEndedEvent
               allOf:
-                - "$ref": "#/components/schemas/MatchZyDemoFileEvent"
+                - "$ref": "#/components/schemas/QueratorDemoFileEvent"
                 - type: object
                   properties:
                     event:
@@ -255,31 +255,31 @@ webhooks:
 
 components:
   schemas:
-    MatchZyEvent:
+    QueratorEvent:
       type: object
       properties:
         event:
           type: string
           description: The name of the event.
-    MatchZyMatchEvent:
+    QueratorMatchEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyEvent"
+        - "$ref": "#/components/schemas/QueratorEvent"
         - type: object
           properties:
             matchid:
               type: integer
               description: The ID of the match.
               example: 14272
-    MatchZyMatchTeamEvent:
+    QueratorMatchTeamEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyMatchEvent"
+        - "$ref": "#/components/schemas/QueratorMatchEvent"
         - type: object
           properties:
             team:
               $ref: "#/components/schemas/Team"
-    MatchZyMapEvent:
+    QueratorMapEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyMatchEvent"
+        - "$ref": "#/components/schemas/QueratorMatchEvent"
         - type: object
           properties:
             map_number:
@@ -287,9 +287,9 @@ components:
               minimum: 0
               example: 0
               description: The map number in the series, starting at 0.
-    MatchZyMapSelectionEvent:
+    QueratorMapSelectionEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyMatchTeamEvent"
+        - "$ref": "#/components/schemas/QueratorMatchTeamEvent"
         - type: object
           properties:
             map_name:
@@ -298,16 +298,16 @@ components:
               description:
                 The name of the map related to the event (map picked/banned
                 etc.).
-    MatchZyMapTeamEvent:
+    QueratorMapTeamEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyMapEvent"
+        - "$ref": "#/components/schemas/QueratorMapEvent"
         - type: object
           properties:
             team:
               $ref: "#/components/schemas/Team"
-    MatchZyRoundEvent:
+    QueratorRoundEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyMapEvent"
+        - "$ref": "#/components/schemas/QueratorMapEvent"
         - type: object
           properties:
             round_number:
@@ -315,9 +315,9 @@ components:
               minimum: 0
               example: 13
               description: The round number of the map, starting at 0.
-    MatchZyTimedRoundEvent:
+    QueratorTimedRoundEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyRoundEvent"
+        - "$ref": "#/components/schemas/QueratorRoundEvent"
         - type: object
           properties:
             round_time:
@@ -349,7 +349,7 @@ components:
         - ct
         - t
         - spec
-    MatchZyTeamWrapper:
+    QueratorTeamWrapper:
       type: object
       description: Describes a team (`Team1` or `Team2`).
       properties:
@@ -362,10 +362,10 @@ components:
           type: string
           description: The name of the team.
           example: Natus Vincere
-    MatchZyStatsTeam:
+    QueratorStatsTeam:
       description: Describes a team with its score and player stats.
       allOf:
-        - $ref: "#/components/schemas/MatchZyTeamWrapper"
+        - $ref: "#/components/schemas/QueratorTeamWrapper"
         - type: object
           properties:
             series_score:
@@ -587,9 +587,9 @@ components:
           minimum: 0
           description: "The number of times the player was elected the round MVP."
           example: 4
-    MatchZyDemoFileEvent:
+    QueratorDemoFileEvent:
       allOf:
-        - "$ref": "#/components/schemas/MatchZyMapEvent"
+        - "$ref": "#/components/schemas/QueratorMapEvent"
         - type: object
           properties:
             filename:
@@ -597,7 +597,7 @@ components:
               example: "1324_map_0_de_nuke.dem"
               description: |
                 The name of the file containing the CSTV recording of the map. The format is determined by the
-                `matchzy_demo_name_format` parameter.
+                `querator_demo_name_format` parameter.
 tags:
   - name: All Events
     description: Forward fired for all events.

@@ -3,7 +3,7 @@ using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using System.Runtime.InteropServices;
 
 
-namespace MatchZy;
+namespace Querator;
 
 public static class GrenadeFunctions
 {

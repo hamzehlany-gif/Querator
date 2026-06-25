@@ -13,14 +13,14 @@ using Newtonsoft.Json.Linq;
 using System.Drawing;
 
 
-namespace MatchZy
+namespace Querator
 {
-    public partial class MatchZy
+    public partial class Querator
     {
-        public const string warmupCfgPath = "MatchZy/warmup.cfg";
-        public const string knifeCfgPath = "MatchZy/knife.cfg";
-        public const string liveCfgPath = "MatchZy/live.cfg";
-        public const string liveWingmanCfgPath = "MatchZy/live_wingman.cfg";
+        public const string warmupCfgPath = "Querator/warmup.cfg";
+        public const string knifeCfgPath = "Querator/knife.cfg";
+        public const string liveCfgPath = "Querator/live.cfg";
+        public const string liveWingmanCfgPath = "Querator/live_wingman.cfg";
 
         private void PrintToAllChat(string message)
         {
@@ -53,7 +53,7 @@ namespace MatchZy
 
         private void LoadAdmins()
         {
-            string fileName = "MatchZy/admins.json";
+            string fileName = "Querator/admins.json";
             string filePath = Path.Join(Server.GameDirectory + "/csgo/cfg", fileName);
 
             if (File.Exists(filePath))
@@ -123,7 +123,7 @@ namespace MatchZy
 
         private bool IsPlayerAdmin(CCSPlayerController? player, string command = "", params string[] permissions)
         {
-            if (everyoneIsAdmin.Value) return true; // Everyone is treated as admin if matchzy_everyone_is_admin is true.
+            if (everyoneIsAdmin.Value) return true; // Everyone is treated as admin if querator_everyone_is_admin is true.
             string[] updatedPermissions = permissions.Concat(new[] { "@css/root" }).ToArray();
             RequiresPermissionsOr attr = new(updatedPermissions)
             {
@@ -131,7 +131,7 @@ namespace MatchZy
             };
             if (attr.CanExecuteCommand(player)) return true; // Admin exists in admins.json of CSSharp
             if (player == null) return true; // Sent via server, hence should be treated as an admin.
-            if (loadedAdmins.ContainsKey(player.SteamID.ToString())) return true; // Admin exists in admins.json of MatchZy
+            if (loadedAdmins.ContainsKey(player.SteamID.ToString())) return true; // Admin exists in admins.json of Querator
             return false;
         }
 
@@ -160,11 +160,11 @@ namespace MatchZy
                 // Server.PrintToChatAll($"{chatPrefix} Unready players: {unreadyPlayerList}. Please type .ready to ready up! {minimumReadyRequiredMessage}");
                 if (isRoundRestorePending)
                 {
-                    PrintToAllChat(Localizer["matchzy.ready.readytotestorebackupinfomessage", unreadyPlayerList, minimumReadyRequiredMessage]);
+                    PrintToAllChat(Localizer["querator.ready.readytotestorebackupinfomessage", unreadyPlayerList, minimumReadyRequiredMessage]);
                 }
                 else
                 {
-                    PrintToAllChat(Localizer["matchzy.utility.unreadyplayers", unreadyPlayerList, minimumReadyRequiredMessage]);
+                    PrintToAllChat(Localizer["querator.utility.unreadyplayers", unreadyPlayerList, minimumReadyRequiredMessage]);
                 }
             }
             else
@@ -173,12 +173,12 @@ namespace MatchZy
                 if (isMatchSetup)
                 {
                     // Server.PrintToChatAll($"{chatPrefix} Current ready players: {ChatColors.Green}{countOfReadyPlayers}{ChatColors.Default}");
-                    PrintToAllChat(Localizer["matchzy.utility.readyplayers", countOfReadyPlayers]);
+                    PrintToAllChat(Localizer["querator.utility.readyplayers", countOfReadyPlayers]);
                 }
                 else
                 {
                     // Server.PrintToChatAll($"{chatPrefix} Minimum ready players required {ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}, current ready players: {ChatColors.Green}{countOfReadyPlayers}{ChatColors.Default}");
-                    PrintToAllChat(Localizer["matchzy.utility.minimumreadyplayers", minimumReadyRequired, countOfReadyPlayers]);
+                    PrintToAllChat(Localizer["querator.utility.minimumreadyplayers", minimumReadyRequired, countOfReadyPlayers]);
                 }
             }
         }
@@ -190,23 +190,23 @@ namespace MatchZy
                 var pauseTeamName = unpauseData["pauseTeam"];
                 if ((string)pauseTeamName == "Admin")
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.adminpausedthematch"]);
+                    PrintToAllChat(Localizer["querator.pause.adminpausedthematch"]);
                 }
                 else if ((string)pauseTeamName == "RoundRestore" && !(bool)unpauseData["t"] && !(bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.pausedbecauserestore"]);
+                    PrintToAllChat(Localizer["querator.pause.pausedbecauserestore"]);
                 }
                 else if ((bool)unpauseData["t"] && !(bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.teamwantstounpause", reverseTeamSides["TERRORIST"].teamName, reverseTeamSides["CT"].teamName]);
+                    PrintToAllChat(Localizer["querator.pause.teamwantstounpause", reverseTeamSides["TERRORIST"].teamName, reverseTeamSides["CT"].teamName]);
                 }
                 else if (!(bool)unpauseData["t"] && (bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.teamwantstounpause", reverseTeamSides["CT"].teamName, reverseTeamSides["TERRORIST"].teamName]);
+                    PrintToAllChat(Localizer["querator.pause.teamwantstounpause", reverseTeamSides["CT"].teamName, reverseTeamSides["TERRORIST"].teamName]);
                 }
                 else if (!(bool)unpauseData["t"] && !(bool)unpauseData["ct"])
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.pausedthematch", pauseTeamName]);
+                    PrintToAllChat(Localizer["querator.pause.pausedthematch", pauseTeamName]);
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace MatchZy
         private void SendSideSelectionMessage()
         {
             if (!isSideSelectionPhase) return;
-            PrintToAllChat(Localizer["matchzy.knife.sidedecisionpending", knifeWinnerName]);
+            PrintToAllChat(Localizer["querator.knife.sidedecisionpending", knifeWinnerName]);
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{knifeWinnerName}{ChatColors.Default} Won the knife. Waiting for them to type {ChatColors.Green}.stay{ChatColors.Default} or {ChatColors.Green}.switch{ChatColors.Default}");
         }
 
@@ -283,7 +283,7 @@ namespace MatchZy
             ExecWarmupCfg();
             knifeWinnerName = knifeWinner == 3 ? reverseTeamSides["CT"].teamName : reverseTeamSides["TERRORIST"].teamName;
             ShowDamageInfo();
-            PrintToAllChat(Localizer["matchzy.knife.sidedecisionpending", knifeWinnerName]);
+            PrintToAllChat(Localizer["querator.knife.sidedecisionpending", knifeWinnerName]);
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{knifeWinnerName}{ChatColors.Default} Won the knife. Waiting for them to type {ChatColors.Green}.stay{ChatColors.Default} or {ChatColors.Green}.switch{ChatColors.Default}");
             sideSelectionMessageTimer ??= AddTimer(chatTimerDelay, SendSideSelectionMessage, TimerFlags.REPEAT);
         }
@@ -318,8 +318,8 @@ namespace MatchZy
             StartDemoRecording();
 
             // Storing 0-0 score backup file as lastBackupFileName, so that .stop functions properly in first round.
-            lastBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.txt";
-            lastMatchZyBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.json";
+            lastBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.txt";
+            lastQueratorBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round00.json";
 
             // This is to reload the map once it is over so that all flags are reset accordingly
             Server.ExecuteCommand("mp_match_end_restart true");
@@ -396,7 +396,7 @@ namespace MatchZy
                 isPreVeto = false;
 
                 lastBackupFileName = "";
-                lastMatchZyBackupFileName = "";
+                lastQueratorBackupFileName = "";
 
                 isRoundRestorePending = false;
                 playerHasTakenDamage = false;
@@ -435,11 +435,11 @@ namespace MatchZy
                 nadeSpecificLastGrenadeData = new();
                 UnpauseMatch();
 
-                matchzyTeam1.teamName = "COUNTER-TERRORISTS";
-                matchzyTeam2.teamName = "TERRORISTS";
+                queratorTeam1.teamName = "COUNTER-TERRORISTS";
+                queratorTeam2.teamName = "TERRORISTS";
 
-                matchzyTeam1.teamPlayers = null;
-                matchzyTeam2.teamPlayers = null;
+                queratorTeam1.teamPlayers = null;
+                queratorTeam2.teamPlayers = null;
 
                 HashSet<CCSPlayerController> coaches = GetAllCoaches();
 
@@ -450,21 +450,21 @@ namespace MatchZy
                     SetPlayerVisible(coach);
                 }
 
-                matchzyTeam1.coach = new();
-                matchzyTeam2.coach = new();
+                queratorTeam1.coach = new();
+                queratorTeam2.coach = new();
                 coachKillTimer?.Kill();
                 coachKillTimer = null;
 
-                matchzyTeam1.seriesScore = 0;
-                matchzyTeam2.seriesScore = 0;
+                queratorTeam1.seriesScore = 0;
+                queratorTeam2.seriesScore = 0;
 
-                Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
-                Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
+                Server.ExecuteCommand($"mp_teamname_1 {queratorTeam1.teamName}");
+                Server.ExecuteCommand($"mp_teamname_2 {queratorTeam2.teamName}");
 
-                teamSides[matchzyTeam1] = "CT";
-                teamSides[matchzyTeam2] = "TERRORIST";
-                reverseTeamSides["CT"] = matchzyTeam1;
-                reverseTeamSides["TERRORIST"] = matchzyTeam2;
+                teamSides[queratorTeam1] = "CT";
+                teamSides[queratorTeam2] = "TERRORIST";
+                reverseTeamSides["CT"] = queratorTeam1;
+                reverseTeamSides["TERRORIST"] = queratorTeam2;
 
                 // Keeping the log URLs to avoid their reset on match start.
                 matchConfig = new()
@@ -623,7 +623,7 @@ namespace MatchZy
             if (matchStarted)
             {
                 // ReplyToUserCommand(player, $"Map cannot be changed once the match is started!");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.matchstarted"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.matchstarted"]);
                 return;
             }
 
@@ -663,20 +663,20 @@ namespace MatchZy
                     minimumReadyRequired = readyRequired;
                     string minimumReadyRequiredFormatted = (player == null) ? $"{minimumReadyRequired}" : $"{ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}";
                     // ReplyToUserCommand(player, $"Minimum ready players required to start the match are now set to: {minimumReadyRequiredFormatted}");
-                    ReplyToUserCommand(player, Localizer["matchzy.utility.minreadyplayers", minimumReadyRequiredFormatted]);
+                    ReplyToUserCommand(player, Localizer["querator.utility.minreadyplayers", minimumReadyRequiredFormatted]);
                     CheckLiveRequired();
                 }
                 else
                 {
                     // ReplyToUserCommand(player, $"Invalid value for readyrequired. Please specify a valid non-negative number. Usage: !readyrequired <number_of_ready_players_required>");
-                    ReplyToUserCommand(player, Localizer["matchzy.utility.rrinvalidvalue"]);
+                    ReplyToUserCommand(player, Localizer["querator.utility.rrinvalidvalue"]);
                 }
             }
             else
             {
                 string minimumReadyRequiredFormatted = (player == null) ? $"{minimumReadyRequired}" : $"{ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}";
                 // ReplyToUserCommand(player, $"Current Ready Required: {minimumReadyRequiredFormatted} .Usage: !readyrequired <number_of_ready_players_required>");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.currentreadyrequired", minimumReadyRequiredFormatted]);
+                ReplyToUserCommand(player, Localizer["querator.utility.currentreadyrequired", minimumReadyRequiredFormatted]);
             }
         }
 
@@ -723,42 +723,42 @@ namespace MatchZy
                 return;
             }
             // If default names, we pick a player and use their name as their team name
-            if (matchzyTeam1.teamName == "COUNTER-TERRORISTS")
+            if (queratorTeam1.teamName == "COUNTER-TERRORISTS")
             {
-                // matchzyTeam1.teamName = teamName;
-                teamSides[matchzyTeam1] = "CT";
-                reverseTeamSides["CT"] = matchzyTeam1;
+                // queratorTeam1.teamName = teamName;
+                teamSides[queratorTeam1] = "CT";
+                reverseTeamSides["CT"] = queratorTeam1;
                 foreach (var key in playerData.Keys)
                 {
                     if (playerData[key].TeamNum == 3)
                     {
-                        matchzyTeam1.teamName = "team_" + RemoveSpecialCharacters(playerData[key].PlayerName.Replace(" ", "_"));
-                        foreach (var coach in matchzyTeam1.coach) {
-                            coach.Clan = $"[{matchzyTeam1.teamName} COACH]";
+                        queratorTeam1.teamName = "team_" + RemoveSpecialCharacters(playerData[key].PlayerName.Replace(" ", "_"));
+                        foreach (var coach in queratorTeam1.coach) {
+                            coach.Clan = $"[{queratorTeam1.teamName} COACH]";
                         }
                         break;
                     }
                 }
-                // Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
+                // Server.ExecuteCommand($"mp_teamname_1 {queratorTeam1.teamName}");
             }
 
-            if (matchzyTeam2.teamName == "TERRORISTS")
+            if (queratorTeam2.teamName == "TERRORISTS")
             {
-                // matchzyTeam2.teamName = teamName;
-                teamSides[matchzyTeam2] = "TERRORIST";
-                reverseTeamSides["TERRORIST"] = matchzyTeam2;
+                // queratorTeam2.teamName = teamName;
+                teamSides[queratorTeam2] = "TERRORIST";
+                reverseTeamSides["TERRORIST"] = queratorTeam2;
                 foreach (var key in playerData.Keys)
                 {
                     if (playerData[key].TeamNum == 2)
                     {
-                        matchzyTeam2.teamName = "team_" + RemoveSpecialCharacters(playerData[key].PlayerName.Replace(" ", "_"));
-                        foreach (var coach in matchzyTeam2.coach) {
-                            coach.Clan = $"[{matchzyTeam2.teamName} COACH]";
+                        queratorTeam2.teamName = "team_" + RemoveSpecialCharacters(playerData[key].PlayerName.Replace(" ", "_"));
+                        foreach (var coach in queratorTeam2.coach) {
+                            coach.Clan = $"[{queratorTeam2.teamName} COACH]";
                         }
                         break;
                     }
                 }
-                // Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
+                // Server.ExecuteCommand($"mp_teamname_2 {queratorTeam2.teamName}");
             }
 
             Server.ExecuteCommand($"mp_teamname_1 {reverseTeamSides["CT"].teamName}");
@@ -767,7 +767,7 @@ namespace MatchZy
             HandleClanTags();
 
             string seriesType = "BO" + matchConfig.NumMaps.ToString();
-            liveMatchId = database.InitMatch(matchzyTeam1.teamName, matchzyTeam2.teamName, "-", isMatchSetup, liveMatchId, matchConfig.CurrentMapNumber, seriesType, matchConfig);
+            liveMatchId = database.InitMatch(queratorTeam1.teamName, queratorTeam2.teamName, "-", isMatchSetup, liveMatchId, matchConfig.CurrentMapNumber, seriesType, matchConfig);
             SetupRoundBackupFile();
 
             GetSpawns();
@@ -787,7 +787,7 @@ namespace MatchZy
             }
             if (showCreditsOnMatchStart.Value)
             {
-                Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}MatchZy{ChatColors.Default} Plugin by {ChatColors.Green}WD-{ChatColors.Default}");
+                Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}Querator{ChatColors.Default} Plugin by {ChatColors.Green}Lany{ChatColors.Default}");
             }
             if (matchStartMessage.Value.Trim() != "" && matchStartMessage.Value.Trim() != "\"\"")
             {
@@ -864,18 +864,18 @@ namespace MatchZy
 
             string winnerName = GetMatchWinnerName();
             (int t1score, int t2score) = GetTeamsScore();
-            int team1SeriesScore = matchzyTeam1.seriesScore;
-            int team2SeriesScore = matchzyTeam2.seriesScore;
+            int team1SeriesScore = queratorTeam1.seriesScore;
+            int team2SeriesScore = queratorTeam2.seriesScore;
 
-            string statsPath = Server.GameDirectory + "/csgo/MatchZy_Stats/" + liveMatchId.ToString();
+            string statsPath = Server.GameDirectory + "/csgo/Querator_Stats/" + liveMatchId.ToString();
 
             var mapResultEvent = new MapResultEvent
             {
                 MatchId = liveMatchId,
                 MapNumber = currentMapNumber,
-                Winner = new Winner(t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2", t1score > t2score ? "team1" : "team2"),
-                StatsTeam1 = new MatchZyStatsTeam(matchzyTeam1.id, matchzyTeam1.teamName, team1SeriesScore, t1score, 0, 0, new List<StatsPlayer>()),
-                StatsTeam2 = new MatchZyStatsTeam(matchzyTeam2.id, matchzyTeam2.teamName, team2SeriesScore, t2score, 0, 0, new List<StatsPlayer>())
+                Winner = new Winner(t1score > t2score && reverseTeamSides["CT"] == queratorTeam1 ? "3" : "2", t1score > t2score ? "team1" : "team2"),
+                StatsTeam1 = new QueratorStatsTeam(queratorTeam1.id, queratorTeam1.teamName, team1SeriesScore, t1score, 0, 0, new List<StatsPlayer>()),
+                StatsTeam2 = new QueratorStatsTeam(queratorTeam2.id, queratorTeam2.teamName, team2SeriesScore, t2score, 0, 0, new List<StatsPlayer>())
             };
 
             Task.Run(async () =>
@@ -894,21 +894,21 @@ namespace MatchZy
                 return;
             }
 
-            int remainingMaps = matchConfig.NumMaps - matchzyTeam1.seriesScore - matchzyTeam2.seriesScore;
-            Log($"[HandleMatchEnd] MATCH ENDED, remainingMaps: {remainingMaps}, NumMaps: {matchConfig.NumMaps}, Team1SeriesScore: {matchzyTeam1.seriesScore}, Team2SeriesScore: {matchzyTeam2.seriesScore}");
-            if (matchzyTeam1.seriesScore == matchzyTeam2.seriesScore && remainingMaps <= 0)
+            int remainingMaps = matchConfig.NumMaps - queratorTeam1.seriesScore - queratorTeam2.seriesScore;
+            Log($"[HandleMatchEnd] MATCH ENDED, remainingMaps: {remainingMaps}, NumMaps: {matchConfig.NumMaps}, Team1SeriesScore: {queratorTeam1.seriesScore}, Team2SeriesScore: {queratorTeam2.seriesScore}");
+            if (queratorTeam1.seriesScore == queratorTeam2.seriesScore && remainingMaps <= 0)
             {
                 EndSeries(null, restartDelay - 1, t1score, t2score);
             }
             else if (matchConfig.SeriesCanClinch)
             {
                 int mapsToWinSeries = (matchConfig.NumMaps / 2) + 1;
-                if (matchzyTeam1.seriesScore == mapsToWinSeries)
+                if (queratorTeam1.seriesScore == mapsToWinSeries)
                 {
                     EndSeries(winnerName, restartDelay - 1, t1score, t2score);
                     return;
                 }
-                else if (matchzyTeam2.seriesScore == mapsToWinSeries)
+                else if (queratorTeam2.seriesScore == mapsToWinSeries)
                 {
                     EndSeries(winnerName, restartDelay - 1, t1score, t2score);
                     return;
@@ -919,19 +919,19 @@ namespace MatchZy
                 EndSeries(winnerName, restartDelay - 1, t1score, t2score);
                 return;
             }
-            if (matchzyTeam1.seriesScore > matchzyTeam2.seriesScore)
+            if (queratorTeam1.seriesScore > queratorTeam2.seriesScore)
             {
-                Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{matchzyTeam1.teamName}{ChatColors.Default} is winning the series {ChatColors.Green}{matchzyTeam1.seriesScore}-{matchzyTeam2.seriesScore}{ChatColors.Default}");
+                Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{queratorTeam1.teamName}{ChatColors.Default} is winning the series {ChatColors.Green}{queratorTeam1.seriesScore}-{queratorTeam2.seriesScore}{ChatColors.Default}");
 
             }
-            else if (matchzyTeam2.seriesScore > matchzyTeam1.seriesScore)
+            else if (queratorTeam2.seriesScore > queratorTeam1.seriesScore)
             {
-                Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{matchzyTeam2.teamName}{ChatColors.Default} is winning the series {ChatColors.Green}{matchzyTeam2.seriesScore}-{matchzyTeam1.seriesScore}{ChatColors.Default}");
+                Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{queratorTeam2.teamName}{ChatColors.Default} is winning the series {ChatColors.Green}{queratorTeam2.seriesScore}-{queratorTeam1.seriesScore}{ChatColors.Default}");
 
             }
             else
             {
-                Server.PrintToChatAll($"{chatPrefix} The series is tied at {ChatColors.Green}{matchzyTeam1.seriesScore}-{matchzyTeam2.seriesScore}{ChatColors.Default}");
+                Server.PrintToChatAll($"{chatPrefix} The series is tied at {ChatColors.Green}{queratorTeam1.seriesScore}-{queratorTeam2.seriesScore}{ChatColors.Default}");
             }
             matchConfig.CurrentMapNumber += 1;
             string nextMap = matchConfig.Maplist[matchConfig.CurrentMapNumber];
@@ -986,13 +986,13 @@ namespace MatchZy
             (int t1score, int t2score) = GetTeamsScore();
             if (t1score > t2score)
             {
-                matchzyTeam1.seriesScore++;
-                return matchzyTeam1.teamName;
+                queratorTeam1.seriesScore++;
+                return queratorTeam1.teamName;
             }
             else if (t2score > t1score)
             {
-                matchzyTeam2.seriesScore++;
-                return matchzyTeam2.teamName;
+                queratorTeam2.seriesScore++;
+                return queratorTeam2.teamName;
             }
             else
             {
@@ -1007,11 +1007,11 @@ namespace MatchZy
             int t2score = 0;
             foreach (var team in teamEntities)
             {
-                if (team.Teamname == teamSides[matchzyTeam1])
+                if (team.Teamname == teamSides[queratorTeam1])
                 {
                     t1score = team.Score;
                 }
-                else if (team.Teamname == teamSides[matchzyTeam2])
+                else if (team.Teamname == teamSides[queratorTeam2])
                 {
                     t2score = team.Score;
                 }
@@ -1032,7 +1032,7 @@ namespace MatchZy
             if (!matchStarted) return;
             playerHasTakenDamage = false;
             HandleCoaches();
-            CreateMatchZyRoundDataBackup();
+            CreateQueratorRoundDataBackup();
             InitPlayerDamageInfo();
             UpdateHostname();
         }
@@ -1046,7 +1046,7 @@ namespace MatchZy
                     coachKillTimer?.Kill();
                     coachKillTimer = null;
                     (int t1score, int t2score) = GetTeamsScore();
-                    Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{matchzyTeam1.teamName} [{t1score} - {t2score}] {matchzyTeam2.teamName}");
+                    Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{queratorTeam1.teamName} [{t1score} - {t2score}] {queratorTeam2.teamName}");
 
                     ShowDamageInfo();
 
@@ -1054,11 +1054,11 @@ namespace MatchZy
 
                     int currentMapNumber = matchConfig.CurrentMapNumber;
                     long matchId = liveMatchId;
-                    int ctTeamNum = reverseTeamSides["CT"] == matchzyTeam1 ? 1 : 2;
-                    int tTeamNum = reverseTeamSides["TERRORIST"] == matchzyTeam1 ? 1 : 2;
+                    int ctTeamNum = reverseTeamSides["CT"] == queratorTeam1 ? 1 : 2;
+                    int tTeamNum = reverseTeamSides["TERRORIST"] == queratorTeam1 ? 1 : 2;
                     Winner winner = new(@event.Winner.ToString(), t1score > t2score ? "team1" : "team2");
 
-                    var roundEndEvent = new MatchZyRoundEndedEvent
+                    var roundEndEvent = new QueratorRoundEndedEvent
                     {
                         MatchId = liveMatchId,
                         MapNumber = matchConfig.CurrentMapNumber,
@@ -1066,8 +1066,8 @@ namespace MatchZy
                         Reason = @event.Reason,
                         RoundTime = 0,
                         Winner = winner,
-                        StatsTeam1 = new MatchZyStatsTeam(matchzyTeam1.id, matchzyTeam1.teamName, 0, t1score, 0, 0, playerStatsListTeam1),
-                        StatsTeam2 = new MatchZyStatsTeam(matchzyTeam2.id, matchzyTeam2.teamName, 0, t2score, 0, 0, playerStatsListTeam2),
+                        StatsTeam1 = new QueratorStatsTeam(queratorTeam1.id, queratorTeam1.teamName, 0, t1score, 0, 0, playerStatsListTeam1),
+                        StatsTeam2 = new QueratorStatsTeam(queratorTeam2.id, queratorTeam2.teamName, 0, t2score, 0, 0, playerStatsListTeam2),
                     };
 
                     Task.Run(async () =>
@@ -1078,9 +1078,9 @@ namespace MatchZy
                     });
 
                     string round = GetRoundNumer().ToString("D2");
-                    lastBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt";
-                    lastMatchZyBackupFileName = $"matchzy_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
-                    Log($"[HandlePostRoundEndEvent] Setting lastBackupFileName to {lastBackupFileName} and lastMatchZyBackupFileName to {lastMatchZyBackupFileName}");
+                    lastBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.txt";
+                    lastQueratorBackupFileName = $"querator_{liveMatchId}_{matchConfig.CurrentMapNumber}_round{round}.json";
+                    Log($"[HandlePostRoundEndEvent] Setting lastBackupFileName to {lastBackupFileName} and lastQueratorBackupFileName to {lastQueratorBackupFileName}");
 
                     // One of the team did not use .stop command hence display the proper message after the round has ended.
                     if (stopData["ct"] && !stopData["t"])
@@ -1149,30 +1149,30 @@ namespace MatchZy
             if (isMatchLive && isPaused)
             {
                 // ReplyToUserCommand(player, "Match is already paused!");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.paused"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.paused"]);
                 return;
             }
             if (IsHalfTimePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command during halftime.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.duringhalftime"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.duringhalftime"]);
                 return;
             }
             if (IsPostGamePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command after the game has ended.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.matchended"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.matchended"]);
                 return;
             }
             if (IsTacticalTimeoutActive())
             {
                 // ReplyToUserCommand(player, "You cannot use this command when tactical timeout is active.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.tacticaltimeout"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.tacticaltimeout"]);
                 return;
             }
             if (!techPauseEnabled.Value && player != null)
             {
-                PrintToPlayerChat(player, Localizer["matchzy.pause.techpausenotenabled"]);
+                PrintToPlayerChat(player, Localizer["querator.pause.techpausenotenabled"]);
                 return;
             }
             if(!string.IsNullOrEmpty(techPausePermission.Value) && techPausePermission.Value != "\"\"")
@@ -1203,7 +1203,7 @@ namespace MatchZy
                 {
                     return;
                 }
-                PrintToAllChat(Localizer["matchzy.pause.pausedthematch", pauseTeamName]);
+                PrintToAllChat(Localizer["querator.pause.pausedthematch", pauseTeamName]);
                 // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{pauseTeamName}{ChatColors.Default} has paused the match. Type .unpause to unpause the match");
 
                 SetMatchPausedFlags();
@@ -1221,33 +1221,33 @@ namespace MatchZy
             if (isMatchLive && isPaused)
             {
                 // ReplyToUserCommand(player, "Match is already paused!");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.paused"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.paused"]);
                 return;
             }
             if (IsHalfTimePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command during halftime.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.duringhalftime"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.duringhalftime"]);
                 return;
             }
             if (IsPostGamePhase())
             {
                 // ReplyToUserCommand(player, "You cannot use this command after the game has ended.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.matchended"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.matchended"]);
                 return;
             }
             if (IsTacticalTimeoutActive())
             {
                 // ReplyToUserCommand(player, "You cannot use this command when tactical timeout is active.");
-                ReplyToUserCommand(player, Localizer["matchzy.utility.tacticaltimeout"]);
+                ReplyToUserCommand(player, Localizer["querator.utility.tacticaltimeout"]);
                 return;
             }
             unpauseData["pauseTeam"] = "Admin";
-            PrintToAllChat(Localizer["matchzy.pause.adminpausedthematch"]);
+            PrintToAllChat(Localizer["querator.pause.adminpausedthematch"]);
             // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}Admin{ChatColors.Default} has paused the match.");
             if (player == null)
             {
-                Server.PrintToConsole($"[MatchZy] {Localizer["matchzy.pause.adminpausedthematch"]}");
+                Server.PrintToConsole($"[Querator] {Localizer["querator.pause.adminpausedthematch"]}");
             }
             SetMatchPausedFlags();
         }
@@ -1261,12 +1261,12 @@ namespace MatchZy
                     SendPlayerNotAdminMessage(player);
                     return;
                 }
-                PrintToAllChat(Localizer["matchzy.pause.adminunpausedthematch"]);
+                PrintToAllChat(Localizer["querator.pause.adminunpausedthematch"]);
                 UnpauseMatch();
 
                 if (player == null)
                 {
-                    Server.PrintToConsole("[MatchZy] Admin has unpaused the match, resuming the match!");
+                    Server.PrintToConsole("[Querator] Admin has unpaused the match, resuming the match!");
                 }
             }
         }
@@ -1343,7 +1343,7 @@ namespace MatchZy
         private void SendPlayerNotAdminMessage(CCSPlayerController? player)
         {
             // ReplyToUserCommand(player, "You do not have permission to use this command!");
-            ReplyToUserCommand(player, Localizer["matchzy.utility.dontpermission"]);
+            ReplyToUserCommand(player, Localizer["querator.utility.dontpermission"]);
         }
 
         private string GetColorTreatedString(string message)
@@ -1405,7 +1405,7 @@ namespace MatchZy
         public void LoadClientNames()
         {
             string namesFileName = "Match_" + liveMatchId.ToString() + ".ini";
-            string namesFilePath = Server.GameDirectory + "/csgo/MatchZyPlayerNames/" + namesFileName;
+            string namesFilePath = Server.GameDirectory + "/csgo/QueratorPlayerNames/" + namesFileName;
             string? directoryPath = Path.GetDirectoryName(namesFilePath);
             if (directoryPath != null)
             {
@@ -1419,13 +1419,13 @@ namespace MatchZy
             sb.AppendLine("\"Names\"");
             sb.AppendLine("{");
 
-            WriteClientNamesInFile(sb, matchzyTeam1.teamPlayers);
-            WriteClientNamesInFile(sb, matchzyTeam2.teamPlayers);
+            WriteClientNamesInFile(sb, queratorTeam1.teamPlayers);
+            WriteClientNamesInFile(sb, queratorTeam2.teamPlayers);
             WriteClientNamesInFile(sb, matchConfig.Spectators);
 
             sb.AppendLine("}");
             File.WriteAllText(namesFilePath, sb.ToString());
-            Server.ExecuteCommand($"sv_load_forced_client_names_file MatchZyPlayerNames/" + namesFileName);
+            Server.ExecuteCommand($"sv_load_forced_client_names_file QueratorPlayerNames/" + namesFileName);
         }
 
         public void WriteClientNamesInFile(StringBuilder sb, JToken? players)
@@ -1539,8 +1539,8 @@ namespace MatchZy
                 .Replace("{MATCH_ID}", $"{liveMatchId}")
                 .Replace("{MAP}", Server.MapName)
                 .Replace("{MAPNUMBER}", matchConfig.CurrentMapNumber.ToString())
-                .Replace("{TEAM1}", matchzyTeam1.teamName.Replace(" ", "_"))
-                .Replace("{TEAM2}", matchzyTeam2.teamName.Replace(" ", "_"))
+                .Replace("{TEAM1}", queratorTeam1.teamName.Replace(" ", "_"))
+                .Replace("{TEAM2}", queratorTeam2.teamName.Replace(" ", "_"))
                 .Replace("{TEAM1_SCORE}", team1Score.ToString())
                 .Replace("{TEAM2_SCORE}", team2Score.ToString());
             return formattedValue;
@@ -1714,8 +1714,8 @@ namespace MatchZy
                         Stats = playerStatsInstance
                     };
 
-                    int ctTeamNum = reverseTeamSides["CT"] == matchzyTeam1 ? 1 : 2;
-                    int tTeamNum = reverseTeamSides["TERRORIST"] == matchzyTeam1 ? 1 : 2;
+                    int ctTeamNum = reverseTeamSides["CT"] == queratorTeam1 ? 1 : 2;
+                    int tTeamNum = reverseTeamSides["TERRORIST"] == queratorTeam1 ? 1 : 2;
 
                     if (player.TeamNum == 3)
                     {
@@ -1745,7 +1745,7 @@ namespace MatchZy
 
         private void Log(string message)
         {
-            Console.WriteLine("[MatchZy] " + message);
+            Console.WriteLine("[Querator] " + message);
         }
 
         private void AutoStart()
@@ -1880,10 +1880,10 @@ namespace MatchZy
                 using ByteArrayContent content = new(fileContent);
                 content.Headers.Add("Content-Type", "application/octet-stream");
 
-                content.Headers.Add("MatchZy-FileName", Path.GetFileName(filePath));
-                content.Headers.Add("MatchZy-MatchId", matchId.ToString());
-                content.Headers.Add("MatchZy-MapNumber", mapNumber.ToString());
-                content.Headers.Add("MatchZy-RoundNumber", roundNumber.ToString());
+                content.Headers.Add("Querator-FileName", Path.GetFileName(filePath));
+                content.Headers.Add("Querator-MatchId", matchId.ToString());
+                content.Headers.Add("Querator-MapNumber", mapNumber.ToString());
+                content.Headers.Add("Querator-RoundNumber", roundNumber.ToString());
 
                 // For Get5 Panel
                 content.Headers.Add("Get5-FileName", Path.GetFileName(filePath));
@@ -1916,7 +1916,7 @@ namespace MatchZy
 
         public bool HandlePlayerWhitelist(CCSPlayerController player, string steamId)
         {
-            string whitelistfileName = "MatchZy/whitelist.cfg";
+            string whitelistfileName = "Querator/whitelist.cfg";
             string whitelistPath = Path.Join(Server.GameDirectory + "/csgo/cfg", whitelistfileName);
             string? directoryPath = Path.GetDirectoryName(whitelistPath);
             if (directoryPath != null)
