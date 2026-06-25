@@ -25,7 +25,7 @@ The version string lives in **one place**: `ModuleVersion` in `Querator.cs`. The
 ## CI / release
 
 - `.github/workflows/build.yml` — on push to `main` (doc/script/markdown-only pushes are ignored), builds three release zips (plugin-only, plus with-CSSharp for Linux and Windows) and creates a GitHub Release tagged with `ModuleVersion`.
-- `.github/workflows/ci.yml` — on push to `main`, deploys the `documentation/` (MkDocs Material site) to GitHub Pages.
+- The `documentation/` MkDocs site is **source only** — kept as reference, not auto-published. (The upstream's GitHub Pages publish workflow `ci.yml` was removed post-rebrand; build/preview locally with `mkdocs serve` if needed.)
 - Note: the working branch here is `dev`; releases happen from `main`.
 
 ## Architecture
