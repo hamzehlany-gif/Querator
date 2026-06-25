@@ -537,7 +537,13 @@ deleted the abandoned `gh-pages` branch (regenerable from source via `mkdocs ser
   unused by the node-agent deploy but handy for a manual scratch-server install.
 - **Deliberate keeps (upstream-audience, not removed):** the Get5 compatibility layer (`G5API.cs` + `get5_*` aliases +
   `get5_status`/`get5_web_available` + `documentation/docs/get5.md`) per decision D7; the 12 `lang/` locales (harmless).
-- **Flagged for the operator (not a MatchZy artifact per se):** the Querator GitHub repo is **public** with public
-  Releases (node-agent installs by unauthenticated download from the release URL), while `docs/12` states the plugin is
-  "Lany-only, never shared outside Lany." Public releases are currently load-bearing for the deploy, so privatizing is
-  coupled — left as an open question for the operator.
+- **Public repo → privatization (operator chose to proceed):** the Querator repo is a **GitHub fork** of
+  `shobhit-pathak/MatchZy` (`"fork": true`), so GitHub **forces it public** — not a settings toggle; the fork link
+  must be broken first. This contradicts `docs/12`'s "Lany-only, never shared." No secrets are exposed (they live in
+  VM `.env`/Mongo/Actions secrets), so it's an IP/visibility choice, not security. **Code prepped** (backward-compatible,
+  inert while public): node-agent `httpUtil`/`config`/`plugin.js` + `cutover-vm.sh` now accept an optional
+  `QUERATOR_RELEASE_TOKEN` for authenticated private-release downloads (token unset ⇒ unchanged public behavior; full
+  test suite green). **Operator GitHub steps + the full procedure** are in
+  [`PRIVATIZE-REPO-RUNBOOK.md`](PRIVATIZE-REPO-RUNBOOK.md) (detach fork via Support or mirror to a new private repo →
+  make private → create a fine-grained PAT → set it on each VM → validate on one VM → roll fleet). **Open: awaiting the
+  operator's GitHub-account actions** (only they can detach/privatize/mint the PAT).
