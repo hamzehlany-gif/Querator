@@ -383,6 +383,26 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
 - **Merge:** `rebrand-b-b9-cfgdir` → `rebrand-b` (Querator + node-agent; local + pushed).
 - **Rollback:** revert/delete the `rebrand-b-b9-cfgdir` branches; `git mv` back.
 
+### Upstream sample-data / identity sweep (2026-06-25) — ✅ removed author's steamid from prod
+Deeper pass for upstream **sample data / identity** (not "matchzy" strings). Biggest find: the shipped
+`cfg/Querator/admins.json` granted **Querator in-game admin to the upstream author's own Steam account**
+(`76561198154367261` — the same account as the old donation tradelink `partner=194101533`), and `whitelist.cfg`
+listed it plus a `steamid2` placeholder. The agent's template sync does **not** manage `cfg/Querator/admins.json`,
+so the shipped default was **live on all 3 prod VMs** (whitelist is disabled by default, so that leg was inert).
+- **Fixed:** `admins.json` → Lany's steamid (`76561198010146178`) as sole admin; `whitelist.cfg` → comment-only
+  (cleared). Applied to the **repo** (rebuilds the 1.0.0 zip so fresh installs are clean) **and all 3 live VMs**.
+  Caveat: the plugin caches the admin list at `Load()`, so the running process keeps the old entry until the next
+  cs2 restart/`css_plugins reload Querator` — benign (author won't join; whitelist off), auto-resolves on next restart.
+- **`config.cfg` "by WD-" comment** → "by Lany" (cosmetic; the cvar + in-game message already said "by Lany"). Fixed
+  in the repo, the Mongo `config_templates` content, and all 3 live `config.cfg`.
+- **Doc examples** (`configuration.md`, `get5.md`) used the author's real steamid + tag "WD-" as the sample admin →
+  neutral placeholder (`76561198000000000` / "Your Admin Name").
+- **Verified clean / kept:** `.csproj` has no package metadata; `database.json` = generic placeholders; `savednades.json`
+  = functional practice-nade data (no identity); `LoadAdmins`/whitelist auto-create defaults are generic placeholders
+  (`"steamid"` / `Steamid1/2`); `match_setup.md` uses well-known pro-player steamids (standard examples); the author's
+  steamid is **absent from lanyBot/node-agent/lany/lany-docs/lany-clipper**. Only the inherited `CHANGELOG` occurrence
+  remains (historical, kept).
+
 ## Phase C — fleet cutover + release pipeline + sweeps
 
 ### SP-C1 — release pipeline + fleet source MatchZy → Querator (Phase C) — 2026-06-24 — ✅ code done (branches, gates green); ⏳ release + switch happen at cutover
