@@ -10,8 +10,8 @@ There are two ways to create an admin for Querator; you can choose the most conv
     You can create a new entry in the `/addons/counterstrikesharp/configs/admins.json` file with appropirate flags like mentioned in the below example:
     ```json
     {
-    "WD-": {
-        "identity": "76561198154367261",
+    "Your Admin Name": {
+        "identity": "76561198000000000",
         "flags": [
         "@css/root"
         ]
@@ -42,7 +42,7 @@ There are two ways to create an admin for Querator; you can choose the most conv
 
     ```json
     {
-        "76561198154367261": "",
+        "76561198000000000": "",
         "<another_steam_id>": ""
     }
     ```
@@ -165,7 +165,7 @@ If these configs are not found in the expected location, Querator executes the d
 Again, inside `csgo/cfg/Querator`, there will be a file called `whitelist.cfg`. You can add Steam64 id of whitelisted players like mentioned in the below example:
 
 ```
-76561198154367261
+76561198000000000
 steamid2
 steamid3
 ```
