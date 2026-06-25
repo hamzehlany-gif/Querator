@@ -452,3 +452,27 @@ scripts were targeting the wrong collections** (Mongoose-default names, not the 
   install (no §8a here). Fleet = **3 VMs** (`carlos` canary + 2). Backend = `api.lany.gg`.
 - **Droplet env risk:** lanyBot prod `.env` still has `MATCHZY_WEBHOOK_SECRET/HEADER` → rename to `QUERATOR_*` with the
   deploy or the rebranded lanyBot fail-closes in prod.
+
+### Cutover EXECUTION — production go-live (2026-06-25) — 🟢 IN PROGRESS (2/3 fleet done)
+The manual cutover was executed. **Global / one-time steps (done once, all repos):** Querator **1.0.0 release** published
+(Discord fired); `lanyBot`/`lany`/`lany-node-agent` `main` merged + deployed (droplet PM2 / Cloudflare); droplet prod
+`.env` `MATCHZY_*`→`QUERATOR_*` renamed by the operator before the lanyBot deploy; **Mongo migrations b6 + c3 ran once**
+against the shared cluster (154 docs / 5 collections / 2 DBs — matches dry-run). New code confirmed live via POST probe
+(`/api/querator/events` → 401 auth; `/api/matchzy/events` → 404).
+- **Per-VM cutover** scripted as [`lany-node-agent/scripts/migrations/cutover-vm.sh`](../../lany-node-agent/scripts/migrations/cutover-vm.sh)
+  (backup → agent `.env` key rename → stop cs2 → install Querator 1.0.0 + remove MatchZy → b7 SQLite/dir moves (conditional)
+  → `git pull` agent → `syncTemplates({root:'querator'})` → restart agent+cs2 → clear stale `vm_states.versions.matchzy` →
+  verify load). **Fleet = 3 VMs:** `carlos` 82.212.83.229, `alan` 82.212.83.227, `botez` 82.212.83.228.
+- **carlos (.229)** — ✅ done 2026-06-25 (manual sequence; the script's source of truth). End-to-end test match verified:
+  `matchsessions` 17→18, `matchEvents` 125→134, `queratorMatchId=1782388514`, 0 matchzy. (Demo upload leg returned 0 docs —
+  pre-existing weakness, flagged for follow-up.)
+- **botez (.228)** — ✅ done 2026-06-25 via `cutover-vm.sh`. Verified: `Finished loading plugin Querator` @12:57:46 in
+  `log-all20260625.txt`; `Querator.dll` present, `MatchZy` plugin removed; `config.cfg`→`/api/querator/events` +
+  `x-querator-secret`; `vm_states[cs2-botez].versions.querator=1.0.0`, **0 matchzy** in the doc. (Test match: operator TODO.)
+- **alan (.227)** — 🔴 BLOCKED on reachability: host is **up** (ping ~120 ms) but **SSH :22 times out** (filtered/firewall/
+  sshd), so the deploy key can't help. Needs operator to open :22 (or confirm sshd / the real port). Cutover ready to run
+  the instant it's reachable.
+- **Two `cutover-vm.sh` bugs found + fixed on the botez run** (committed to node-agent `main`): (1) step-2 `MATCHZY_`-remaining
+  check used `grep -c | grep -q` which trips a false FATAL under `set -o pipefail` (grep -c exits 1 on a 0 count) → replaced
+  with `if grep -qE`; (2) step-9 verify snapshotted `$LOG` once before the restart, pinning a stale pre-restart log → now
+  recomputes the newest log each loop iteration. Both are verify/guard fixes; the proven mutation sequence is unchanged.
