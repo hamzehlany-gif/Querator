@@ -453,7 +453,7 @@ scripts were targeting the wrong collections** (Mongoose-default names, not the 
 - **Droplet env risk:** lanyBot prod `.env` still has `MATCHZY_WEBHOOK_SECRET/HEADER` → rename to `QUERATOR_*` with the
   deploy or the rebranded lanyBot fail-closes in prod.
 
-### Cutover EXECUTION — production go-live (2026-06-25) — 🟢 IN PROGRESS (2/3 fleet done)
+### Cutover EXECUTION — production go-live (2026-06-25) — ✅ FLEET COMPLETE (3/3)
 The manual cutover was executed. **Global / one-time steps (done once, all repos):** Querator **1.0.0 release** published
 (Discord fired); `lanyBot`/`lany`/`lany-node-agent` `main` merged + deployed (droplet PM2 / Cloudflare); droplet prod
 `.env` `MATCHZY_*`→`QUERATOR_*` renamed by the operator before the lanyBot deploy; **Mongo migrations b6 + c3 ran once**
@@ -469,9 +469,11 @@ against the shared cluster (154 docs / 5 collections / 2 DBs — matches dry-run
 - **botez (.228)** — ✅ done 2026-06-25 via `cutover-vm.sh`. Verified: `Finished loading plugin Querator` @12:57:46 in
   `log-all20260625.txt`; `Querator.dll` present, `MatchZy` plugin removed; `config.cfg`→`/api/querator/events` +
   `x-querator-secret`; `vm_states[cs2-botez].versions.querator=1.0.0`, **0 matchzy** in the doc. (Test match: operator TODO.)
-- **alan (.227)** — 🔴 BLOCKED on reachability: host is **up** (ping ~120 ms) but **SSH :22 times out** (filtered/firewall/
-  sshd), so the deploy key can't help. Needs operator to open :22 (or confirm sshd / the real port). Cutover ready to run
-  the instant it's reachable.
+- **alan (.227)** — ✅ done 2026-06-25 via `cutover-vm.sh`. **SSH is on port 2222, not 22** (the earlier ":22 timeout"
+  was simply the wrong port — sshd is healthy on 2222; key already authorized). Verified: `Finished loading plugin Querator`
+  @13:04:31; `Querator.dll` present, `MatchZy` removed; `config.cfg`→`/api/querator/events` + `x-querator-secret`;
+  `vm_states[cs2-alan].versions.querator=1.0.0`, **0 matchzy**. (Test match: operator TODO.)
+  → connect with `ssh -i ~/.ssh/querator_deploy -p 2222 root@82.212.83.227`.
 - **Two `cutover-vm.sh` bugs found + fixed on the botez run** (committed to node-agent `main`): (1) step-2 `MATCHZY_`-remaining
   check used `grep -c | grep -q` which trips a false FATAL under `set -o pipefail` (grep -c exits 1 on a 0 count) → replaced
   with `if grep -qE`; (2) step-9 verify snapshotted `$LOG` once before the restart, pinning a stale pre-restart log → now
