@@ -3,13 +3,18 @@
 The actionable "what we're changing and why" doc. Built from the codebase reality (docs 01–11) + Lany's direction.
 Everything else is *how it works*; this is *how we make it ours*.
 
+> **Status (2026-06-25):** §1 (the **MatchZy → Querator rebrand**) is **complete and live in production** — Querator
+> 1.0.0, deployed across all repos and all 3 fleet VMs. The canonical record of what changed and why is
+> [`00-REBRAND-LOG.md`](00-REBRAND-LOG.md); §1 below is retained as the original plan (now executed, read in past
+> tense). **§2–§8 remain the active post-rebrand roadmap.**
+
 ## 0. Fork goals (in your words)
 
 - **Replace workarounds with solid core functions.** Things currently hacked around outside the plugin should become
   first-class plugin features. Canonical example: **a warmup ready-timer that penalizes players who don't ready up** —
   MatchZy has no such thing (it runs an effectively infinite warmup, `mp_warmuptime 9999`, with only repeating
   "unready players" chat reminders).
-- **Tighter Lany integration** — own the event/demo/backup seam with `lanyBot` (`/webhooks/matchzy`) and `lany-clipper`.
+- **Tighter Lany integration** — own the event/demo/backup seam with `lanyBot` (`/api/querator/events`) and `lany-clipper`.
 - **Own & rebrand the core** — MatchZy → **Querator** (priority #1).
 - **Match formats & stats** — BO3/BO5 pugs, side-type parsing, richer stats for Glicko + the frontend.
 - **Fix gaps & dead code.**
@@ -24,10 +29,13 @@ they cost us (but see the Get5 note in §7 — "Lany-only" doesn't automatically
 
 ---
 
-## 1. Priority #1 — Rebrand MatchZy → Querator (do it in tiers)
+## 1. Priority #1 — Rebrand MatchZy → Querator (done — original tiered plan below)
 
-The identity is "MatchZy" in ~8 distinct places, each with a **different blast radius**. Do the safe tier first; treat
-the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
+> ✅ **Completed 2026-06-25** (lockstep hard-swap, no transitional aliases — decision D4; see
+> [`00-REBRAND-LOG.md`](00-REBRAND-LOG.md)). The tier tables below are the original plan, kept for reference.
+
+The identity was "MatchZy" in ~8 distinct places, each with a **different blast radius**. The plan did the safe tier
+first and treated the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
 
 ### Tier A — cosmetic / internal (safe, do first)
 | What | Where | Notes |
@@ -35,14 +43,14 @@ the coupled tier as a coordinated change with `lany-node-agent`/`lanyBot`.
 | `ModuleName`, `ModuleAuthor`, `ModuleDescription` | [`Querator.cs`](../Querator.cs) | `ModuleName "MatchZy"` → `"Querator"`. Changes the load banner + `css_plugins` name. |
 | Chat prefix default | `Querator.cs` `chatPrefix` + `config.cfg` `querator_chat_prefix` | `[{Green}MatchZy{Default}]` → `[{Green}Querator{Default}]` (or Lany branding). |
 | Namespace + class name | every `.cs` (`namespace MatchZy`, `class MatchZy`) | Mechanical rename (`MatchZy` → `Querator`). The class is `partial`, so rename consistently across all files. |
-| Assembly / DLL name | rename `Querator.csproj` → `Querator.csproj` | Produces `Querator.dll`; deploy folder becomes `plugins/Querator/`. **Update lany-node-agent's plugin path/manifest.** |
+| Assembly / DLL name | rename `MatchZy.csproj` → `Querator.csproj` | Produces `Querator.dll`; deploy folder becomes `plugins/Querator/`. **Update lany-node-agent's plugin path/manifest.** |
 | `get5_status` `plugin_version` string, credits message | `G5API.cs`, `Utility.cs` | Optional vanity. |
 
 ### Tier B — coupled to external systems (coordinate before changing)
 | What | Where | Coupling / risk |
 |---|---|---|
-| **ConVar prefix** `querator_*` | `ConfigConvars.cs`, `ConsoleCommands.cs`, all `config.cfg`/cfgs | **lany-node-agent config sync + lanyBot RCON likely send `querator_*`.** Safest: add `querator_*` **aliases** (like the existing `get5_*`) and keep `querator_*` working, then migrate callers. Don't hard-rename in one shot. |
-| **cfg folder** `MatchZy/` | `Utility.cs` path consts (`warmupCfgPath`…), `SleepMode.cs`, `PracticeMode.cs`, deploy layout | Renaming `cfg/Querator/` → `cfg/Querator/` breaks deployed configs + lany-node-agent's config templates. Coordinate the move. |
+| **ConVar prefix** `matchzy_*` → `querator_*` | `ConfigConvars.cs`, `ConsoleCommands.cs`, all `config.cfg`/cfgs | **lany-node-agent config sync + lanyBot RCON send these cvars.** Original plan floated additive `querator_*` aliases keeping `matchzy_*` working; actual decision (D4) was a coordinated lockstep hard-swap with node-agent + lanyBot. |
+| **cfg folder** `MatchZy/` → `Querator/` | `Utility.cs` path consts (`warmupCfgPath`…), `SleepMode.cs`, `PracticeMode.cs`, deploy layout | Renaming `cfg/MatchZy/` → `cfg/Querator/` breaks deployed configs + lany-node-agent's config templates. Coordinated the move at cutover. |
 | **lang keys** `matchzy.*` | all `lang/*.json` + every `Localizer["matchzy…"]` call | Mechanical but large; purely internal (no external consumer) → safe-ish, just big. Can defer. |
 | **DB table names** `querator_stats_*` | `DatabaseStats.cs` (both dialects) | ⚠️ **Renaming breaks existing data and any direct SQL readers.** lanyBot stores match data in **MongoDB** (via events), so it likely doesn't read these tables — *verify*. If nothing reads them directly, a rename is low-risk but pointless; recommend **leaving table names** for data continuity. |
 | **get5_\*** aliases | `*.cs` | Keep/drop per §7. |
@@ -95,7 +103,7 @@ This is the contract with lanyBot/clipper — make it complete and reliable. Con
 - **Add Lany-specific events freely.** Since lanyBot is the only consumer, you are not bound to Get5's event schema
   for *new* events (e.g. `ready_timeout`, `player_penalized`, `coach_changed`, richer per-round player stats). Keep the
   existing event *names/fields* stable (lanyBot parses them), but extend at will.
-- **Align field names with `/webhooks/matchzy`.** Confirm lanyBot's webhook handler expects the exact `event`/field
+- **Align field names with `/api/querator/events`.** Confirm lanyBot's webhook handler expects the exact `event`/field
   names in [`Events.cs`](../Events.cs); treat that as the integration test.
 
 ---
@@ -184,7 +192,7 @@ keeping. Spend the effort on owning the **events**, not on excising Get5.
    `Type` bug.
 3. **Ready-timer + not-ready penalty** (§2) — the flagship "workaround → core function," with the penalty delegated to
    lanyBot via a new event.
-4. **Event-seam hardening** (§3) — retry/idempotency/shared client; confirm field alignment with `/webhooks/matchzy`.
+4. **Event-seam hardening** (§3) — retry/idempotency/shared client; confirm field alignment with `/api/querator/events`.
 5. **Rebrand Tier B** as a coordinated change (querator_* cvar aliases → cfg-folder move with node-agent).
 6. **Formats/stats** (§4) and **dead-code cleanup** (§5) as ongoing.
 

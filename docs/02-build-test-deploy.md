@@ -8,8 +8,8 @@ the concrete copy-paste runbook for **your** server is [13-build-and-test-on-ser
 ## 1. Prerequisites
 
 ### To build (dev machine)
-- **.NET 8.0 SDK.** ⚠️ As of this writing the SDK is **not installed on the current dev machine** (`dotnet` is not on
-  PATH). Install from <https://dotnet.microsoft.com/download/dotnet/8.0> before building.
+- **.NET 8.0 SDK** (installed on the dev machine). If a fresh machine lacks it, install from
+  <https://dotnet.microsoft.com/download/dotnet/8.0> before building.
 - NuGet restore pulls the deps listed in [`Querator.csproj`](../Querator.csproj) — needs internet on first restore.
 - No IDE required (CLI is enough), but VS / Rider / VS Code work.
 
@@ -80,7 +80,7 @@ The server's game dir is `.../game/csgo/`. After `dotnet publish`:
 3. (First time) make sure Metamod + CSSharp are installed and loading — verify with `meta list` and
    `css_plugins list` in the server console.
 4. Load: restart the server, or `css_plugins load Querator` (hot path), then check the console for
-   `[Querator 0.8.15 LOADED] …`.
+   `[Querator 1.0.0 LOADED] …`.
 
 ### Hot-reload caveat (important)
 CSSharp supports hot-reload (`css_plugins reload Querator`), and `Load()` handles `hotReload=true`. **But never
@@ -93,17 +93,17 @@ will desync from a fresh `Load()`. Restart the server instead. Hot-reload is onl
 
 - **Single source of truth:** `ModuleVersion` in [`Querator.cs`](../Querator.cs). The pipeline tags releases from it.
 - Convention (from upstream): the **first line of a release commit bumps the version** and the change is logged in
-  [`CHANGELOG.md`](../CHANGELOG.md). The current branch tip is `0.8.15: noclip command fix`.
-- The release tag/name is just the bare version string (e.g. `0.8.15`).
+  [`CHANGELOG.md`](../CHANGELOG.md). The current release is `1.0.0` (the Querator rebrand cutover).
+- The release tag/name is just the bare version string (e.g. `1.0.0`).
 
 ---
 
 ## 6. Fork-specific gotchas to remember
 
-- The fork is "Querator" but **every build artifact, ConVar, and identity string still says MatchZy**. If/when you
-  rename, you touch: `ModuleName`/`ModuleVersion`/`ModuleAuthor`, namespace `MatchZy`, ConVar prefix `querator_`,
-  lang keys `matchzy.*`, chat prefix, the `get5_*` aliases (keep for panel compat), the workflow's grep patterns and
-  zip names, and the deploy folder name `plugins/MatchZy`. This is a deliberate, wide-reaching change — plan it.
+- The MatchZy → Querator rebrand is **done** (Querator 1.0.0, live across the fleet as of 2026-06-25 — see
+  [`00-REBRAND-LOG.md`](00-REBRAND-LOG.md)). Every build artifact, ConVar, identity string, lang key, env var, cfg
+  folder, API path, and the deploy folder `plugins/Querator` are now Querator-named. The **only** remaining MatchZy
+  references are intentional upstream attribution (`CREDITS`/`LICENSE`/`README`/`ModuleAuthor`) — keep those forever.
 - Because there are no tests, **every change must be smoke-tested on a server**. Keep a scratch server handy.
 - `database.json`, `admins.json`, and the `*_override.cfg` files are *user data* — when deploying an update, don't
   clobber a server operator's customized copies. (The override cfgs exist precisely so base configs can change
