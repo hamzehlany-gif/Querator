@@ -510,3 +510,19 @@ cosmetic code regex, and one dead Mongo key — all fixed.
   `lany-clipper/CLAUDE.md` (2 demo-provenance mentions). Not touched (user files / WIP branch).
 - **Deferred (flagged, not blocking):** demo-upload leg returned 0 docs on carlos's test match (pre-existing; spawned
   as a follow-up task). Backups on all 3 VMs (`/home/cs2/rebrand-backup-*`) retained for a 1-month rollback window.
+
+### Upstream external-hook cleanup (2026-06-25) — ✅ removed leftover MatchZy integrations
+A separate pass for upstream-OSS **external hooks** (not "matchzy" strings, so the rebrand sweep didn't catch them) —
+things the original MatchZy repo wired to the author's own accounts/services that a fork silently inherits. Confirmed
+with the operator, then removed:
+- **`.github/FUNDING.yml`** (deleted) — the GitHub **Sponsor button** routed to the upstream author's BuyMeACoffee +
+  Steam tradelink.
+- **`build.yml` Discord step** (removed) — release-announce to `secrets.DISCORD_WEBHOOK` (the MatchZy pattern). No
+  Querator Discord exists; the secret was unset so the step had been failing (it never posted anywhere).
+- **`documentation/docs/index.md`** (removed) — a Discord **badge linking to the upstream MatchZy server** invite
+  (`discord.gg/...`) on the published docs homepage.
+- **`documentation/docs/donation.md`** + mkdocs nav (deleted) — donation page routing to the upstream author.
+- Verified **clean** (no action): plugin `.cs` has no telemetry / update-check / phone-home (only operator-configured
+  endpoints + Lany's own author URL); `mkdocs.yml` has no analytics; no issue-templates / dependabot / CODEOWNERS;
+  README has no badges. **Attribution retained on purpose:** `LICENSE` (©Shobhit Pathak), `CREDITS`, README/docs
+  lineage prose, and the historical upstream `CHANGELOG` entries + links.
