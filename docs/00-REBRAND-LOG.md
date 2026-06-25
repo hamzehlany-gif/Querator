@@ -524,5 +524,20 @@ with the operator, then removed:
 - **`documentation/docs/donation.md`** + mkdocs nav (deleted) — donation page routing to the upstream author.
 - Verified **clean** (no action): plugin `.cs` has no telemetry / update-check / phone-home (only operator-configured
   endpoints + Lany's own author URL); `mkdocs.yml` has no analytics; no issue-templates / dependabot / CODEOWNERS;
-  README has no badges. **Attribution retained on purpose:** `LICENSE` (©Shobhit Pathak), `CREDITS`, README/docs
-  lineage prose, and the historical upstream `CHANGELOG` entries + links.
+  README has no badges; live docs prose has only attribution links (no upstream "read more" redirects). **Attribution
+  retained on purpose:** `LICENSE` (©Shobhit Pathak), `CREDITS`, README/docs lineage prose, and the historical upstream
+  `CHANGELOG` entries + links.
+
+### Docs-site publish pipeline retired (2026-06-25) — deep-look follow-up
+The public MkDocs site (`hamzehlany-gif.github.io/Querator`) was **404** — Pages was never enabled, so `ci.yml`'s
+`mkdocs gh-deploy` pushed rendered HTML to a `gh-pages` branch that nothing served, on every push to `main`. Per
+operator decision: **keep `documentation/` as source reference, stop publishing.** Removed `.github/workflows/ci.yml`,
+deleted the abandoned `gh-pages` branch (regenerable from source via `mkdocs serve`), updated CLAUDE.md.
+- Operator chose to **keep all 3 release zips** (plugin-only + the 2 with-cssharp bundles) — the with-cssharp ones are
+  unused by the node-agent deploy but handy for a manual scratch-server install.
+- **Deliberate keeps (upstream-audience, not removed):** the Get5 compatibility layer (`G5API.cs` + `get5_*` aliases +
+  `get5_status`/`get5_web_available` + `documentation/docs/get5.md`) per decision D7; the 12 `lang/` locales (harmless).
+- **Flagged for the operator (not a MatchZy artifact per se):** the Querator GitHub repo is **public** with public
+  Releases (node-agent installs by unauthenticated download from the release URL), while `docs/12` states the plugin is
+  "Lany-only, never shared outside Lany." Public releases are currently load-bearing for the deploy, so privatizing is
+  coupled — left as an open question for the operator.
