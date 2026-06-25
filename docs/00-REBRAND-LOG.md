@@ -431,3 +431,24 @@ lives in Querator. Companion to [`LANY.md`](../../LANY.md) and the engineering d
   "MatchZy limitations / fork strategy", "upstream ships `MatchZy-<ver>-with-cssharp`"). Needs per-occurrence editing,
   not sed — a focused follow-up. No functional impact.
 - **⚠️ Deploy:** NOT deployed (rides with the cutover). `rebrand-c` pushed in all repos; lany-docs `rebrand-c` pushed.
+
+### Cutover PREP — prod recon + migration corrections (2026-06-25) — ✅ scripts fixed + dry-run verified; NOT executed
+Read-only recon of the live VM (`carlos`, 82.212.83.229) + a full read-only Mongo scan caught **the migration
+scripts were targeting the wrong collections** (Mongoose-default names, not the real custom names):
+- **Real Mongo schema (cluster has 2 app DBs):** `lany-agent` → `vm_states`, `config_templates` (+ `jobs`,
+  `manifests`, `backups`); `lanybot` → `matchsessions`, `matchEvents` (camelCase), `orchestratorserverstates`, etc.
+- **b6 fixed** (`vmstates`→`vm_states`, `configtemplates`→`config_templates`) + **added** the `config_templates.content`
+  transform (closes the #9 "re-seed" gap — done in-place, no admin-UI step) **and** `lanybot.orchestratorserverstates`
+  (component-key `versions`/`pluginStack`/`autoUpdate` `.matchzy`→`querator`). As written it would have been a **no-op**.
+- **c3 fixed** (`matchevents`→`matchEvents`) — original would have **silently skipped all 125 event docs**.
+- **Dry-run write counts (verified, zero writes):** b6 = vm_states 3 + config_templates root 4 + content 2 +
+  orchestratorserverstates 3; c3 = matchsessions 17 + matchEvents 125. Total 154 docs / 5 collections / 2 DBs.
+- **Decision:** historical/audit records left MatchZy-named (`jobs`, `manifests`, `orchestratoraudits`,
+  `matchEvents.payload.cvars.matchzy_*`) — true record of the MatchZy era, not queried by the new code.
+- **b7:** no-op on `carlos` (no `matchzy.db`/`MatchZy_Stats`/`MatchZyDataBackup`) — plugin creates `querator.db` fresh;
+  run only on VMs that accumulated SQLite/CSV stats.
+- **VM facts:** node-agent = `cs2-agent.service` (systemd, user `cs2`, git checkout `/home/cs2/agent` on `main`); update =
+  `sudo -u cs2 git -C /home/cs2/agent pull && systemctl restart cs2-agent`; env `/home/cs2/agent/.env`; flat plugin
+  install (no §8a here). Fleet = **3 VMs** (`carlos` canary + 2). Backend = `api.lany.gg`.
+- **Droplet env risk:** lanyBot prod `.env` still has `MATCHZY_WEBHOOK_SECRET/HEADER` → rename to `QUERATOR_*` with the
+  deploy or the rebranded lanyBot fail-closes in prod.

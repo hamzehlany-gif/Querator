@@ -29,23 +29,33 @@ Phase B/C lives on `rebrand-c` (which contains `rebrand-b`). For each repo, merg
   `/^Querator-.*\.zip$/i`. Override env `ORCHESTRATOR_QUERATOR_RELEASE_URL` if you pin a specific release.
 - lany `QUERATOR_TEMPLATE_URL` → the fork `1.0.0` zip.
 
-## 3. Rename server env + re-seed config templates
-- [ ] On each server / deployment config, rename env vars **`MATCHZY_*` → `QUERATOR_*`** (the agent now reads
-      `QUERATOR_CONFIG_PATH`, `QUERATOR_PLUGIN_PATH`, `QUERATOR_WEBHOOK_SECRET/HEADER`, `QUERATOR_BACKEND_URL`).
-- [ ] **Re-seed the Mongo config-templates** from the updated `lany-node-agent/docs/config-template-seed.json` so the
-      synced `config.cfg` sets `querator_*` cvars, the header `x-querator-secret`, `/api/querator/*` URLs, the demo dir
-      `Querator/`, and `exec Querator/live_override.cfg`. The live `cfg` root is now `cfg/Querator`.
+## 3. Rename server env (config-template CONTENT is migrated by b6, not re-seeded manually)
+- [ ] **Each CS2 VM** `/home/cs2/agent/.env`: rename `MATCHZY_{CONFIG_PATH,PLUGIN_PATH,BACKEND_URL,WEBHOOK_SECRET,WEBHOOK_HEADER}`
+      → `QUERATOR_*` (keep the values — e.g. `MATCHZY_WEBHOOK_HEADER=x-matchzy-secret` becomes
+      `QUERATOR_WEBHOOK_HEADER=x-querator-secret`). The agent (`cs2-agent.service`) reads `QUERATOR_*` after restart.
+- [ ] **lanyBot droplet `.env`**: rename `MATCHZY_WEBHOOK_SECRET`→`QUERATOR_WEBHOOK_SECRET` and
+      `MATCHZY_WEBHOOK_HEADER`→`QUERATOR_WEBHOOK_HEADER` (same values). ⚠️ **The rebranded lanyBot fail-closes in prod
+      without `QUERATOR_WEBHOOK_SECRET`** — do this with the lanyBot deploy. (`ORCHESTRATOR_*` use code defaults already
+      pointed at the fork.)
+- The `querator_*` cvars + `/api/querator` + `x-querator-secret` + `Querator/` demo dir inside the config templates are
+  migrated **in place by b6** (`config_templates.content` transform). **No manual admin-UI re-seed needed.**
 
-## 4. Run the data migrations (after backups)
-- [ ] **Mongo (once):** `mongosh "<MONGO_URI>" lany-node-agent/scripts/migrations/rebrand-b6-config-root-component-key.js`
-      — renames `versions.matchzy`→`versions.querator`, `lastJobIds.matchzy`→`querator`, and `ConfigTemplate.root`
-      `'matchzy'`→`'querator'`. Verify collection names first (`db.getCollectionNames()`).
-- [ ] **Per game-server:** `CSGO=/home/cs2/server/game/csgo bash Querator/scripts/migrations/rebrand-b7-data-migration.sh`
-      — renames `matchzy.db`→`querator.db` + the 3 `*_stats_*` tables, and moves `MatchZy_Stats`/`MatchZyDataBackup`/
-      demo `MatchZy` dirs → `Querator*`.
-- [ ] **Mongo (once, lanyBot field):** `mongosh "<MONGO_URI>" lanyBot/scripts/migrations/rebrand-c3-matchid-field-rename.js`
-      — renames the persisted field `matchzyMatchId`→`queratorMatchId` on `matchsessions` (UNIQUE idx) + `matchevents`
-      (idx); drops the old indexes, `$rename`s, recreates the indexes. Lockstep with the renamed lanyBot deploy.
+## 4. Run the data migrations (after backups) — collection names + counts VERIFIED against prod 2026-06-25
+Both Mongo scripts use `getSiblingDB`, so run each with **any** `<MONGO_URI>` on the cluster (they target the
+right DB themselves). Idempotent.
+- [ ] **Mongo b6 (once):** `mongosh "<MONGO_URI>" lany-node-agent/scripts/migrations/rebrand-b6-config-root-component-key.js`
+      — `lany-agent.vm_states` `versions.matchzy`→`querator` (3); `lany-agent.config_templates` `root` (4) + `content`
+      transform → `querator_*`/`/api/querator`/`x-querator-secret`/`Querator/` (2); `lanybot.orchestratorserverstates`
+      `versions`/`pluginStack`/`autoUpdate` `.matchzy`→`querator` (3).
+- [ ] **Mongo c3 (once):** `mongosh "<MONGO_URI>" lanyBot/scripts/migrations/rebrand-c3-matchid-field-rename.js`
+      — `matchzyMatchId`→`queratorMatchId` on `lanybot.matchsessions` (17, UNIQUE idx) + `lanybot.matchEvents`
+      (**125**, camelCase collection); drops/recreates the indexes.
+- [ ] **Per game-server b7 (ONLY where old SQLite/stats exist):**
+      `CSGO=/home/cs2/server/game/csgo bash Querator/scripts/migrations/rebrand-b7-data-migration.sh`
+      — `matchzy.db`→`querator.db` + tables + `MatchZy_Stats`/`MatchZyDataBackup`/demo dirs → `Querator*`. **NOTE:**
+      on `carlos` none of those exist → no-op; the plugin creates `querator.db` fresh. Run only on VMs that accumulated stats.
+- **Left MatchZy-named by design** (historical/audit): `jobs`, `manifests`, `orchestratoraudits`,
+  `matchEvents.payload.cvars.matchzy_*`.
 
 ## 5. Install the Querator fork on the fleet (via node-agent)
 - [ ] Trigger the plugin install/update from the fork release. **`targetPath` MUST be the csgo root**
