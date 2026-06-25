@@ -3,9 +3,6 @@ Querator - Match Plugin for CS2!
 
 Querator is a plugin for CS2 (Counter Strike 2) for running and managing practice/pugs/scrims/matches with easy configuration! Querator is [Lany](https://lany.gg)'s fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy).
 
-[![Discord](https://discordapp.com/api/guilds/1169549878490304574/widget.png?style=banner2)](https://discord.gg/2zvhy9m7qg)
-
-
 ## What can Querator do?
 Querator can solve a lot of match management requirements. It provides basic commands like `!ready`, `!unready`, `!pause`, `!unpause`, `!tac`, `!stop`, etc, provides matches stats, and much more!
 
