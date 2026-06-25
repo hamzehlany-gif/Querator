@@ -1,6 +1,6 @@
 # 04 — Commands & ConVars Reference
 
-Exhaustive, source-derived catalog of every command and ConVar as of **0.8.15**. Descriptions are the in-code help
+Exhaustive, source-derived catalog of every command and ConVar as of **1.0.0**. Descriptions are the in-code help
 strings. Practice-command *mechanics* are detailed in [05-practice-mode.md](05-practice-mode.md); this doc is the
 catalog + routing/permission model.
 

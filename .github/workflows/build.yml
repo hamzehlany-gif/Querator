@@ -2,8 +2,13 @@ name: Build and Release
 
 on:
   push:
+    # Doc-only pushes must NOT re-cut a release: softprops/action-gh-release updates the existing
+    # tag and re-fires the Discord notification, spamming duplicate "released" posts. A release is
+    # cut by a real change (ModuleVersion in Querator.cs, .csproj, cfg/) — never by editing markdown.
     paths-ignore:
         - "documentation/**"
+        - "docs/**"
+        - "**.md"
     branches:
       - main
   workflow_dispatch:

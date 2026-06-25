@@ -138,7 +138,7 @@ Panels poll these console commands; both reply with JSON via `command.ReplyToCom
 
 ### `get5_status`
 Builds a `Get5Status`:
-`plugin_version` (**hardcoded `"0.15.0"`** — the *Get5 protocol version emulated*, NOT Querator's `0.8.15`),
+`plugin_version` (**hardcoded `"0.15.0"`** — the *Get5 protocol version emulated*, NOT Querator's `1.0.0`),
 `gamestate` (string), `paused`, `loaded_config_file`, `matchid`, `map_number`, `round_number`, `round_time`,
 `team1`/`team2` (`Get5StatusTeam`: `name`, `series_score`, `current_map_score`, `connected_clients`, `ready`,
 `side`), `maps`.

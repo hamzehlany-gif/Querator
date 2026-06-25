@@ -8,8 +8,8 @@ Lany's own needs.
 
 > **Querator is a fork of MatchZy** by shobhit-pathak ("WD-"), used under the MIT License. The lineage is kept on
 > purpose — see [`CREDITS`](CREDITS) and [`LICENSE`](LICENSE). Internal engineering docs live in
-> [`docs/`](docs/00-index.md); a rebrand from MatchZy → Querator is in progress (see
-> [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md)).
+> [`docs/`](docs/00-index.md); the rebrand from MatchZy → Querator is complete and live in production as of
+> 2026-06-25 (Querator 1.0.0 — see [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md)).
 
 ## Feature highlights
 

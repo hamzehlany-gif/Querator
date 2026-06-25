@@ -61,7 +61,7 @@ Into the server's game dir (`.../game/csgo/`):
 ## Step 5 — Load & confirm
 
 - Fresh load: **restart the server**, or `css_plugins load Querator` in console.
-- Confirm in the console log: `[Querator 0.8.15 LOADED] …`.
+- Confirm in the console log: `[Querator 1.0.0 LOADED] …`.
 - ⚠️ **Never hot-reload during a live match** — restart instead (see [02](02-build-test-deploy.md#hot-reload-caveat-important)).
 
 ## Step 6 — Smoke test in-game

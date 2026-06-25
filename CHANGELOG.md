@@ -1,4 +1,18 @@
-# MatchZy Changelog
+# Querator Changelog
+
+> Querator is a Lany fork of [MatchZy](https://github.com/shobhit-pathak/MatchZy) (MIT). Releases tagged `0.8.15`
+> and earlier below are the inherited **upstream MatchZy** history, kept for provenance (see `CREDITS` / `LICENSE`).
+
+# 1.0.0
+
+#### June 25, 2026
+
+- **MatchZy → Querator rebrand — complete and live in production.** Renamed throughout: namespace/class, `ModuleName`,
+  `Querator.dll`/`Querator.cs`, `querator_*` cvars, `/api/querator/*`, `x-querator-secret`, `querator_stats_*` tables +
+  `querator.db`, `QUERATOR_*` env, `cfg/Querator/`, `querator.*` lang keys, and the `Querator-*` demo-upload headers.
+- Cut over the full server fleet and the Lany backend/agent/frontend in lockstep; ran the supporting data migrations.
+- Upstream MatchZy attribution retained on purpose in `CREDITS` / `LICENSE` / `README` / `ModuleAuthor`.
+- See [`docs/00-REBRAND-LOG.md`](docs/00-REBRAND-LOG.md) for the full change ledger.
 
 # 0.8.15
 
