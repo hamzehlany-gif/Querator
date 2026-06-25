@@ -478,3 +478,35 @@ against the shared cluster (154 docs / 5 collections / 2 DBs — matches dry-run
   check used `grep -c | grep -q` which trips a false FATAL under `set -o pipefail` (grep -c exits 1 on a 0 count) → replaced
   with `if grep -qE`; (2) step-9 verify snapshotted `$LOG` once before the restart, pinning a stale pre-restart log → now
   recomputes the newest log each loop iteration. Both are verify/guard fixes; the proven mutation sequence is unchanged.
+
+### Post-cutover AUDIT + finalization (2026-06-25) — ✅ deployment verified clean
+Deep cross-repo audit (6 parallel auditors: one per repo + a cross-repo contract pass) plus live-infra verification.
+**Result: 0 runtime blockers; 8/8 cross-repo contracts consistent.** Everything found was stale docs/comments, one
+cosmetic code regex, and one dead Mongo key — all fixed.
+- **Live infra verified:** all 3 VMs (carlos/botez/alan) — `Querator.dll` loaded, `MatchZy` plugin+cfg+db+stats dirs
+  gone, 0 `MATCHZY_` env keys, `config.cfg`→`/api/querator/events`. Backend: POST `/api/querator/events`→401,
+  `/api/matchzy/events`→404. Mongo: `vm_states` 3/3 `querator 1.0.0` (0 matchzy); `config_templates` 5 docs root
+  `querator` (0 matchzy); `matchsessions` 18/18 + `matchEvents` 134/134 on `queratorMatchId` (0 `matchzyMatchId`,
+  indexes correct).
+- **One live-data fix:** `lanybot.orchestratorserverstates` had a dead `autoUpdate.matchzy:false` on all 3 docs — b6's
+  `$rename` no-op'd because the merge-preserved `autoUpdate` already had a `querator` key (added by post-cutover sync);
+  the old key was never unset. `$unset` cleaned all 3 (querator flag preserved); re-verified it stays gone after a sync
+  cycle. b6 script hardened with a defensive `$unset` for replays.
+- **Code fix:** `lany-node-agent/src/services/updates/plugin.js` find-replace artifact `/^(querator|querator)$/i`
+  → `/^querator$/i`.
+- **Docs finalized across all repos:** lany-docs `rebrand-c`→`main` (the last cutover step — 29 stale refs → 0);
+  Querator README/00-index/02/04/07/13/CHANGELOG (version 0.8.15→1.0.0, "in progress"→done, +1.0.0 changelog entry);
+  node-agent orchestrator-api-spec + 5 docs (config-root contract key `matchzy`→`querator`); lanyBot CLAUDE/README/
+  explainers (renamed symbols + `QUERATOR_WEBHOOK_SECRET`); lany + node-agent `REBRAND-TODO.md` closed; deploy-script
+  comment + test-runbook shortcut.
+- **CI hygiene:** Querator `build.yml` + lanyBot `deploy.yml` now `paths-ignore` docs/scripts/markdown so a doc-only
+  push no longer re-cuts the 1.0.0 release (re-firing Discord) / redeploys the prod backend.
+- **Branch cleanup:** all merged `rebrand-*` branches deleted (local + remote) across Querator/lanyBot/node-agent/lany;
+  lany-docs `rebrand-c` deleted after merge.
+- **Residue now = intentional only:** `grep -ri matchzy` across all repos returns only attribution (CREDITS/LICENSE/
+  README/ModuleAuthor), this ledger + CUTOVER-RUNBOOK, migration scripts, node-agent `detector.js` lineage comments,
+  archived handoffs, historical research/changelog/explainer prose, and the closure notes. **Two owner-maintained files
+  left to the user:** `lany/CLAUDE.md:114` (one-word `matchzy`→`querator` in a component-key list) and
+  `lany-clipper/CLAUDE.md` (2 demo-provenance mentions). Not touched (user files / WIP branch).
+- **Deferred (flagged, not blocking):** demo-upload leg returned 0 docs on carlos's test match (pre-existing; spawned
+  as a follow-up task). Backups on all 3 VMs (`/home/cs2/rebrand-backup-*`) retained for a 1-month rollback window.
