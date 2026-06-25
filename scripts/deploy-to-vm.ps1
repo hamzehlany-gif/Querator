@@ -18,10 +18,9 @@ param(
   [string]$Key       = "$HOME\.ssh\querator_deploy",
   [string]$Csgo      = "/home/cs2/server/game/csgo",
   [string]$Service   = "cs2",            # the CS2 server unit (NOT cs2-agent / node-agent)
-  [string]$PluginDir = "Querator"        # plugins/<PluginDir>. SP-B2 renamed the DLL MatchZy->Querator. NOTE: the
-                                         # first Querator.dll deploy must REMOVE the old plugins/MatchZy folder, else
-                                         # CSSharp loads both DLLs and double-instantiates the plugin. Coupled to the
-                                         # node-agent install path (MATCHZY_PLUGIN_PATH) -- see docs/00-REBRAND-LOG.md SP-B2 TODO.
+  [string]$PluginDir = "Querator"        # plugins/<PluginDir>. Coupled to the node-agent install path
+                                         # (QUERATOR_PLUGIN_PATH). The fleet is fully on plugins/Querator since the
+                                         # 2026-06-25 cutover; no old plugins/MatchZy folder remains (see docs/00-REBRAND-LOG.md).
 )
 $ErrorActionPreference = "Stop"
 $dest = "$Csgo/addons/counterstrikesharp/plugins/$PluginDir"

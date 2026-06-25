@@ -46,9 +46,9 @@ The server must have:
   `css_plugins list`.
 - `tv_enable 1` if you want demos.
 
-> **Shortcut for a fresh server:** the upstream release ships `MatchZy-<ver>-with-cssharp-linux.zip` /
-> `-windows.zip` that bundle a matching CSSharp runtime — install Metamod, extract that zip into `csgo/`, then
-> overlay your freshly built `Querator.dll`. This avoids version-matching CSSharp by hand.
+> **Shortcut for a fresh server:** the Querator release ships `Querator-<ver>-with-cssharp-linux.zip` /
+> `-windows.zip` that bundle `Querator.dll` + a matching CSSharp runtime — install Metamod, then extract that zip
+> into `csgo/`. This avoids version-matching CSSharp by hand (and needs no separate `Querator.dll` overlay).
 
 ## Step 4 — Deploy the build
 

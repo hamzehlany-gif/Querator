@@ -9,6 +9,7 @@ on:
         - "documentation/**"
         - "docs/**"
         - "**.md"
+        - "scripts/**"
     branches:
       - main
   workflow_dispatch:
